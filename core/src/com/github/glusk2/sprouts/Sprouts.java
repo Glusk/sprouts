@@ -12,13 +12,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Sprouts extends InputAdapter implements ApplicationListener {
 
-    private Viewport viewport;
+    private final Viewport viewport;
 
-    /** Most recent, unprojected touch/mouse position. */
-    private Vector3 currentPosition;
     private ShapeRenderer shapes;
+    private List<Vector3> sampledDragPoints;
 
     public Sprouts() {
         this(1280, 720);
@@ -43,39 +45,35 @@ public class Sprouts extends InputAdapter implements ApplicationListener {
     public void create() {
         shapes = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
-
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
+
     @Override
     public void resize(int width, int height) {
-        currentPosition = null;
-
         viewport.update(width, height, true);
-
-        Gdx.gl.glClearColor(1, 1, 1,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
     }
 
     @Override
     public void render() {
-        if (currentPosition != null) {
+        Gdx.gl.glClearColor(1, 1, 1,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (sampledDragPoints != null) {
             shapes.setProjectionMatrix(viewport.getCamera().combined);
             shapes.setColor(Color.BLACK);
             shapes.begin(ShapeRenderer.ShapeType.Filled);
-            shapes.circle(currentPosition.x, currentPosition.y, 0.125f, 16);
+            for (Vector3 point : sampledDragPoints) {
+                shapes.circle(point.x, point.y, 0.125f, 16);
+            }
             shapes.end();
         }
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
-
     }
 
     @Override
@@ -84,9 +82,19 @@ public class Sprouts extends InputAdapter implements ApplicationListener {
     }
 
     @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        sampledDragPoints = new ArrayList<Vector3>();
+        sampledDragPoints.add(
+            viewport.getCamera().unproject(new Vector3(screenX, screenY, 0))
+        );
+        return true;
+    }
+
+    @Override
     public boolean touchDragged (int screenX, int screenY, int pointer) {
-        currentPosition =
-            viewport.getCamera().unproject(new Vector3(screenX, screenY, 0));
+        sampledDragPoints.add(
+            viewport.getCamera().unproject(new Vector3(screenX, screenY, 0))
+        );
         return true;
     }
 }
