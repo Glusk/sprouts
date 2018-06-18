@@ -114,7 +114,8 @@ project(":core") {
         compile "org.la4j:la4j:0.6.0"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        
+
+        testCompile "junit:junit:4.11"
     }
 }
 
