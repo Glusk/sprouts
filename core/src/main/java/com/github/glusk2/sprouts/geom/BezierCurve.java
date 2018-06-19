@@ -3,16 +3,15 @@ package com.github.glusk2.sprouts.geom;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Vector2;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BezierCurve implements Curve<Bezier<Vector2>> {
 
-    private final List<Point2D> sample;
-    private final Polyline<Point2D> bSplineControlPoints;
+    private final List<Vector2> sample;
+    private final Polyline bSplineControlPoints;
 
-    public BezierCurve(List<Point2D> sample) {
+    public BezierCurve(List<Vector2> sample) {
         this(
             sample,
             new BSplineControlPoints(sample)
@@ -20,8 +19,8 @@ public class BezierCurve implements Curve<Bezier<Vector2>> {
     }
 
     public BezierCurve(
-        List<Point2D> sample,
-        Polyline<Point2D> bSplineControlPoints
+        List<Vector2> sample,
+        Polyline bSplineControlPoints
     ) {
         this.sample = sample;
         this.bSplineControlPoints = bSplineControlPoints;
@@ -29,14 +28,8 @@ public class BezierCurve implements Curve<Bezier<Vector2>> {
 
     @Override
     public List<Bezier<Vector2>> splines() {
-        List<Vector2> s = new ArrayList<Vector2>(sample.size());
-        List<Vector2> b = new ArrayList<Vector2>(bSplineControlPoints.points().size());
-        for (Point2D p : sample) {
-            s.add(new Vector2((float) p.getX(), (float) p.getY()));
-        }
-        for (Point2D p : bSplineControlPoints.points()) {
-            b.add(new Vector2((float) p.getX(), (float) p.getY()));
-        }
+        List<Vector2> s = sample;
+        List<Vector2> b = bSplineControlPoints.points();
 
         List<Bezier<Vector2>> splines = new ArrayList<Bezier<Vector2>>();
         for (int i = 1; i < s.size(); i++) {

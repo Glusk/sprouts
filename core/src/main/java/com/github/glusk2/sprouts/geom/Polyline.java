@@ -1,8 +1,9 @@
 package com.github.glusk2.sprouts.geom;
 
-import java.awt.geom.Point2D;
+import com.badlogic.gdx.math.Vector2;
+
 import java.util.List;
 
-public interface Polyline<T extends Point2D> {
-    List<T> points();
+public interface Polyline {
+    List<Vector2> points();
 }

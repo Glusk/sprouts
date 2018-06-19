@@ -17,7 +17,6 @@ import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CachedCurve;
 import com.github.glusk2.sprouts.geom.Curve;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +26,7 @@ public class Sprouts extends InputAdapter implements ApplicationListener {
     private final Viewport viewport;
 
     private ShapeRenderer shapes;
-    List<Point2D> sample;
+    private List<Vector2> sample;
     private Curve<Bezier<Vector2>> curve;
 
     private List<Vector3> sampledDragPoints;
@@ -108,9 +107,9 @@ public class Sprouts extends InputAdapter implements ApplicationListener {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector3 nextPoint =
             viewport.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        sample = new ArrayList<Point2D>();
+        sample = new ArrayList<Vector2>();
         sample.add(
-            new Point2D.Double(
+            new Vector2(
                 nextPoint.x,
                 nextPoint.y
             )
@@ -123,9 +122,9 @@ public class Sprouts extends InputAdapter implements ApplicationListener {
     public boolean touchDragged (int screenX, int screenY, int pointer) {
         Vector3 nextPoint =
             viewport.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        Point2D p = new Point2D.Double(nextPoint.x, nextPoint.y);
+        Vector2 p = new Vector2(nextPoint.x, nextPoint.y);
 
-        if (!sample.isEmpty() && p.distance(sample.get(sample.size() - 1)) >= 0.75f) {
+        if (!sample.isEmpty() && p.dst(sample.get(sample.size() - 1)) >= 0.75f) {
             sample.add(p);
         }
         return true;
