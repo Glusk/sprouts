@@ -45,8 +45,8 @@ public class BezierCurve implements Curve<Bezier<Vector2>> {
             Vector2 dir = b.get(i).cpy().sub(b.get(i-1));
             Vector2[] p = new Vector2[4];
             p[0] = p0.cpy();
-            p[1] = p0.cpy().mulAdd(dir.cpy(), 1/3f);
-            p[2] = p0.cpy().mulAdd(dir.cpy(), 2/3f);
+            p[1] = b.get(i-1).cpy().mulAdd(dir.cpy(), 1/3f);
+            p[2] = b.get(i-1).cpy().mulAdd(dir.cpy(), 2/3f);
             p[3] = p3.cpy();
             splines.add(new Bezier<Vector2>(p));
         }
