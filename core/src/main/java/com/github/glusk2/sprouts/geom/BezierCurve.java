@@ -8,10 +8,13 @@ import java.util.List;
 
 public class BezierCurve implements Curve<Bezier<Vector2>> {
 
-    private final List<Vector2> sample;
+    private final Polyline sample;
     private final Polyline bSplineControlPoints;
 
     public BezierCurve(List<Vector2> sample) {
+        this(new PerpDistSimpl(sample));
+    }
+    public BezierCurve(Polyline sample) {
         this(
             sample,
             new BSplineControlPoints(sample)
@@ -19,7 +22,7 @@ public class BezierCurve implements Curve<Bezier<Vector2>> {
     }
 
     public BezierCurve(
-        List<Vector2> sample,
+        Polyline sample,
         Polyline bSplineControlPoints
     ) {
         this.sample = sample;
@@ -28,7 +31,7 @@ public class BezierCurve implements Curve<Bezier<Vector2>> {
 
     @Override
     public List<Bezier<Vector2>> splines() {
-        List<Vector2> s = sample;
+        List<Vector2> s = sample.points();
         List<Vector2> b = bSplineControlPoints.points();
 
         List<Bezier<Vector2>> splines = new ArrayList<Bezier<Vector2>>();

@@ -12,19 +12,23 @@ public class BSplineControlPoints implements Polyline {
 
     private static final double[] ONE_FOUR_ONE = {1, 4, 1};
 
-    private final List<Vector2> sample;
+    private final Polyline sample;
 
     public BSplineControlPoints(List<Vector2> sample) {
+        this(new Polyline.SAMPLE_WRAPPER(sample));
+    }
+
+    public BSplineControlPoints(Polyline sample) {
         this.sample = sample;
     }
 
     @Override
     public List<Vector2> points() {
-        Vector2[] s = sample.toArray(new Vector2[0]);
+        Vector2[] s = sample.points().toArray(new Vector2[0]);
         int N = s.length;
         int n = N-1;
         if (n < 3) {
-            return sample;
+            return sample.points();
         }
 
         double[][] m = new double[n-1][n-1];
