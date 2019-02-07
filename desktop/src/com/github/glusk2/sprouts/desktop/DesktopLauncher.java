@@ -7,6 +7,8 @@ import com.github.glusk2.sprouts.Sprouts;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.useHDPI = true;
+		config.samples = 2;
 		new LwjglApplication(new Sprouts(), config);
 	}
 }
