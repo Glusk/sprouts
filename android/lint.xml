@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- Disable this given check in this project -->
+    <issue id="GradleOverrides" severity="ignore" />
+    <!-- Disable this given check in this project -->
+    <issue id="GoogleAppIndexingWarning" severity="ignore" />
+    <!-- Disable this given check in this project -->
+    <issue id="AllowBackup" severity="ignore" />
+    <!-- Disable this given check in this project -->
+    <issue id="NewApi" severity="ignore" />
+</lint>
