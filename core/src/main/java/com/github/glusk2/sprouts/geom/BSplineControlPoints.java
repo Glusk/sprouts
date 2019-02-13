@@ -1,17 +1,12 @@
 package com.github.glusk2.sprouts.geom;
 
 import com.badlogic.gdx.math.Vector2;
-import org.la4j.Vector;
-import org.la4j.linear.LinearSystemSolver;
-import org.la4j.linear.SweepSolver;
-import org.la4j.matrix.SparseMatrix;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BSplineControlPoints implements Polyline {
-
-    private static final double[] ONE_FOUR_ONE = {1, 4, 1};
 
     private final Polyline sample;
 
@@ -32,37 +27,99 @@ public class BSplineControlPoints implements Polyline {
             return sample.points();
         }
 
-        double[][] m = new double[n-1][n-1];
         double[] cX = new double[n-1];
         double[] cY = new double[n-1];
 
-        System.arraycopy(ONE_FOUR_ONE, 1, m[0], 0, 2);
         cX[0] = 6 * s[1].x - s[0].x;
         cY[0] = 6 * s[1].y - s[0].y;
-        for (int i = 1; i < m.length - 1; i++) {
-            System.arraycopy(ONE_FOUR_ONE, 0, m[i],i - 1,3);
+        for (int i = 1; i < n-2; i++) {
             cX[i] = 6 * s[i+1].x;
             cY[i] = 6 * s[i+1].y;
         }
-        System.arraycopy(ONE_FOUR_ONE, 0, m[n-2], n-3, 2);
         cX[n-2] = 6 * s[n-1].x - s[n].x;
         cY[n-2] = 6 * s[n-1].y - s[n].y;
 
-        LinearSystemSolver lss = new SweepSolver(SparseMatrix.from2DArray(m));
-        Vector bX = lss.solve(Vector.fromArray(cX));
-        Vector bY = lss.solve(Vector.fromArray(cY));
+        double[] bX = tridiagonalPreset(n-1, cX);
+        double[] bY = tridiagonalPreset(n-1, cY);
 
         List<Vector2> controlPoints = new ArrayList<Vector2>(N);
         controlPoints.add(s[0]);
         for (int i = 0; i < n-1; i++) {
             controlPoints.add(
                 new Vector2(
-                    (float) bX.get(i),
-                    (float) bY.get(i)
+                    (float) bX[i],
+                    (float) bY[i]
                 )
             );
         }
         controlPoints.add(s[n]);
         return controlPoints;
+    }
+
+
+    /**
+     * Prepares special vectors (a, b, c) and calls
+     * {@link #tridiagonalAlgorithm(int, double[], double[], double[], double[])}.
+     *
+     * @param n dimension of the tridiagonal system
+     * @param d right-hand side of the equation; length: {@code n}
+     */
+    private static double[] tridiagonalPreset(int n, double[] d) {
+        double[] a = new double[n-1];
+        double[] b = new double[n];
+        double[] c = new double[n-1];
+
+        Arrays.fill(a, 1.0);
+        Arrays.fill(b, 4.0);
+        Arrays.fill(c, 1.0);
+
+        return tridiagonalAlgorithm(n, a, b, c, d);
+    }
+
+    /**
+     * Solves a tridiagonal system of linear equations by using the Thomas
+     * Algorithm.
+     * <p>
+     * <pre>
+     *
+     *   |b0 c0         0| |x0  |   |d0  |
+     *   |a1 b1 c1       | |x1  |   |d1  |
+     *   |  a2 b2 c2     | |x2  |   |d2  |
+     *   |    . . .      | | .  | = | .  |
+     *   |               | | .  |   | .  |
+     *   |           cn-2| | .  |   | .  |
+     *   |0    an-1  bn-1| |xn-1|   |dn-1|
+     * </pre>
+     *
+     * @param n dimension of the coefficient matrix
+     * @param a coefficients under the diagonal; length: {@code n-1}
+     * @param b coefficients on the diagonal; length: {@code n}
+     * @param c coefficients over the diagonal; length: {@code n-1}
+     * @param d right-hand side of the equation; length: {@code n}
+     * @return a vector of solutions: {@code x}: length: {@code n}
+     */
+    private static double[] tridiagonalAlgorithm(
+        int n,
+        double[] a,
+        double[] b,
+        double[] c,
+        double[] d
+    ) {
+        double [] newC = new double[c.length+1];
+        double [] newD = new double[d.length];
+        newC[0] = c[0] / b[0];
+        newD[0] = d[0] / b[0];
+        for (int i = 1; i < n; i++) {
+            if (i != n-1) {
+                newC[i] = c[i] / (b[i] - a[i - 1] * newC[i - 1]);
+            }
+            newD[i] = (d[i] - a[i-1] * newD[i-1]) / (b[i] - a[i-1] * newC[i-1]);
+        }
+        double[] x = new double[n];
+        x[n-1] = newD[n-1];
+        for (int i = n-2; i >= 0; i--) {
+            x[i] = newD[i] - newC[i] * x[i+1];
+        }
+        return x;
     }
 }
