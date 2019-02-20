@@ -9,13 +9,21 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BSplineControlPointsTest {
+/**
+ * Test class for {@code BSplineControlPoints}.
+ *
+ * @see com.github.glusk2.sprouts.geom.BSplineControlPoints
+ */
+public final class BSplineControlPointsTest {
+    /** Maximum error allowed. */
     private static final double DELTA = 1E-10;
+
     /**
-     * A test case from this paper;
-     * http://www.math.ucla.edu/%7Ebaker/149.1.02w/handouts/dd_splines.pdf
+     * A test case from this paper:
+     * <a href="http://www.math.ucla.edu/%7Ebaker/149.1.02w/handouts/dd_splines.pdf">UCLA splines handout</a>.
      */
     @Test
+    @SuppressWarnings("checkstyle:magicnumber")
     public void testUclaPaper() {
         List<Vector2> actual = new BSplineControlPoints(
             Arrays.<Vector2>asList(
