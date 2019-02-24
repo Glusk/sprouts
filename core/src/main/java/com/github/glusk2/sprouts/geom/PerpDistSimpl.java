@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.geom;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -59,41 +60,6 @@ public final class PerpDistSimpl implements Polyline {
         this.tolerance = tolerance;
     }
 
-    /**
-     * Computes the perpendicular distance ({@code e}) between point {@code x}
-     * and the line segment {@code p0-p1}.
-     * <p>
-     * <pre>
-     *          * x
-     *         /|
-     *        / |
-     *   a   /  | e
-     *      /   |
-     *     /    |
-     *    /_____|_____
-     *   *   p        *
-     *          b
-     *   p0           p1
-     * </pre>
-     *
-     * @param p0 line segment end point
-     * @param p1 line segment end point
-     * @param x the point to compute the distance to
-     * @return {@code e} - the perpendicular distance between the line segment
-     *         {@code p0-p1} and point {@code x}
-     */
-    private static double perpDistance(
-        final Vector2 p0,
-        final Vector2 p1,
-        final Vector2 x
-    ) {
-        Vector2 a = x.cpy().sub(p0);
-        Vector2 b = p1.cpy().sub(p0);
-        Vector2 p = b.scl(a.dot(b) / b.dot(b));
-        Vector2 e = a.sub(p);
-        return e.len();
-    }
-
     /** {@inheritDoc} */
     @Override
     public List<Vector2> points() {
@@ -108,7 +74,7 @@ public final class PerpDistSimpl implements Polyline {
             Vector2 p0 = originalPoints.get(i);
             Vector2 p1 = originalPoints.get(i + 2);
             Vector2 x = originalPoints.get(i + 1);
-            if (perpDistance(p0, p1, x) < tolerance) {
+            if (Intersector.distanceSegmentPoint(p0, p1, x) < tolerance) {
                 i++;
             }
         }
