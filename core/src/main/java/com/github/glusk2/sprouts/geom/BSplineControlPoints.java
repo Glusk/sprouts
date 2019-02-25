@@ -31,7 +31,7 @@ public final class BSplineControlPoints implements Polyline {
      * control points are not computed. {@code sample.points()} gets returned
      * instead.
      */
-    private static final int MIN_SAMPLE_SIZE = 4;
+    private static final int MIN_SAMPLE_SIZE = 3;
 
     /** The sample polyline used to produce B-Spline control points. */
     private final Polyline sample;
@@ -68,6 +68,13 @@ public final class BSplineControlPoints implements Polyline {
         Vector2[] s = sample.points().toArray(new Vector2[0]);
         if (s.length < MIN_SAMPLE_SIZE) {
             return sample.points();
+        }
+        if (s.length == MIN_SAMPLE_SIZE) {
+            return Arrays.asList(
+                s[0].cpy(),
+                s[1].cpy().scl(6f).sub(s[0]).sub(s[2]).scl(.25f),
+                s[2].cpy()
+            );
         }
         int n = s.length - 1;
 

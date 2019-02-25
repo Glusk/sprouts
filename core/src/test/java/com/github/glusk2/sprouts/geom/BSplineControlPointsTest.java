@@ -52,4 +52,44 @@ public final class BSplineControlPointsTest {
             );
         }
     }
+
+    /**
+     * Tests for valid B-Spline control points if sample size is equal to 3.
+     * <p>
+     * The matrix system of linear equations breaks on this case and control
+     * points have to be computed like this (pseudocode):
+     * <pre>
+     * // s ... sample points
+     * // b ... B-spline control points
+     * b[0] = s[0];
+     * b[1] = (6*s[1] - s[0] - s[2]) / 4;
+     * b[2] = s[2];
+     * </pre>
+     */
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void worksWithThreeSamplePoints() {
+        List<Vector2> actual = new BSplineControlPoints(
+            Arrays.<Vector2>asList(
+                new Vector2(0, 0),
+                new Vector2(1.5f, 3f),
+                new Vector2(4, 4)
+            )
+        ).points();
+
+        List<Vector2> expected =
+            Arrays.<Vector2>asList(
+                new Vector2(0, 0),
+                new Vector2(1.25f, 3.5f),
+                new Vector2(4, 4)
+            );
+
+        assertEquals(actual.size(), expected.size());
+        for (int i = 0; i < actual.size(); i++) {
+            assertTrue(
+                "Computed point is too far off!",
+                actual.get(i).dst(expected.get(i)) < DELTA
+            );
+        }
+    }
 }
