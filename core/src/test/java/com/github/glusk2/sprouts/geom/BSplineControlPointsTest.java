@@ -15,9 +15,6 @@ import static org.junit.Assert.assertTrue;
  * @see com.github.glusk2.sprouts.geom.BSplineControlPoints
  */
 public final class BSplineControlPointsTest {
-    /** Maximum error allowed. */
-    private static final double DELTA = 1E-10;
-
     /**
      * A test case from this paper:
      * <a href="http://www.math.ucla.edu/%7Ebaker/149.1.02w/handouts/dd_splines.pdf">UCLA splines handout</a>.
@@ -48,7 +45,7 @@ public final class BSplineControlPointsTest {
         for (int i = 0; i < actual.size(); i++) {
             assertTrue(
                 "Computed point is too far off!",
-                actual.get(i).dst(expected.get(i)) < DELTA
+                actual.get(i).epsilonEquals(expected.get(i))
             );
         }
     }
@@ -88,7 +85,7 @@ public final class BSplineControlPointsTest {
         for (int i = 0; i < actual.size(); i++) {
             assertTrue(
                 "Computed point is too far off!",
-                actual.get(i).dst(expected.get(i)) < DELTA
+                actual.get(i).epsilonEquals(expected.get(i))
             );
         }
     }
