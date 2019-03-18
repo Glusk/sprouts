@@ -20,7 +20,7 @@ public final class ClockwiseComparator implements Comparator<Vertex> {
     private final Vector2 centerPoint;
 
     /**
-     * Constructs a new {@code RadialComparator} from the specified Vertex
+     * Constructs a new {@code ClockwiseComparator} from the specified Vertex
      * center point.
      *
      * @param centerPoint center point vertex
@@ -30,7 +30,7 @@ public final class ClockwiseComparator implements Comparator<Vertex> {
     }
 
     /**
-     * Constructs a new {@code RadialComparator} from the specified central
+     * Constructs a new {@code ClockwiseComparator} from the specified central
      * position.
      *
      * @param centerPoint center point position
