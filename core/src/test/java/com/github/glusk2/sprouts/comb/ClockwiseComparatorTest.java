@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import org.junit.Test;
 
-/** Test class for {@code RadialComparator}. */
+/** Test class for {@code ClockwiseComparator}. */
 public final class ClockwiseComparatorTest {
     /** Checks the basic ordering of vertices. */
     @Test
