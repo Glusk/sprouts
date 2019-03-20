@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.comb;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.geom.Polyline;
 
 import org.junit.Test;
 
@@ -103,6 +105,74 @@ public final class FromAdjacencyMapTest {
             correctFaces.containsAll(
                 new FromAdjacencyMap(adjacencyMap).faces()
             )
+        );
+    }
+
+    /**
+     * This test checks that an unfinished move is placed into the correct
+     * face.
+     * <p>
+     * A move consists of one or more polyline segments. The first segment
+     * from the origin point determines in which face the next move is
+     * being drawn.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void placesUnfinishedMoveIntoTheCorrectFace() {
+        Vertex v1 = new Vertex(new Vector2(-4, 0), 1);
+        Vertex v4 = new Vertex(new Vector2(4, 0), 4);
+        Vertex v5 = new Vertex(new Vector2(0, 4), 5);
+        Vertex v7 = new Vertex(new Vector2(0, -4), 7);
+
+        Map<Vertex, TreeSet<Vertex>> adjacencyMap =
+            new HashMap<Vertex, TreeSet<Vertex>>();
+
+        TreeSet<Vertex> nextSet = null;
+
+        nextSet = new TreeSet<Vertex>(new ClockwiseComparator(v1));
+        nextSet.add(v5);
+        nextSet.add(v7);
+        adjacencyMap.put(v1, nextSet);
+
+        nextSet = new TreeSet<Vertex>(new ClockwiseComparator(v4));
+        nextSet.add(v5);
+        nextSet.add(v7);
+        adjacencyMap.put(v4, nextSet);
+
+        nextSet = new TreeSet<Vertex>(new ClockwiseComparator(v5));
+        nextSet.add(v1);
+        nextSet.add(v4);
+        adjacencyMap.put(v5, nextSet);
+
+        nextSet = new TreeSet<Vertex>(new ClockwiseComparator(v7));
+        nextSet.add(v1);
+        nextSet.add(v4);
+        adjacencyMap.put(v7, nextSet);
+
+        Polyline unfinishedMove =
+            new Polyline.WrappedList(
+                Arrays.asList(
+                    v7.position(),
+                    new Vector2(0, -2),
+                    new Vector2(-2, 0),
+                    new Vector2(0, 2)
+                )
+        );
+
+        Face correctFace = new PlanarFace(
+            new HashSet<Edge>(
+                Arrays.asList(
+                    new Edge(v4, v5),
+                    new Edge(v5, v1),
+                    new Edge(v1, v7),
+                    new Edge(v7, v4)
+                )
+            )
+        );
+
+        assertEquals(
+            correctFace,
+            new FromAdjacencyMap(adjacencyMap).nextMoveFace(unfinishedMove)
         );
     }
 }
