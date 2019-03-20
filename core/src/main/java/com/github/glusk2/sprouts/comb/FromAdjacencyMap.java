@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.geom.Polyline;
+
 /** Graph from adjacency map. */
 public final class FromAdjacencyMap implements PlanarGraph {
     /** Adjacency map representation of {@code this} graph. */
@@ -82,17 +85,45 @@ public final class FromAdjacencyMap implements PlanarGraph {
      */
     private Edge nextEdge(final Edge current) {
         TreeSet<Vertex> neighborsSet = adjacencyMap.get(current.from());
+        List<Vertex> neighborsList = new ArrayList<Vertex>(neighborsSet);
+        if (!edges().contains(current)) {
+            neighborsList.add(current.to());
+            Collections.sort(neighborsList, neighborsSet.comparator());
+        }
         return
             new Edge(
                 current.from(),
                 new CircularIterator<Vertex>(
-                    neighborsSet,
+                    neighborsList,
                     Collections.binarySearch(
-                        new ArrayList<Vertex>(neighborsSet),
+                        neighborsList,
                         current.to(),
                         neighborsSet.comparator()
                     )
                 ).next()
             );
+    }
+
+    @Override
+    public Face nextMoveFace(final Polyline nextMove) {
+        List<Vector2> nextMovePoints = nextMove.points();
+        List<Vertex> vertices = new ArrayList<Vertex>(vertices());
+        for (int i = 0; i < vertices.size(); i++) {
+            Vertex from = vertices.get(i);
+            if (from.position().equals(nextMovePoints.get(0))) {
+                Edge firstSegment =
+                    new Edge(
+                        from,
+                        new Vertex(nextMovePoints.get(1), -1)
+                    );
+                Edge faceEdge = nextEdge(firstSegment);
+                for (Face f : faces()) {
+                    if (f.boundary().contains(faceEdge)) {
+                        return f;
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("Illegal move!");
     }
 }
