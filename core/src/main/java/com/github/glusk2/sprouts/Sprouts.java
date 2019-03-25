@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -8,13 +9,12 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Path;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.glusk2.sprouts.geom.BezierCurve;
-import com.github.glusk2.sprouts.geom.CachedCurve;
-import com.github.glusk2.sprouts.geom.Curve;
+import com.github.glusk2.sprouts.geom.CurveApproximation;
+import com.github.glusk2.sprouts.geom.Polyline;
 
 /**
  * Sprouts main application class (renders the game and captures player input).
@@ -35,7 +35,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
      * {@code tolerance} in
      * {@link PerpDistSimpl#PerpDistSimpl(java.util.List, double)}.
      */
-    private static final float PERP_DISTANCE_MODIFIER = 1.5f;
+    private static final float PERP_DISTANCE_MODIFIER = 3f;
 
     /**
      * Minimum distance modifier.
@@ -52,7 +52,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
      * Defines the number of discrete points on interval: {@code 0 <= t <= 1}
      * for spline rendering.
      */
-    private static final int SPLINE_SEGMENT_COUNT = 100;
+    private static final int SPLINE_SEGMENT_COUNT = 10;
 
     /**
      * Circle segment count.
@@ -90,7 +90,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     private LinkedList<Vector2> sample;
 
     /** A curve backed by {@code sample}. */
-    private Curve<Path<Vector2>> curve;
+    private Polyline nextMove;
 
     /**
      * Creates a new {@code Sprouts} application object with default settings.
@@ -175,23 +175,21 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     public void render() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (curve != null) {
-            Vector2 nextVal = new Vector2();
-
+        if (nextMove != null) {
             renderer.setProjectionMatrix(viewport.getCamera().combined);
-            renderer.begin(ShapeRenderer.ShapeType.Filled);
             renderer.setColor(Color.BLACK);
-            for (Path<Vector2> spline : curve.splines()) {
-                for (int i = 1; i <= SPLINE_SEGMENT_COUNT; i++) {
-                    float val = 1f * i / SPLINE_SEGMENT_COUNT;
-                    spline.valueAt(nextVal, val);
-                    renderer.circle(
-                        nextVal.x,
-                        nextVal.y,
-                        lineThickness / 2,
-                        CIRCLE_SEGMENT_COUNT
-                    );
-                }
+            renderer.begin(ShapeRenderer.ShapeType.Filled);
+            List<Vector2> points = nextMove.points();
+            for (int i = 1; i < points.size(); i++) {
+                Vector2 p1 = points.get(i - 1);
+                Vector2 p2 = points.get(i);
+                renderer.rectLine(p1, p2, lineThickness);
+                renderer.circle(
+                    p2.x,
+                    p2.y,
+                    lineThickness / 2,
+                    CIRCLE_SEGMENT_COUNT
+                );
             }
             renderer.end();
         }
@@ -221,7 +219,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer,
         final int button
     ) {
-        curve = new CachedCurve(curve);
+        nextMove = new Polyline.WrappedList(nextMove.points());
         return true;
     }
 
@@ -235,7 +233,14 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     ) {
         sample = new LinkedList<Vector2>();
         sample.add(viewport.unproject(new Vector2(screenX, screenY)));
-        curve = new BezierCurve(sample, PERP_DISTANCE_MODIFIER * lineThickness);
+        nextMove =
+            new CurveApproximation(
+                new BezierCurve(
+                    sample,
+                    PERP_DISTANCE_MODIFIER * lineThickness
+                ),
+                SPLINE_SEGMENT_COUNT
+            );
         return true;
     }
 
