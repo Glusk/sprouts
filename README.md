@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/Glusk2/sprouts.svg?branch=master)](https://travis-ci.com/Glusk2/sprouts)
+[![Build status](https://ci.appveyor.com/api/projects/status/8p0xficdfjn90odb/branch/master?svg=true)](https://ci.appveyor.com/project/Glusk2/sprouts/branch/master)
 
 # Compiling
 Prerequisites:

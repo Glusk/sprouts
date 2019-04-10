@@ -1,0 +1,30 @@
+environment:
+  ANDROID_HOME: "C:\\android-sdk-windows"
+  JAVA_HOME: "C:\\Program Files\\Java\\jdk1.8.0"
+
+init:
+  - git config --global --unset core.autocrlf
+  - set GRADLE_OPTS="-Dorg.gradle.daemon=false"
+  - cd \
+  - appveyor DownloadFile https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip
+  - 7z x sdk-tools-windows-4333796.zip -o"%ANDROID_HOME%" > nul
+  - cd C:\projects\sprouts
+  - echo > C:\Users\appveyor\.android\repositories.cfg
+
+install:
+  - ps: for($i=0;$i -lt 30;$i++) { $response += "y`n"}; $response | cmd /c '%ANDROID_HOME%\tools\bin\sdkmanager.bat 2>&1' --licenses
+  - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "tools"
+  - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "platform-tools"
+  - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "build-tools;27.0.3"
+  - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "platforms;android-27"
+
+build_script:
+  - gradlew.bat clean build connectedCheck
+
+after_test:
+  - ps: del "$env:USERPROFILE\.gradle\caches\modules-2\modules-2.lock"
+  - ps: del -Recurse "$env:USERPROFILE\.gradle\caches\*\plugin-resolution"
+
+cache:
+  - "%USERPROFILE%\\.gradle\\wrapper"
+  - "%USERPROFILE%\\.gradle\\caches"
