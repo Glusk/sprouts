@@ -49,6 +49,10 @@ task dist(dependsOn: [clean, compileGwt]) {
     }
 }
 
+javadoc {
+  options.addStringOption("sourcepath", "")
+}
+
 draftWar {
    from "war"
 }
