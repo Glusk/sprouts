@@ -3,50 +3,74 @@ package com.github.glusk2.sprouts.comb;
 import java.util.List;
 
 /**
- * Represents a graph Vertex and a list of VertexPlugs connected to it. It can
- * be thought of as a clock with many clock pointers. All pointers
- * (VertexPlugs) are connected to the center (center Vertex).
+ * Represents a graph Vertex - {@code v} and a list of DirectedEdges
+ * {@code (a, b)}. All DirectedEdges are virtually connected to the center
+ * Vertex (virtual DirectedEdges {@code (v, a)}).
+ * <p>
+ * Virtual DirectedEdges {@code (v, a)} are ordered by the clockwise order of
+ * {@code a}s around {@code v}. The order of virtual DirectedEdges is used to
+ * establish {@code edges()}, which returns pairs {@code (v, b)}
+ * <p>
+ * Next DirectedEdge of {@code (a, b)} is a DirectedEdge {@code (c, d)}.
+ * {@code c} comes strictly after {@code a} in the clockwise order of virtual
+ * DirectedEdges - {@code (v, a) < (v, c)}. Method {@code next()} is defined
+ * as: {@code (v, d) = next(a, b)}
+ * <p>
+ * <h3>Definitions:</h3>
+ * <pre>
+ * v ... the center vertex of this LocalRotations
+ * a ... the source vertex of a DirectedEdge; virtually connected to v
+ * b ... the destination vertex of a DirectedEdge; virtually connected to v
+ * c ... the source vertex of the first DirectedEdge after (a, b); virtually
+ *       connected to v
+ * d ... the destination vertex of the first DirectedEdge after (a, b);
+ *       virtually connected to v
+ * </pre>
  */
 public interface LocalRotations {
     /**
-     * Converts the internal representation of {@code this} object into a list
-     * of DirectedEdges that share a common source Vertex (the center Vertex
-     * of {@code this} LocalRotations), ordered by their destination vertices
-     * in clockwise order around the source Vertex, and returns it.
+     * Returns DirectedEdges {@code (v, b)}.
+     * <p>
+     * Refer to <strong>Definitions</strong> in the interface definition Doc
+     * for more info.
      *
-     * @return an ordered list of {@code this} object's clock pointers
+     * @return a list of DirectedEdges {@code (v, b)}
      */
     List<DirectedEdge> edges();
 
     /**
-     * Advances the clock pointer {@code current} to the next pointer in
-     * {@code this} LocalRotations and returns the result as a new DirectedEdge
-     * that goes from the center Vertex of {@code this} LocalRotations to the
-     * {@code endPoint()} of the next clock pointer.
+     * Returns the first DirectedEdge after {@code current} in {@code this}
+     * LocalRotations.
      * <p>
      * {@code current} need not be a part of {@code this} LocalRotations.
+     * <p>
+     * Refer to <strong>Definitions</strong> in the interface definition Doc
+     * for more info.
      *
-     * @param current the clock pointer that starts at the center Vertex of
-     *                {@code this} LocalRotations object
-     * @return a new DirectedEdge that goes from the center Vertex of
-     *         {@code this} LocalRotations to the {@code endPoint()} of the
-     *         first clock pointer after {@code current}
+     * @param current DirectedEdge {@code (a, b)}
+     * @return a new DirectedEdge {@code (v, d)}
      */
-    DirectedEdge next(VertexPlug current);
+    DirectedEdge next(DirectedEdge current);
 
     /**
-     * Returns new LocalRotations with {@code plugToAdd}.
+     * Returns new LocalRotations with an {@code additionalEdge}.
+     * <p>
+     * Refer to <strong>Definitions</strong> in the interface definition Doc
+     * for more info.
      *
-     * @param plugToAdd the plug to add
-     * @return new LocalRotations with {@code plugToAdd}
+     * @param additionalEdge the DirectedEdge {@code (a, b)} to add
+     * @return new LocalRotations with an {@code additionalEdge}
      */
-    LocalRotations with(VertexPlug plugToAdd);
+    LocalRotations with(DirectedEdge additionalEdge);
 
     /**
-     * Returns new LocalRotations without {@code plugToRemove}.
+     * Returns new LocalRotations without the {@code surplusEdge}.
+     * <p>
+     * Refer to <strong>Definitions</strong> in the interface definition Doc
+     * for more info.
      *
-     * @param plugToRemove the plug to remove
-     * @return new LocalRotations without {@code plugToRemove}
+     * @param surplusEdge the DirectedEdge {@code (a, b)} to remove
+     * @return new LocalRotations without the {@code surplusEdge}
      */
-    LocalRotations without(VertexPlug plugToRemove);
+    LocalRotations without(DirectedEdge surplusEdge);
 }
