@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.comb;
 
 import com.badlogic.gdx.graphics.Color;
+import com.github.glusk2.sprouts.geom.Polyline;
 
 /**
  * A DirectedEdge of a graph is a directed connection between 2 of its
@@ -31,4 +32,15 @@ public interface DirectedEdge extends Colorable {
      * {@code from()} and {@code to()}.
      */
     Color color();
+
+    /**
+     * Returns the geometric representation of {@code this} DirectedEdge.
+     * <p>
+     * A geometric representation of a DirectedEdge is a straight line (or
+     * a curve approximated to line segments) bounded by {@code from()} and
+     * {@code to()}.
+     *
+     * @return the geometric representation of {@code this} DirectedEdge
+     */
+    Polyline polyline();
 }
