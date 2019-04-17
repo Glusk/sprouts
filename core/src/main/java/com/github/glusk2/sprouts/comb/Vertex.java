@@ -2,7 +2,12 @@ package com.github.glusk2.sprouts.comb;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** Graph vertex. */
+/**
+ * A Graph vertex.
+ * <p>
+ * Objects that implement this interface must also override hashCode() and
+ * equals().
+ */
 public interface Vertex extends Colorable {
     /**
      * Returns the position of {@code this} vertex in a 2-dimensional space.
@@ -16,10 +21,12 @@ public interface Vertex extends Colorable {
     Vector2 position();
 
     /**
-     * Returns a numeric label of {@code this} vertex for human-readable
+     * Returns a string label of {@code this} vertex for human-readable
      * comparisons.
+     * <p>
+     * Vertices can be labeled with numeric values or with its position.
      *
-     * @return an integer label of {@code this} vertex
+     * @return a string label of {@code this} vertex
      */
-    int label();
+    String label();
 }
