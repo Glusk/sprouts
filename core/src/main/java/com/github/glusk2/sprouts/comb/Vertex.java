@@ -2,71 +2,31 @@ package com.github.glusk2.sprouts.comb;
 
 import com.badlogic.gdx.math.Vector2;
 
-/** Read-only, struct-like object representing a graph vertex. */
-public final class Vertex {
-    /** Position of {@code this} vertex in 2-dimensional space. */
-    private final Vector2 position;
-    /** Numeric label of the vertex. */
-    private final int label;
-
+/**
+ * A Graph vertex.
+ * <p>
+ * Objects that implement this interface must also override hashCode() and
+ * equals().
+ */
+public interface Vertex extends Colorable {
     /**
-     * Constructs a new Vertex object with specified position and label.
-     *
-     * @param position position of the vertex in 2-dimensional space
-     * @param label numeric label of the vertex
-     */
-    public Vertex(final Vector2 position, final int label) {
-        this.position = position;
-        this.label = label;
-    }
-
-    /**
-     * Returns vertex position.
-     *
-     * @return a copy of vertex position
-     */
-    public Vector2 position() {
-        return position.cpy();
-    }
-
-    /**
-     * Label getter.
-     *
-     * @return vertex label
-     */
-    public int label() {
-        return label;
-    }
-
-    /**
-     * Returns label.
+     * Returns the position of {@code this} vertex in a 2-dimensional space.
      * <p>
-     * Equivalent to:
-     * <pre>
-     * return label();
-     * </pre>
-     * <p>
-     * {@inheritDoc}
+     * Implementations should return a copy of the position vector to ensure
+     * immutability of {@code this} object -
+     * {@link com.badlogic.gdx.math.Vector2#cpy()}.
+     *
+     * @return a copy of {@code this} vertex position vector
      */
-    @Override
-    public int hashCode() {
-        return label();
-    }
+    Vector2 position();
 
     /**
-     * Tests 2 Vertices for equality by comparing labels.
+     * Returns a string label of {@code this} vertex for human-readable
+     * comparisons.
      * <p>
-     * {@inheritDoc}
+     * Vertices can be labeled with numeric values or with its position.
+     *
+     * @return a string label of {@code this} vertex
      */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || !(obj instanceof Vertex)) {
-            return false;
-        }
-        Vertex that = (Vertex) obj;
-        return this.label == that.label;
-    }
+    String label();
 }
