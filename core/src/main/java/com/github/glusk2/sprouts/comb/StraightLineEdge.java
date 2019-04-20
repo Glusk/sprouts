@@ -22,6 +22,27 @@ public final class StraightLineEdge implements DirectedEdge {
     private Vertex to;
 
     /**
+     * Constructs a new StraightLineEdge with equal endpoints and
+     * the default edge color.
+     *
+     * @param vertex the endpoints of the edge
+     */
+    public StraightLineEdge(final Vertex vertex) {
+        this(vertex, vertex);
+    }
+
+    /**
+     * Constructs a new StraightLineEdge with equal endpoints and
+     * the specified edge color.
+     *
+     * @param color the color of the DirectedEdge
+     * @param vertex the endpoints of the edge
+     */
+    public StraightLineEdge(final Color color, final Vertex vertex) {
+        this(color, vertex, vertex);
+    }
+
+    /**
      * Constructs a new StraightLineEdge from its endpoints and the default
      * edge color.
      *
