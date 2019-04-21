@@ -3,7 +3,7 @@ package com.github.glusk2.sprouts.comb;
 import java.util.List;
 
 /**
- * Represents a graph Vertex - {@code v} and a list of DirectedEdges
+ * Represents a graph Vertex - {@code v} and a set of DirectedEdges
  * {@code (a, b)}. All DirectedEdges are virtually connected to the center
  * Vertex (virtual DirectedEdges {@code (v, a)}).
  * <p>
@@ -57,24 +57,24 @@ public interface LocalRotations {
     DirectedEdge next(DirectedEdge current);
 
     /**
-     * Returns new LocalRotations with an {@code additionalEdge}.
+     * Returns new LocalRotations with an {@code additionalEdges}.
      * <p>
      * Refer to <strong>Definitions</strong> in the interface definition Doc
      * for more info.
      *
-     * @param additionalEdge the DirectedEdge {@code (a, b)} to add
-     * @return new LocalRotations with an {@code additionalEdge}
+     * @param additionalEdges the DirectedEdges {@code (a, b)} to add
+     * @return new LocalRotations with {@code additionalEdges}
      */
-    LocalRotations with(DirectedEdge additionalEdge);
+    LocalRotations with(DirectedEdge ...additionalEdges);
 
     /**
-     * Returns new LocalRotations without the {@code surplusEdge}.
+     * Returns new LocalRotations without the {@code surplusEdges}.
      * <p>
      * Refer to <strong>Definitions</strong> in the interface definition Doc
      * for more info.
      *
-     * @param surplusEdge the DirectedEdge {@code (a, b)} to remove
-     * @return new LocalRotations without the {@code surplusEdge}
+     * @param surplusEdges the DirectedEdges {@code (a, b)} to remove
+     * @return new LocalRotations without the {@code surplusEdges}
      */
-    LocalRotations without(DirectedEdge surplusEdge);
+    LocalRotations without(DirectedEdge ...surplusEdges);
 }
