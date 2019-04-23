@@ -78,7 +78,7 @@ public interface LocalRotations {
      * @param additionalEdges the DirectedEdges {@code (a, b)} to add
      * @return new LocalRotations with {@code additionalEdges}
      */
-    LocalRotations with(DirectedEdge ...additionalEdges);
+    LocalRotations with(DirectedEdge... additionalEdges);
 
     /**
      * Returns new LocalRotations without the {@code surplusEdges}.
@@ -89,5 +89,5 @@ public interface LocalRotations {
      * @param surplusEdges the DirectedEdges {@code (a, b)} to remove
      * @return new LocalRotations without the {@code surplusEdges}
      */
-    LocalRotations without(DirectedEdge ...surplusEdges);
+    LocalRotations without(DirectedEdge... surplusEdges);
 }

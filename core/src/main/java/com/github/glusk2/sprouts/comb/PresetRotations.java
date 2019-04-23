@@ -76,7 +76,7 @@ public final class PresetRotations implements LocalRotations {
                 return withCurrent[(i + 1) % withCurrent.length];
             }
         }
-        throw new RuntimeException("Programming error!");
+        throw new AssertionError("Programming error!");
     }
 
     @Override
@@ -89,13 +89,13 @@ public final class PresetRotations implements LocalRotations {
                 return withCurrent[(i + 1) % withCurrent.length];
             }
         }
-        throw new RuntimeException(
+        throw new IllegalStateException(
             "This LocalRotations object is empty! It has no edges."
         );
     }
 
     @Override
-    public LocalRotations with(final DirectedEdge ...additionalEdges) {
+    public LocalRotations with(final DirectedEdge... additionalEdges) {
         SortedSet<DirectedEdge> copy = new TreeSet<DirectedEdge>(edges);
         for (DirectedEdge additionalEdge : additionalEdges) {
             copy.add(additionalEdge);
@@ -104,7 +104,7 @@ public final class PresetRotations implements LocalRotations {
     }
 
     @Override
-    public LocalRotations without(final DirectedEdge ...surplusEdges) {
+    public LocalRotations without(final DirectedEdge... surplusEdges) {
         SortedSet<DirectedEdge> copy = new TreeSet<DirectedEdge>(edges);
         for (DirectedEdge surplusEdge : surplusEdges) {
             copy.remove(surplusEdge);

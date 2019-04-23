@@ -1,5 +1,7 @@
 package com.github.glusk2.sprouts.comb;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,7 +12,6 @@ import java.util.Set;
 
 import com.badlogic.gdx.math.Vector2;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -40,7 +41,6 @@ public final class PresetGraphTest {
                 new StraightLineEdge(v9)
             )
         );
-
         rotationsList.put(
             v2,
             new PresetRotations(v2).with(
@@ -49,7 +49,6 @@ public final class PresetGraphTest {
                 new StraightLineEdge(v7)
             )
         );
-
         rotationsList.put(
             v4,
             new PresetRotations(v4).with(
@@ -58,7 +57,6 @@ public final class PresetGraphTest {
                 new StraightLineEdge(v2)
             )
         );
-
         rotationsList.put(
             v5,
             new PresetRotations(v5).with(
@@ -66,7 +64,6 @@ public final class PresetGraphTest {
                 new StraightLineEdge(v6)
             )
         );
-
         rotationsList.put(
             v6,
             new PresetRotations(v6).with(
@@ -74,14 +71,12 @@ public final class PresetGraphTest {
                 new StraightLineEdge(v2)
             )
         );
-
         rotationsList.put(
             v7,
             new PresetRotations(v7).with(
                 new StraightLineEdge(v2)
             )
         );
-
         rotationsList.put(
             v9,
             new PresetRotations(v9).with(
@@ -117,7 +112,7 @@ public final class PresetGraphTest {
                 )
             )
         );
-        Assert.assertTrue(
+        assertTrue(
             "Faces don't match!",
             correctFaces.containsAll(
                 new PresetGraph(rotationsList).faces()

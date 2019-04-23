@@ -1,12 +1,13 @@
 package com.github.glusk2.sprouts.comb;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
 
-import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.Test;
 
 /** Test class for {@code PresetRotations}. */
@@ -68,7 +69,7 @@ public final class PresetRotationsTest {
         List<String> actual = new ArrayList<String>(labels);
         actual.addAll(labels);
 
-        Assertions.assertThat(actual).containsSubsequence(
+        assertThat(actual).containsSubsequence(
             "1", "0", "4", "5", "2", "3"
         );
     }
@@ -76,7 +77,7 @@ public final class PresetRotationsTest {
     /** Finds the next DirectedEdge of an empty LocalRotations object. */
     @Test
     public void findsNextEdgeOfEmptyLocalRotations() {
-        Assert.assertEquals(
+        assertEquals(
             new StraightLineEdge(
                 new PresetVertex(
                     new Vector2(0, 0),
