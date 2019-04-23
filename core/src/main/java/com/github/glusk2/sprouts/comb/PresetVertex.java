@@ -15,8 +15,19 @@ public final class PresetVertex implements Vertex {
     private final String label;
 
     /**
-     * Constructs a new Vertex with specified position and label and the
-     * default color.
+     * Constructs a new Vertex with specified {@code position} and a numeric
+     * {@code label}. The color of {@code this} Vertex is set to default.
+     *
+     * @param position position of the Vertex in a 2-dimensional space
+     * @param label numeric label of the Vertex
+     */
+    public PresetVertex(final Vector2 position, final Number label) {
+        this(DEFAULT_COLOR, position, label.toString());
+    }
+
+    /**
+     * Constructs a new Vertex with specified {@code position} and a string
+     * {@code label}. The color of {@code this} Vertex is set to default.
      *
      * @param position position of the Vertex in a 2-dimensional space
      * @param label string label of the Vertex
