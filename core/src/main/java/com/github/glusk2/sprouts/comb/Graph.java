@@ -18,11 +18,4 @@ public interface Graph extends Drawable {
      * @return the list of bounding Sets of {@code this} Graph's faces
      */
     List<Set<DirectedEdge>> faces();
-
-    /**
-     * Returns a list of LocalRotations of {@code this} Graph.
-     *
-     * @return a new list of LocalRotations of {@code this} Graph
-     */
-    RotationsList rotationsList();
 }
