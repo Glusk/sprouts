@@ -80,6 +80,21 @@ public final class PresetRotations implements LocalRotations {
     }
 
     @Override
+    public DirectedEdge next(final Vertex current) {
+        DirectedEdge[] withCurrent =
+            this.edges()
+                .toArray(new DirectedEdge[0]);
+        for (int i = 0; i < withCurrent.length; i++) {
+            if (current.equals(withCurrent[i].to())) {
+                return withCurrent[(i + 1) % withCurrent.length];
+            }
+        }
+        throw new RuntimeException(
+            "This LocalRotations object is empty! It has no edges."
+        );
+    }
+
+    @Override
     public LocalRotations with(final DirectedEdge ...additionalEdges) {
         SortedSet<DirectedEdge> copy = new TreeSet<DirectedEdge>(edges);
         for (DirectedEdge additionalEdge : additionalEdges) {

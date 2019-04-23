@@ -57,6 +57,19 @@ public interface LocalRotations {
     DirectedEdge next(DirectedEdge current);
 
     /**
+     * Returns the first DirectedEdge after {@code (v, b)}.
+     * <p>
+     * {@code b = current}
+     * <p>
+     * Refer to <strong>Definitions</strong> in the interface definition Doc
+     * for more info.
+     *
+     * @param current Vertex {@code b}
+     * @return a new DirectedEdge {@code (v, d)}
+     */
+    DirectedEdge next(Vertex current);
+
+    /**
      * Returns new LocalRotations with an {@code additionalEdges}.
      * <p>
      * Refer to <strong>Definitions</strong> in the interface definition Doc
