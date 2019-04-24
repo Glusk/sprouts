@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.github.glusk2.sprouts.comb.Graph;
+import com.github.glusk2.sprouts.comb.InitialCobweb;
 import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CurveApproximation;
 import com.github.glusk2.sprouts.geom.Polyline;
@@ -92,6 +94,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     /** A curve backed by {@code sample}. */
     private Polyline nextMove;
 
+    /** The current combinatorial state of the game. */
+    private Graph combState;
+
     /**
      * Creates a new {@code Sprouts} application object with default settings.
      * <p>
@@ -162,6 +167,11 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     public void create() {
         renderer = new ShapeRenderer();
         Gdx.input.setInputProcessor(this);
+
+        combState = new InitialCobweb(
+            lineThickness,
+            CIRCLE_SEGMENT_COUNT
+        );
     }
 
     /** {@inheritDoc} */
@@ -175,8 +185,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     public void render() {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        renderer.setProjectionMatrix(viewport.getCamera().combined);
         if (nextMove != null) {
-            renderer.setProjectionMatrix(viewport.getCamera().combined);
             renderer.setColor(Color.BLACK);
             renderer.begin(ShapeRenderer.ShapeType.Filled);
             List<Vector2> points = nextMove.points();
@@ -192,6 +203,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
                 );
             }
             renderer.end();
+        }
+        if (combState != null) {
+            combState.renderTo(renderer);
         }
     }
 
