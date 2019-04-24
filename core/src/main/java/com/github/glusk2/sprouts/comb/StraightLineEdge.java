@@ -13,7 +13,7 @@ import com.github.glusk2.sprouts.geom.Polyline;
  */
 public final class StraightLineEdge implements DirectedEdge {
     /** Default Edge color. */
-    private static final Color DEFAULT_COLOR = Color.BLACK;
+    private static final Color DEFAULT_COLOR = Color.RED;
     /** The color of {@code this} DirectedEdge.*/
     private final Color color;
     /** The source Vertex of {@code this} DirectedEdge. */
