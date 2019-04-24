@@ -18,4 +18,28 @@ public interface Graph extends Drawable {
      * @return the list of bounding Sets of {@code this} Graph's faces
      */
     List<Set<DirectedEdge>> faces();
+
+    /**
+     * Returns a new Graph with an additional DirectedEdge.
+     * <p>
+     * Refer to {@link LocalRotations} interface definition for notes on
+     * notation.
+     *
+     * @param origin the center Vertex {@code v}
+     * @param direction the DirectedEdge {@code (a, b)}
+     * @return a new Graph with an additional DirectedEdge
+     */
+    Graph with(Vertex origin, DirectedEdge direction);
+
+     /**
+     * Returns a new Graph without a surplus DirectedEdge.
+     * <p>
+     * Refer to {@link LocalRotations} interface definition for notes on
+     * notation.
+     *
+     * @param origin the center Vertex {@code v}
+     * @param direction the DirectedEdge {@code (a, b)}
+     * @return a new Graph without a surplus DirectedEdge
+     */
+    Graph without(Vertex origin, DirectedEdge direction);
 }

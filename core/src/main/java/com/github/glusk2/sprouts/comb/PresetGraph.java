@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.comb;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -158,5 +159,46 @@ public final class PresetGraph implements Graph {
             }
         }
         return faces;
+    }
+
+    @Override
+    public Graph with(final Vertex origin, final DirectedEdge direction) {
+        Map<Vertex, LocalRotations> newRotations =
+            new HashMap<Vertex, LocalRotations>(rotationsList);
+        if (rotationsList.containsKey(origin)) {
+            newRotations.put(
+                origin,
+                rotationsList.get(origin).with(direction)
+            );
+        } else {
+            newRotations.put(
+                origin,
+                new PresetRotations(origin).with(direction)
+            );
+        }
+        return
+            new PresetGraph(
+                newRotations,
+                lineThickness,
+                circleSegmentCount
+            );
+    }
+
+    @Override
+    public Graph without(final Vertex origin, final DirectedEdge direction) {
+        Map<Vertex, LocalRotations> newRotations =
+            new HashMap<Vertex, LocalRotations>(rotationsList);
+        if (rotationsList.containsKey(origin)) {
+            newRotations.put(
+                origin,
+                rotationsList.get(origin).without(direction)
+            );
+        }
+        return
+            new PresetGraph(
+                newRotations,
+                lineThickness,
+                circleSegmentCount
+            );
     }
 }

@@ -97,4 +97,14 @@ public final class InitialCobweb implements Graph {
     public List<Set<DirectedEdge>> faces() {
         return graph.faces();
     }
+
+    @Override
+    public Graph with(final Vertex origin, final DirectedEdge direction) {
+        return graph.with(origin, direction);
+    }
+
+    @Override
+    public Graph without(final Vertex origin, final DirectedEdge direction) {
+        return graph.without(origin, direction);
+    }
 }
