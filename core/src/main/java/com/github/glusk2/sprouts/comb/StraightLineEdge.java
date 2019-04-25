@@ -1,7 +1,8 @@
 package com.github.glusk2.sprouts.comb;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -87,10 +88,10 @@ public final class StraightLineEdge implements DirectedEdge {
 
     @Override
     public Polyline polyline() {
-        List<Vector2> endpoints = new ArrayList<Vector2>();
+        Set<Vector2> endpoints = new HashSet<Vector2>();
         endpoints.add(from().position());
         endpoints.add(to().position());
-        return new Polyline.WrappedList(endpoints);
+        return new Polyline.WrappedList(new ArrayList<Vector2>(endpoints));
     }
 
     @Override
