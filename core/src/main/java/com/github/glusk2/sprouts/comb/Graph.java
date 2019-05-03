@@ -17,7 +17,25 @@ public interface Graph extends Drawable {
      *
      * @return the list of bounding Sets of {@code this} Graph's faces
      */
-    List<Set<DirectedEdge>> faces();
+    List<Set<CompoundEdge>> faces();
+
+    /**
+     * A set of LocalRotations CompoundEdges {@code v, (a, b)} of {@code this}
+     * Graph.
+     * <p>
+     * Refer to {@link LocalRotations} interface definition for more info on
+     * notation used.
+     *
+     * @return the set of CompoundEdges {@code v, (a, b)}
+     */
+    Set<CompoundEdge> edges();
+
+    /**
+     * Returns {@code this} Graph's Vertices.
+     *
+     * @return the Set of Vertices in {@code this} Graph
+     */
+    Set<Vertex> vertices();
 
     /**
      * Returns a new Graph with an additional DirectedEdge.

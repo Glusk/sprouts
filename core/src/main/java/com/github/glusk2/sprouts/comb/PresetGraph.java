@@ -70,12 +70,12 @@ public final class PresetGraph implements Graph {
 
     @Override
     public void renderTo(final ShapeRenderer renderer) {
-        Set<DirectedEdge> drawnEdges = new HashSet<DirectedEdge>();
+        Set<CompoundEdge> drawnEdges = new HashSet<CompoundEdge>();
         renderer.begin(ShapeType.Filled);
-        for (DirectedEdge edge : edges()) {
+        for (CompoundEdge edge : edges()) {
             if (!drawnEdges.contains(edge)) {
-                renderer.setColor(edge.color());
-                List<Vector2> points = edge.polyline().points();
+                renderer.setColor(edge.direction().color());
+                List<Vector2> points = edge.direction().polyline().points();
                 for (int i = 1; i < points.size(); i++) {
                     Vector2 p1 = points.get(i - 1);
                     Vector2 p2 = points.get(i);
@@ -88,19 +88,10 @@ public final class PresetGraph implements Graph {
                     );
                 }
                 drawnEdges.add(edge);
-                // ToDo: ReversedEdge implementation!
-                List<DirectedEdge> tmp =
-                    rotationsList.get(edge.to()).edges();
-                for (DirectedEdge e : tmp) {
-                    if (e.to().equals(edge.from())) {
-                        drawnEdges.add(e);
-                        break;
-                    }
-                }
-                // end of ToDo
+                drawnEdges.add(new ReversedCompoundEdge(edge));
             }
         }
-        for (Vertex v : rotationsList.keySet()) {
+        for (Vertex v : vertices()) {
             renderer.setColor(v.color());
             renderer.circle(
                 v.position().x,
@@ -120,42 +111,40 @@ public final class PresetGraph implements Graph {
         renderer.end();
     }
 
-    /**
-     * Returns a Set of DirectedEdges of {@code this} Graph.
-     *
-     * @return a Set of DirectedEdges of {@code this} Graph
-     */
-    private Set<DirectedEdge> edges() {
-        Set<DirectedEdge> result = new HashSet<DirectedEdge>();
-        for (Vertex v: rotationsList.keySet()) {
+    @Override
+    public Set<CompoundEdge> edges() {
+        Set<CompoundEdge> result = new HashSet<CompoundEdge>();
+        for (Vertex v : vertices()) {
             result.addAll(rotationsList.get(v).edges());
         }
         return result;
     }
 
     @Override
-    public List<Set<DirectedEdge>> faces() {
-        List<Set<DirectedEdge>> faces = new ArrayList<Set<DirectedEdge>>();
+    public List<Set<CompoundEdge>> faces() {
+        List<Set<CompoundEdge>> faces = new ArrayList<Set<CompoundEdge>>();
 
-        Set<DirectedEdge> nextFace = new HashSet<DirectedEdge>();
-        Set<DirectedEdge> burntEdges = new HashSet<DirectedEdge>();
-        for (DirectedEdge edge : edges()) {
-            DirectedEdge nextEdge = edge;
+        Set<CompoundEdge> nextFace = new HashSet<CompoundEdge>();
+        Set<CompoundEdge> burntEdges = new HashSet<CompoundEdge>();
+        for (CompoundEdge edge : edges()) {
+            CompoundEdge nextEdge = edge;
             while (
                 !nextFace.contains(nextEdge)
              && !burntEdges.contains(nextEdge)
             ) {
                 burntEdges.add(nextEdge);
                 nextFace.add(nextEdge);
-                // nextEdge = next(rev(nextEdge))
-                // ToDo: ReversedEdge, NextEdge implementations!
-                nextEdge = rotationsList.get(nextEdge.to())
-                                        .next(nextEdge.from());
-                // end of ToDo
+                nextEdge =
+                    new CachedCompoundEdge(
+                        new NextCompoundEdge(
+                            rotationsList,
+                            new ReversedCompoundEdge(nextEdge)
+                        )
+                    );
             }
             if (!nextFace.isEmpty()) {
                 faces.add(nextFace);
-                nextFace = new HashSet<DirectedEdge>();
+                nextFace = new HashSet<CompoundEdge>();
             }
         }
         return faces;
@@ -200,5 +189,10 @@ public final class PresetGraph implements Graph {
                 lineThickness,
                 circleSegmentCount
             );
+    }
+
+    @Override
+    public Set<Vertex> vertices() {
+        return rotationsList.keySet();
     }
 }
