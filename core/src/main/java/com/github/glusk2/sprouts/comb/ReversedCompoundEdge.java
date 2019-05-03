@@ -40,7 +40,7 @@ public final class ReversedCompoundEdge implements CompoundEdge {
     public DirectedEdge direction() {
         DirectedEdge result =
             new StraightLineEdge(
-                original.origin().color(),
+                original.direction().color(),
                 original.origin()
             );
         Vector2[] points =
