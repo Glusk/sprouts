@@ -93,12 +93,13 @@ public final class ExtendedEdge implements DirectedEdge {
 
     @Override
     public int hashCode() {
-        if (appendToEnd) {
-           return (
-               from().hashCode() + "-" + vertexToAdd.hashCode()
-            ).hashCode();
+        String hash = color().hashCode() + "-" + from().hashCode() + "-";
+        Vector2[] points = polyline().points().toArray(new Vector2[0]);
+        for (int i = 1; i < points.length - 1; i++) {
+            hash += points[i].hashCode() + "-";
         }
-        return (vertexToAdd.hashCode() + "-" + to().hashCode()).hashCode();
+        hash += to().hashCode();
+        return hash.hashCode();
     }
 
     @Override
@@ -110,9 +111,12 @@ public final class ExtendedEdge implements DirectedEdge {
             return false;
         }
         DirectedEdge that = (DirectedEdge) obj;
-        if (appendToEnd) {
-            return from().equals(that.from()) && vertexToAdd.equals(that.to());
-        }
-        return vertexToAdd.equals(that.from()) && to().equals(that.to());
+        boolean quickCheck =
+            color().equals(that.color())
+            && from().equals(that.from())
+            && to().equals(that.to());
+        return
+            quickCheck
+            && polyline().points().containsAll(that.polyline().points());
     }
 }

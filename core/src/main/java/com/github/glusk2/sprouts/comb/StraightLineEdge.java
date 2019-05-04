@@ -96,7 +96,13 @@ public final class StraightLineEdge implements DirectedEdge {
 
     @Override
     public int hashCode() {
-        return (from().hashCode() + "-" + to().hashCode()).hashCode();
+        return (
+            color().hashCode()
+            + "-"
+            + from().hashCode()
+            + "-"
+            + to().hashCode()
+        ).hashCode();
     }
 
     @Override
@@ -108,6 +114,9 @@ public final class StraightLineEdge implements DirectedEdge {
             return false;
         }
         DirectedEdge that = (DirectedEdge) obj;
-        return from().equals(that.from()) && to().equals(that.to());
+        return
+            color().equals(that.color())
+            && from().equals(that.from())
+            && to().equals(that.to());
     }
 }
