@@ -60,4 +60,22 @@ public interface Graph extends Drawable {
      * @return a new Graph without a surplus DirectedEdge
      */
     Graph without(Vertex origin, DirectedEdge direction);
+
+    /**
+     * Returns the face in which {@code edge} lies.
+     * <p>
+     * Refer to {@link LocalRotations} interface definition for notes on
+     * notation.
+     *
+     * @param edge a CompoundEdge {@code v, (a, b)}
+     * @return the face in which {@code edge} lies
+     */
+    Set<CompoundEdge> edgeFace(CompoundEdge edge);
+
+    /**
+     * Returns a new graph without unneeded faces, vertices or edges.
+     *
+     * @return a simplified Graph
+     */
+    Graph simplified();
 }

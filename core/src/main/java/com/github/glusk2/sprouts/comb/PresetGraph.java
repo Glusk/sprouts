@@ -195,4 +195,52 @@ public final class PresetGraph implements Graph {
     public Set<Vertex> vertices() {
         return rotationsList.keySet();
     }
+
+    @Override
+    public Set<CompoundEdge> edgeFace(final CompoundEdge edge) {
+        CompoundEdge next =
+            new CachedCompoundEdge(
+                new NextCompoundEdge(
+                    rotationsList,
+                    edge
+                )
+            );
+        for (Set<CompoundEdge> face : faces()) {
+            if (face.contains(next)) {
+                return face;
+            }
+        }
+        throw
+            new IllegalArgumentException(
+                "Edge is not connected to this graph"
+            );
+    }
+
+    @Override
+    public Graph simplified() {
+        for (Set<CompoundEdge> f1 : faces()) {
+            for (Set<CompoundEdge> f2 : faces()) {
+                if (f1.equals(f2)) {
+                    continue;
+                }
+                for (CompoundEdge e1 : f1) {
+                    for (CompoundEdge e2 : f2) {
+                        if (
+                            // checks not complete
+                            e1.origin().equals(e2.direction().to())
+                            && e1.direction().to().equals(e2.origin())
+                            && e2.origin().equals(e1.direction().to())
+                            && e2.direction().to().equals(e1.origin())
+                            && e1.direction().color() == Color.RED
+                            && e2.direction().color() == Color.RED
+                        ) {
+                            return this.without(e1.origin(), e1.direction())
+                                       .without(e2.origin(), e2.direction());
+                        }
+                    }
+                }
+            }
+        }
+        return this;
+    }
 }

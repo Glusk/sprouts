@@ -115,4 +115,14 @@ public final class InitialCobweb implements Graph {
     public Set<CompoundEdge> edges() {
         return graph.edges();
     }
+
+    @Override
+    public Set<CompoundEdge> edgeFace(final CompoundEdge edge) {
+        return graph.edgeFace(edge);
+    }
+
+    @Override
+    public Graph simplified() {
+        return graph.simplified();
+    }
 }
