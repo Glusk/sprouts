@@ -76,8 +76,13 @@ public final class PresetGraph implements Graph {
             if (!drawnEdges.contains(edge)) {
                 renderer.setColor(edge.direction().color());
                 List<Vector2> points = edge.direction().polyline().points();
-                for (int i = 1; i < points.size(); i++) {
-                    Vector2 p1 = points.get(i - 1);
+                for (int i = 0; i < points.size(); i++) {
+                    Vector2 p1 = null;
+                    if (i == 0) {
+                        p1 = edge.origin().position();
+                    } else {
+                        p1 = points.get(i - 1);
+                    }
                     Vector2 p2 = points.get(i);
                     renderer.rectLine(p1, p2, lineThickness);
                     renderer.circle(
