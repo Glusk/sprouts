@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts;
 
 import com.github.glusk2.sprouts.comb.DirectedEdge;
+import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.Vertex;
 
 /**
@@ -31,15 +32,29 @@ public interface Submove {
     DirectedEdge direction();
 
     /**
+     * Returns a new state after {@code this} Move is drawn.
+     *
+     * @return a new state after {@code this} Move is drawn
+     */
+    Graph updatedState();
+
+    /**
      * Checks if {@code this} Submove is completed.
      * <p>
      * A Submove is completed if it intersects a cobweb or
-     * {@code direction().to()} connects to a sprout.
+     * {@code direction().to()} connects to a Graph Vertex.
      *
      * @return {@code true} if {@code this} Submove is completed
      */
     boolean isCompleted();
 
+    /**
+     * Checks if {@code this} Submove can be rendered.
+     *
+     * @return {@code true} if enough of {@code this} Submove has already
+     *         been drawn that it can be rendered
+     */
+    boolean isReadyToRender();
     /**
      * Checks if {@code this} Submove is valid.
      * <p>
