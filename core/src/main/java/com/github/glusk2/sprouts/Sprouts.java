@@ -53,7 +53,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
      * Defines the number of discrete points on interval: {@code 0 <= t <= 1}
      * for spline rendering.
      */
-    private static final int SPLINE_SEGMENT_COUNT = 10;
+    private static final int SPLINE_SEGMENT_COUNT = 5;
 
     /**
      * Circle segment count.
