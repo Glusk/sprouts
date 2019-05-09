@@ -247,7 +247,6 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         for (Vertex v : combState.vertices()) {
             if (v.position().dst(p) < lineThickness) {
                 sample = new LinkedList<Vector2>();
-                sample.add(p);
                 nextSubmove =
                     new PresetSubmove(
                         v,
@@ -274,6 +273,16 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer
     ) {
         Vector2 p = viewport.unproject(new Vector2(screenX, screenY));
+        if (
+            sample != null
+            && nextSubmove != null
+            && sample.isEmpty()
+            && p.dst(nextSubmove.origin().position())
+            >= MIN_DISTANCE_MODIFIER * lineThickness
+        ) {
+            sample.add(p);
+            return true;
+        }
         if (
             sample != null
             && !sample.isEmpty()
