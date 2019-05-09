@@ -19,7 +19,11 @@ import com.github.glusk2.sprouts.geom.Polyline;
 
 /** The Submove reference implementation. */
 public final class PresetSubmove implements Submove {
-
+    /**
+     * Maximum error margin for detection of intersection between a line
+     * segment and a point.
+     */
+    private static final float LINE_INTERSECT_ERROR = .5f;
     /**
      * The minimal Submove length in segments at which we check for
      * auto-complete.
@@ -69,6 +73,7 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public DirectedEdge direction() {
+        isCompleted = false;
         List<Vector2> strokePoints = stroke.points();
         if (strokePoints.size() < 2) {
             throw
@@ -221,10 +226,52 @@ public final class PresetSubmove implements Submove {
         if (!isCompleted()) {
             throw new IllegalStateException("Submove not yet completed!");
         }
-        CompoundEdge reversed = new ReversedCompoundEdge(origin(), direction());
+        Graph result = currentState;
+        DirectedEdge currentDirection = direction();
+        Vertex tip = currentDirection.to();
+        if (tip.color().equals(Color.RED)) {
+            for (CompoundEdge edge : currentState.edges()) {
+                if (edge.direction().color().equals(Color.RED)) {
+                    Vector2 line =
+                        edge.origin().position().sub(
+                            edge.direction().to().position()
+                        );
+                    Vector2 redPoint =
+                        edge.origin().position().sub(
+                            tip.position()
+                        );
+                    if (redPoint.isOnLine(line, LINE_INTERSECT_ERROR)) {
+                        CompoundEdge twin = new ReversedCompoundEdge(edge);
+                        CompoundEdge fromRed =
+                            new CompoundEdge.Wrapped(
+                                edge.origin(),
+                                new StraightLineEdge(tip)
+                            );
+                        CompoundEdge fromRedRev =
+                            new ReversedCompoundEdge(fromRed);
+                        CompoundEdge redTo =
+                            new CompoundEdge.Wrapped(
+                                tip,
+                                new StraightLineEdge(edge.direction().to())
+                            );
+                        CompoundEdge redToRev = new ReversedCompoundEdge(redTo);
+                        result = result
+                            .without(edge.origin(), edge.direction())
+                            .without(twin.origin(), twin.direction())
+                            .with(fromRed.origin(), fromRed.direction())
+                            .with(fromRedRev.origin(), fromRedRev.direction())
+                            .with(redTo.origin(), redTo.direction())
+                            .with(redToRev.origin(), redToRev.direction());
+                        break;
+                    }
+                }
+            }
+        }
+        CompoundEdge reversed =
+            new ReversedCompoundEdge(origin(), currentDirection);
         return
-            currentState.with(origin(), direction())
-                        .with(reversed.origin(), reversed.direction())
-                        .simplified();
+            result.with(origin(), currentDirection)
+                  .with(reversed.origin(), reversed.direction())
+                  .simplified();
     }
 }
