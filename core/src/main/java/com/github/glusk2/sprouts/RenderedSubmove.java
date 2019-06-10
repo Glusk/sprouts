@@ -23,7 +23,7 @@ public final class RenderedSubmove implements Drawable {
      * Constructs a new RenderedSubmove from the Submove and the rendering
      * settings.
      *
-     * @param submove he wrapped Submove to draw
+     * @param submove the wrapped Submove to draw
      * @param lineThickness the thickness of the line drawn
      * @param circleSegmentCount the number of segments for the circles between
      *                           adjacent line segments
@@ -43,10 +43,12 @@ public final class RenderedSubmove implements Drawable {
         if (!submove.isReadyToRender()) {
             return;
         }
+        // Needed to set the completed flag
+        submove.direction();
 
         renderer.begin(ShapeType.Filled);
         if (submove.isCompleted()) {
-            renderer.setColor(submove.direction().color());
+            renderer.setColor(Color.BLUE);
         } else {
             renderer.setColor(Color.GREEN);
         }
