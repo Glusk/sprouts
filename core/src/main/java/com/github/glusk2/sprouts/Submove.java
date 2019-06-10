@@ -1,5 +1,7 @@
 package com.github.glusk2.sprouts;
 
+import java.util.Iterator;
+
 import com.github.glusk2.sprouts.comb.DirectedEdge;
 import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.Vertex;
@@ -13,7 +15,7 @@ import com.github.glusk2.sprouts.comb.Vertex;
  * A Submove is dynamic in a sense that it may not yet be completed as the
  * player draws it. Method {@code isCompleted()} tests for that.
  */
-public interface Submove {
+public interface Submove extends Iterator<Submove> {
     /**
      * Returns the origin of {@code this} Submove.
      * <p>

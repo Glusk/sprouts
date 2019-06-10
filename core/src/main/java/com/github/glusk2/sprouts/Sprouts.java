@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -189,12 +190,22 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.setProjectionMatrix(viewport.getCamera().combined);
-        if (nextSubmove != null) {
-            new RenderedSubmove(
-                nextSubmove,
-                lineThickness,
-                CIRCLE_SEGMENT_COUNT
-            ).renderTo(renderer);
+
+        Submove next = nextSubmove;
+        if (next != null) {
+            do {
+                new RenderedSubmove(
+                    next,
+                    lineThickness,
+                    CIRCLE_SEGMENT_COUNT
+                ).renderTo(renderer);
+
+                if (next.hasNext()) {
+                    next = next.next();
+                } else {
+                    break;
+                }
+            } while (true);
         }
         if (combState != null) {
             combState.renderTo(renderer);
@@ -225,9 +236,21 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer,
         final int button
     ) {
-        //nextMove = new Polyline.WrappedList(nextMove.points());
-        if (nextSubmove != null && nextSubmove.isCompleted()) {
-            combState = nextSubmove.updatedState();
+        if (nextSubmove != null) {
+            Submove next = nextSubmove;
+            while (next.isCompleted() && next.hasNext()) {
+                next = next.next();
+                if (next.isReadyToRender()) {
+                    // Needed to set the completed flag
+                    next.direction();
+                }
+            }
+            if (
+                next.isCompleted()
+                && next.direction().to().color().equals(Color.BLACK)
+            ) {
+                combState = next.updatedState();
+            }
         }
         nextSubmove = null;
         sample = null;

@@ -16,6 +16,8 @@ import com.github.glusk2.sprouts.comb.ReversedCompoundEdge;
 import com.github.glusk2.sprouts.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.geom.Polyline;
+import com.github.glusk2.sprouts.geom.PolylinePiece;
+import com.github.glusk2.sprouts.geom.TrimmedPolyline;
 
 /** The Submove reference implementation. */
 public final class PresetSubmove implements Submove {
@@ -273,5 +275,31 @@ public final class PresetSubmove implements Submove {
             result.with(origin(), currentDirection)
                   .with(reversed.origin(), reversed.direction())
                   .simplified();
+    }
+
+    @Override
+    public boolean hasNext() {
+        return isCompleted() && !direction().to().color().equals(Color.BLACK);
+    }
+
+    @Override
+    public Submove next() {
+        if (!isCompleted()) {
+            throw new IllegalStateException("Submove not yet completed!");
+        }
+        float minDistance = vertexGlueRadius;
+        return
+            new PresetSubmove(
+                direction().to(),
+                new TrimmedPolyline(
+                    new PolylinePiece(
+                        stroke,
+                        direction().to().position()
+                    ),
+                    minDistance
+                ),
+                updatedState(),
+                vertexGlueRadius
+            );
     }
 }
