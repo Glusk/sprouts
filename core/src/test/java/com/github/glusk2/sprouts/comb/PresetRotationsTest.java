@@ -16,7 +16,7 @@ public final class PresetRotationsTest {
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void checksClockwiseEdgeOrder() {
-        List<DirectedEdge> edges =
+        List<CompoundEdge> edges =
             new PresetRotations(
                 new PresetVertex(
                     new Vector2(0, 0),
@@ -62,8 +62,8 @@ public final class PresetRotationsTest {
             ).edges();
 
         List<String> labels = new ArrayList<String>();
-        for (DirectedEdge edge : edges) {
-            labels.add(edge.to().label());
+        for (CompoundEdge edge : edges) {
+            labels.add(edge.direction().to().label());
         }
 
         List<String> actual = new ArrayList<String>(labels);
@@ -78,14 +78,16 @@ public final class PresetRotationsTest {
     @Test
     public void findsNextEdgeOfEmptyLocalRotations() {
         assertEquals(
-            new StraightLineEdge(
-                new PresetVertex(
-                    new Vector2(0, 0),
-                    "v"
-                ),
-                new PresetVertex(
-                    new Vector2(1, 1),
-                    "1"
+            new CompoundEdge.Wrapped(
+                new StraightLineEdge(
+                    new PresetVertex(
+                        new Vector2(0, 0),
+                        "v"
+                    ),
+                    new PresetVertex(
+                        new Vector2(1, 1),
+                        "1"
+                    )
                 )
             ),
             new PresetRotations(
@@ -102,5 +104,27 @@ public final class PresetRotationsTest {
                 )
             )
         );
+    }
+
+    /**
+     * Checks that the implementation can differentiate between the
+     * DirectedEdges that end in the same Vertex.
+     */
+    @Test
+    @SuppressWarnings("checkstyle:magicnumber")
+    public void differentiatesBetweenEdgesThatEndInTheSameVertex() {
+        assertThat(
+            new PresetRotations(
+                new PresetVertex(Vector2.Zero, 0)
+            ).with(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(10, 10), 10)
+                ),
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(3, 4), "34"),
+                    new PresetVertex(new Vector2(10, 10), 10)
+                )
+            ).edges()
+        ).hasSize(2);
     }
 }

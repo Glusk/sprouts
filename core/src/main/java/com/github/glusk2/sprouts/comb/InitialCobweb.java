@@ -35,14 +35,12 @@ public final class InitialCobweb implements Graph {
         ROTATIONS_LIST.put(
             v2,
             new PresetRotations(v2).with(
-                new StraightLineEdge(v3),
                 new StraightLineEdge(v1)
             )
         );
         ROTATIONS_LIST.put(
             v3,
             new PresetRotations(v3).with(
-                new StraightLineEdge(v2),
                 new StraightLineEdge(v4)
             )
         );
@@ -94,7 +92,37 @@ public final class InitialCobweb implements Graph {
     }
 
     @Override
-    public List<Set<DirectedEdge>> faces() {
+    public List<Set<CompoundEdge>> faces() {
         return graph.faces();
+    }
+
+    @Override
+    public Graph with(final Vertex origin, final DirectedEdge direction) {
+        return graph.with(origin, direction);
+    }
+
+    @Override
+    public Graph without(final Vertex origin, final DirectedEdge direction) {
+        return graph.without(origin, direction);
+    }
+
+    @Override
+    public Set<Vertex> vertices() {
+        return graph.vertices();
+    }
+
+    @Override
+    public Set<CompoundEdge> edges() {
+        return graph.edges();
+    }
+
+    @Override
+    public Set<CompoundEdge> edgeFace(final CompoundEdge edge) {
+        return graph.edgeFace(edge);
+    }
+
+    @Override
+    public Graph simplified() {
+        return graph.simplified();
     }
 }

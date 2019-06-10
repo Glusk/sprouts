@@ -70,7 +70,9 @@ public final class PresetVertex implements Vertex {
 
     @Override
     public int hashCode() {
-        return position().hashCode();
+        return (
+            color().hashCode() + "-" + position().hashCode()
+        ).hashCode();
     }
 
     @Override
@@ -82,6 +84,8 @@ public final class PresetVertex implements Vertex {
             return false;
         }
         Vertex that = (Vertex) obj;
-        return this.position().equals(that.position());
+        return
+            color.equals(that.color())
+            && position.equals(that.position());
     }
 }

@@ -9,12 +9,11 @@ import java.util.List;
  * <p>
  * Virtual DirectedEdges {@code (v, a)} are ordered by the clockwise order of
  * {@code a}s around {@code v}. The order of virtual DirectedEdges is used to
- * establish {@code edges()}, which returns pairs {@code (v, b)}
+ * establish {@code edges()}, which returns CompoundEdges {@code v, (a, b)}.
  * <p>
  * Next DirectedEdge of {@code (a, b)} is a DirectedEdge {@code (c, d)}.
  * {@code c} comes strictly after {@code a} in the clockwise order of virtual
- * DirectedEdges - {@code (v, a) < (v, c)}. Method {@code next()} is defined
- * as: {@code (v, d) = next(a, b)}
+ * DirectedEdges - {@code (v, a) < (v, c)}.
  * <h3>Definitions:</h3>
  * <pre>
  * v ... the center vertex of this LocalRotations
@@ -33,17 +32,17 @@ import java.util.List;
  */
 public interface LocalRotations {
     /**
-     * Returns DirectedEdges {@code (v, b)}.
+     * Returns CompoundEdges {@code v, (a, b)}.
      * <p>
      * Refer to <strong>Definitions</strong> in the interface definition Doc
      * for more info.
      *
-     * @return a list of DirectedEdges {@code (v, b)}
+     * @return a list of CompoundEdges {@code v, (a, b)}
      */
-    List<DirectedEdge> edges();
+    List<CompoundEdge> edges();
 
     /**
-     * Returns the first DirectedEdge after {@code current} in {@code this}
+     * Returns the first CompoundEdge after {@code current} in {@code this}
      * LocalRotations.
      * <p>
      * {@code current} need not be a part of {@code this} LocalRotations.
@@ -52,22 +51,9 @@ public interface LocalRotations {
      * for more info.
      *
      * @param current DirectedEdge {@code (a, b)}
-     * @return a new DirectedEdge {@code (v, d)}
+     * @return a new CompoundEdge {@code v (c, d)}
      */
-    DirectedEdge next(DirectedEdge current);
-
-    /**
-     * Returns the first DirectedEdge after {@code (v, b)}.
-     * <p>
-     * {@code b = current}
-     * <p>
-     * Refer to <strong>Definitions</strong> in the interface definition Doc
-     * for more info.
-     *
-     * @param current Vertex {@code b}
-     * @return a new DirectedEdge {@code (v, d)}
-     */
-    DirectedEdge next(Vertex current);
+    CompoundEdge next(DirectedEdge current);
 
     /**
      * Returns new LocalRotations with an {@code additionalEdges}.

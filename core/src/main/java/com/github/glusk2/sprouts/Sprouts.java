@@ -1,7 +1,6 @@
 package com.github.glusk2.sprouts;
 
 import java.util.LinkedList;
-import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.InitialCobweb;
+import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CurveApproximation;
 import com.github.glusk2.sprouts.geom.Polyline;
@@ -54,7 +54,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
      * Defines the number of discrete points on interval: {@code 0 <= t <= 1}
      * for spline rendering.
      */
-    private static final int SPLINE_SEGMENT_COUNT = 10;
+    private static final int SPLINE_SEGMENT_COUNT = 5;
 
     /**
      * Circle segment count.
@@ -96,6 +96,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
 
     /** The current combinatorial state of the game. */
     private Graph combState;
+
+    /** The next Submove. */
+    private Submove nextSubmove;
 
     /**
      * Creates a new {@code Sprouts} application object with default settings.
@@ -187,22 +190,22 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         renderer.setProjectionMatrix(viewport.getCamera().combined);
-        if (nextMove != null) {
-            renderer.setColor(Color.BLACK);
-            renderer.begin(ShapeRenderer.ShapeType.Filled);
-            List<Vector2> points = nextMove.points();
-            for (int i = 1; i < points.size(); i++) {
-                Vector2 p1 = points.get(i - 1);
-                Vector2 p2 = points.get(i);
-                renderer.rectLine(p1, p2, lineThickness);
-                renderer.circle(
-                    p2.x,
-                    p2.y,
-                    lineThickness / 2,
+
+        Submove next = nextSubmove;
+        if (next != null) {
+            do {
+                new RenderedSubmove(
+                    next,
+                    lineThickness,
                     CIRCLE_SEGMENT_COUNT
-                );
-            }
-            renderer.end();
+                ).renderTo(renderer);
+
+                if (next.hasNext()) {
+                    next = next.next();
+                } else {
+                    break;
+                }
+            } while (true);
         }
         if (combState != null) {
             combState.renderTo(renderer);
@@ -233,7 +236,24 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer,
         final int button
     ) {
-        nextMove = new Polyline.WrappedList(nextMove.points());
+        if (nextSubmove != null) {
+            Submove next = nextSubmove;
+            while (next.isCompleted() && next.hasNext()) {
+                next = next.next();
+                if (next.isReadyToRender()) {
+                    // Needed to set the completed flag
+                    next.direction();
+                }
+            }
+            if (
+                next.isCompleted()
+                && next.direction().to().color().equals(Color.BLACK)
+            ) {
+                combState = next.updatedState();
+            }
+        }
+        nextSubmove = null;
+        sample = null;
         return true;
     }
 
@@ -245,16 +265,26 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer,
         final int button
     ) {
-        sample = new LinkedList<Vector2>();
-        sample.add(viewport.unproject(new Vector2(screenX, screenY)));
-        nextMove =
-            new CurveApproximation(
-                new BezierCurve(
-                    sample,
-                    PERP_DISTANCE_MODIFIER * lineThickness
-                ),
-                SPLINE_SEGMENT_COUNT
-            );
+        Vector2 p =
+            viewport.unproject(new Vector2(screenX, screenY));
+        for (Vertex v : combState.vertices()) {
+            if (v.position().dst(p) < lineThickness) {
+                sample = new LinkedList<Vector2>();
+                nextSubmove =
+                    new PresetSubmove(
+                        v,
+                        new CurveApproximation(
+                            new BezierCurve(
+                                sample,
+                                PERP_DISTANCE_MODIFIER * lineThickness
+                            ),
+                            SPLINE_SEGMENT_COUNT
+                        ),
+                        combState,
+                        lineThickness
+                    );
+            }
+        }
         return true;
     }
 
@@ -266,9 +296,19 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer
     ) {
         Vector2 p = viewport.unproject(new Vector2(screenX, screenY));
-
         if (
-            !sample.isEmpty()
+            sample != null
+            && nextSubmove != null
+            && sample.isEmpty()
+            && p.dst(nextSubmove.origin().position())
+            >= MIN_DISTANCE_MODIFIER * lineThickness
+        ) {
+            sample.add(p);
+            return true;
+        }
+        if (
+            sample != null
+            && !sample.isEmpty()
             && p.dst(sample.get(sample.size() - 1))
             >= MIN_DISTANCE_MODIFIER * lineThickness
         ) {

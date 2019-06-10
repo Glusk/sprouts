@@ -57,41 +57,27 @@ public final class PresetRotations implements LocalRotations {
     }
 
     @Override
-    public List<DirectedEdge> edges() {
-        List<DirectedEdge> result = new ArrayList<DirectedEdge>();
+    public List<CompoundEdge> edges() {
+        List<CompoundEdge> result = new ArrayList<CompoundEdge>();
         for (DirectedEdge e : edges) {
-            result.add(new ExtendedEdge(false, center, e));
+            result.add(new CachedCompoundEdge(center, e));
         }
         return result;
     }
 
     @Override
-    public DirectedEdge next(final DirectedEdge current) {
-        DirectedEdge[] withCurrent =
+    public CompoundEdge next(final DirectedEdge current) {
+        CompoundEdge[] withCurrent =
             this.with(current)
                 .edges()
-                .toArray(new DirectedEdge[0]);
+                .toArray(new CompoundEdge[0]);
+
         for (int i = 0; i < withCurrent.length; i++) {
-            if (current.to().equals(withCurrent[i].to())) {
+            if (current.equals(withCurrent[i].direction())) {
                 return withCurrent[(i + 1) % withCurrent.length];
             }
         }
         throw new AssertionError("Programming error!");
-    }
-
-    @Override
-    public DirectedEdge next(final Vertex current) {
-        DirectedEdge[] withCurrent =
-            this.edges()
-                .toArray(new DirectedEdge[0]);
-        for (int i = 0; i < withCurrent.length; i++) {
-            if (current.equals(withCurrent[i].to())) {
-                return withCurrent[(i + 1) % withCurrent.length];
-            }
-        }
-        throw new IllegalStateException(
-            "This LocalRotations object is empty! It has no edges."
-        );
     }
 
     @Override
