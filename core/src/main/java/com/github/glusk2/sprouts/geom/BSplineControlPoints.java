@@ -157,8 +157,8 @@ public final class BSplineControlPoints implements Polyline {
         final double[] c,
         final double[] d
     ) {
-        double [] newC = new double[c.length];
-        double [] newD = new double[d.length];
+        double[] newC = new double[c.length];
+        double[] newD = new double[d.length];
         newC[0] = c[0] / b[0];
         newD[0] = d[0] / b[0];
         for (int i = 1; i < n; i++) {
