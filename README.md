@@ -17,11 +17,11 @@ Run this from the command line:
 ``` bash
 # On Windows
 # cd %ANDROID_HOME%/tools/bin
-# sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+# sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3"
 
 # On Unix
 cd ANDROID_HOME/tools/bin
-./sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+./sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3"
 
 ```
 
