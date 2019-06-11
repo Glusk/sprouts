@@ -4,6 +4,7 @@ android:
     - build-tools-28.0.3
     - android-28
 jdk: oraclejdk8
+dist: trusty
 
 # Cache gradle dependencies (should be faster to download them from cache)
 cache:
