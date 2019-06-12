@@ -21,7 +21,7 @@ public final class PresetRotations implements LocalRotations {
      * <pre>
      * new PresetRotations(
      *     center,
-     *     new TreeSet<DirectedEdge>(
+     *     {@literal new TreeSet<DirectedEdge>(}
      *         new ClockwiseComparator(center)
      *     )
      * )
