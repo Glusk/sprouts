@@ -77,10 +77,10 @@ public final class PresetSubmove implements Submove {
     public DirectedEdge direction() {
         isCompleted = false;
         List<Vector2> strokePoints = stroke.points();
-        if (strokePoints.size() < 2) {
+        if (strokePoints.isEmpty()) {
             throw
                 new IllegalStateException(
-                    "At least 2 sample points are needed to establish a "
+                    "At least 1 sample points are needed to establish a "
                      + "direction!"
                 );
         }
@@ -90,20 +90,25 @@ public final class PresetSubmove implements Submove {
                 Color.BLACK,
                 new PresetVertex(
                     Color.BLACK,
-                    strokePoints.get(1),
+                    strokePoints.get(0),
                     null
                 )
             );
-        for (int i = 2; i < strokePoints.size(); i++) {
-            DirectedEdge updatedDirection =
-                new ExtendedEdge(
-                    new PresetVertex(
-                        Color.BLACK,
-                        strokePoints.get(i),
-                        null
-                    ),
-                    direction
-                );
+        for (int i = 0; i < strokePoints.size(); i++) {
+            DirectedEdge updatedDirection = null;
+            if (i == 0) {
+                updatedDirection = direction;
+            } else {
+                updatedDirection =
+                    new ExtendedEdge(
+                        new PresetVertex(
+                            Color.BLACK,
+                            strokePoints.get(i),
+                            null
+                        ),
+                        direction
+                    );
+            }
             // Check if close to a Graph Vertex and finnish
             Vertex v = closestToTheEnd(updatedDirection);
             if (
@@ -121,7 +126,7 @@ public final class PresetSubmove implements Submove {
             Vector2 crossPoint =
                 crossPoint(
                     currentState.edgeFace(
-                        new CachedCompoundEdge(origin, direction)
+                        new CachedCompoundEdge(origin, updatedDirection)
                     ),
                     updatedDirection
                 );
