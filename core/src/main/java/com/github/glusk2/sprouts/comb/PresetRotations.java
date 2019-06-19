@@ -73,7 +73,10 @@ public final class PresetRotations implements LocalRotations {
                 .toArray(new CompoundEdge[0]);
 
         for (int i = 0; i < withCurrent.length; i++) {
-            if (current.equals(withCurrent[i].direction())) {
+            if (
+                edges.comparator()
+                     .compare(current, withCurrent[i].direction()) == 0
+            ) {
                 return withCurrent[(i + 1) % withCurrent.length];
             }
         }

@@ -127,4 +127,35 @@ public final class PresetRotationsTest {
             ).edges()
         ).hasSize(2);
     }
+
+    /**
+     * Checks that the implementation can find the <em>next</em> CompoundEdge
+     * of two different DirectedEdges that share the same direction.
+     */
+    @Test
+    public void findsNextForTheSameDirection() {
+        assertThat(
+            new PresetRotations(
+                new PresetVertex(Vector2.Zero, 0)
+            ).with(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(1, 1), 1)
+                ),
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(-1, 1), -1)
+                )
+            ).next(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(2, 2), 2)
+                )
+            )
+        ).isEqualTo(
+            new CompoundEdge.Wrapped(
+                new PresetVertex(Vector2.Zero, 0),
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(-1, 1), -1)
+                )
+            )
+        );
+    }
 }
