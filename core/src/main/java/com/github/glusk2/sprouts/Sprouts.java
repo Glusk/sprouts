@@ -1,6 +1,8 @@
 package com.github.glusk2.sprouts;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -17,6 +19,7 @@ import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CurveApproximation;
 import com.github.glusk2.sprouts.geom.Polyline;
+import com.github.glusk2.sprouts.geom.TrimmedPolyline;
 
 /**
  * Sprouts main application class (renders the game and captures player input).
@@ -99,6 +102,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
 
     /** The next Submove. */
     private Submove nextSubmove;
+
+    /** The origin of the next move. */
+    private Vertex origin;
 
     /**
      * Creates a new {@code Sprouts} application object with default settings.
@@ -191,21 +197,41 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
 
         renderer.setProjectionMatrix(viewport.getCamera().combined);
 
-        Submove next = nextSubmove;
-        if (next != null) {
-            do {
-                new RenderedSubmove(
-                    next,
-                    lineThickness,
-                    CIRCLE_SEGMENT_COUNT
-                ).renderTo(renderer);
+        if (sample != null) {
+            List<Vector2> points =
+                new TrimmedPolyline(
+                    new CurveApproximation(
+                        new BezierCurve(
+                            new ArrayList<Vector2>(sample),
+                            PERP_DISTANCE_MODIFIER * lineThickness
+                        ),
+                        SPLINE_SEGMENT_COUNT
+                    ),
+                    MIN_DISTANCE_MODIFIER * lineThickness
+                ).points();
 
-                if (next.hasNext()) {
-                    next = next.next();
-                } else {
-                    break;
-                }
-            } while (true);
+            if (!points.isEmpty()) {
+                Submove next =
+                    new PresetSubmove(
+                        origin,
+                        new Polyline.WrappedList(points),
+                        combState,
+                        lineThickness
+                    );
+                do {
+                    new RenderedSubmove(
+                        next,
+                        lineThickness,
+                        CIRCLE_SEGMENT_COUNT
+                    ).renderTo(renderer);
+
+                    if (next.hasNext()) {
+                        next = next.next();
+                    } else {
+                        break;
+                    }
+                } while (true);
+            }
         }
         if (combState != null) {
             combState.renderTo(renderer);
@@ -236,23 +262,41 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer,
         final int button
     ) {
-        if (nextSubmove != null) {
-            Submove next = nextSubmove;
-            while (next.isCompleted() && next.hasNext()) {
-                next = next.next();
-                if (next.isReadyToRender()) {
-                    // Needed to set the completed flag
-                    next.direction();
+        if (sample != null) {
+            List<Vector2> points =
+                new TrimmedPolyline(
+                    new CurveApproximation(
+                        new BezierCurve(
+                            new ArrayList<Vector2>(sample),
+                            PERP_DISTANCE_MODIFIER * lineThickness
+                        ),
+                        SPLINE_SEGMENT_COUNT
+                    ),
+                    MIN_DISTANCE_MODIFIER * lineThickness
+                ).points();
+
+            if (!points.isEmpty()) {
+                Submove next =
+                    new PresetSubmove(
+                        origin,
+                        new Polyline.WrappedList(points),
+                        combState,
+                        lineThickness
+                    );
+
+                while (next.isCompleted() && next.hasNext()) {
+                    next = next.next();
+                }
+
+                if (
+                    next.isCompleted()
+                    && next.direction().to().color().equals(Color.BLACK)
+                ) {
+                    combState = next.updatedState();
                 }
             }
-            if (
-                next.isCompleted()
-                && next.direction().to().color().equals(Color.BLACK)
-            ) {
-                combState = next.updatedState();
-            }
         }
-        nextSubmove = null;
+        origin = null;
         sample = null;
         return true;
     }
@@ -269,20 +313,9 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
             viewport.unproject(new Vector2(screenX, screenY));
         for (Vertex v : combState.vertices()) {
             if (v.position().dst(p) < lineThickness) {
+                origin = v;
                 sample = new LinkedList<Vector2>();
-                nextSubmove =
-                    new PresetSubmove(
-                        v,
-                        new CurveApproximation(
-                            new BezierCurve(
-                                sample,
-                                PERP_DISTANCE_MODIFIER * lineThickness
-                            ),
-                            SPLINE_SEGMENT_COUNT
-                        ),
-                        combState,
-                        lineThickness
-                    );
+                sample.add(p);
             }
         }
         return true;
@@ -296,16 +329,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         final int pointer
     ) {
         Vector2 p = viewport.unproject(new Vector2(screenX, screenY));
-        if (
-            sample != null
-            && nextSubmove != null
-            && sample.isEmpty()
-            && p.dst(nextSubmove.origin().position())
-            >= MIN_DISTANCE_MODIFIER * lineThickness
-        ) {
-            sample.add(p);
-            return true;
-        }
+
         if (
             sample != null
             && !sample.isEmpty()
