@@ -214,12 +214,17 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public boolean isCompleted() {
+        if (!isReadyToRender()) {
+            return false;
+        }
+        // Needed to set the completed flag
+        direction();
         return isCompleted;
     }
 
     @Override
     public boolean isReadyToRender() {
-        return stroke.points().size() >= 2;
+        return !stroke.points().isEmpty();
     }
 
     @Override

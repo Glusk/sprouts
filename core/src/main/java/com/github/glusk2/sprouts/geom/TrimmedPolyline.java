@@ -44,6 +44,9 @@ public final class TrimmedPolyline implements Polyline {
     @Override
     public List<Vector2> points() {
         List<Vector2> points = new ArrayList<Vector2>(original.points());
+        if (points.isEmpty()) {
+            return new ArrayList<Vector2>();
+        }
         Vector2 firstPoint = points.get(0);
         for (int i = 1; i < points.size(); i++) {
             if (firstPoint.dst(points.get(i)) >= minDistance) {
