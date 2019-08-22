@@ -1,6 +1,5 @@
 package com.github.glusk2.sprouts.geom;
 
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public final class PerpDistSimpl implements Polyline {
     /** The polyline to simplify. */
     private final Polyline original;
     /** Point-to-segment distance tolerance. */
-    private final double tolerance;
+    private final float tolerance;
 
     /**
      * Creates a new {@code Polyline} that simplifies the {@code original}
@@ -37,13 +36,13 @@ public final class PerpDistSimpl implements Polyline {
      * )
      * </pre>
      *
-     * @see #PerpDistSimpl(Polyline, double)
+     * @see #PerpDistSimpl(Polyline, float)
      * @param original list of points representing the polyline to simplify
      * @param tolerance point-to-segment distance tolerance
      */
     public PerpDistSimpl(
         final List<Vector2> original,
-        final double tolerance
+        final float tolerance
     ) {
         this(new WrappedList(original), tolerance);
     }
@@ -55,7 +54,7 @@ public final class PerpDistSimpl implements Polyline {
      * @param original the polyline to simplify
      * @param tolerance point-to-segment distance tolerance
      */
-    public PerpDistSimpl(final Polyline original, final double tolerance) {
+    public PerpDistSimpl(final Polyline original, final float tolerance) {
         this.original = original;
         this.tolerance = tolerance;
     }
@@ -74,7 +73,7 @@ public final class PerpDistSimpl implements Polyline {
             Vector2 p0 = originalPoints.get(i);
             Vector2 p1 = originalPoints.get(i + 2);
             Vector2 x = originalPoints.get(i + 1);
-            if (Intersector.distanceSegmentPoint(p0, p1, x) < tolerance) {
+            if (new IsPointOnLineSegment(p0, p1, x, tolerance).check()) {
                 i++;
             }
         }

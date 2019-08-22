@@ -73,12 +73,13 @@ public final class PolylinePiece implements Polyline {
         for (int i = 1; i < points.size(); i++) {
             Vector2 p0 = points.get(i - 1).cpy();
             Vector2 p1 = points.get(i).cpy();
-            Vector2 line = p0.cpy().sub(p1);
             if (
-                cuttingPoint.cpy().sub(p0).isOnLine(
-                    line,
+                new IsPointOnLineSegment(
+                    p0,
+                    p1,
+                    cuttingPoint,
                     SEGMENT_INTERSECT_ERROR
-                )
+                ).check()
             ) {
                 if (pieceFlag) {
                     List<Vector2> result = points.subList(0, i);

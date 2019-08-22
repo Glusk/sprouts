@@ -15,6 +15,7 @@ import com.github.glusk2.sprouts.comb.PresetVertex;
 import com.github.glusk2.sprouts.comb.ReversedCompoundEdge;
 import com.github.glusk2.sprouts.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.comb.Vertex;
+import com.github.glusk2.sprouts.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.geom.Polyline;
 import com.github.glusk2.sprouts.geom.PolylinePiece;
 import com.github.glusk2.sprouts.geom.TrimmedPolyline;
@@ -244,15 +245,17 @@ public final class PresetSubmove implements Submove {
         if (tip.color().equals(Color.RED)) {
             for (CompoundEdge edge : currentState.edges()) {
                 if (edge.direction().color().equals(Color.RED)) {
-                    Vector2 line =
-                        edge.origin().position().sub(
-                            edge.direction().to().position()
-                        );
-                    Vector2 redPoint =
-                        edge.origin().position().sub(
-                            tip.position()
-                        );
-                    if (redPoint.isOnLine(line, LINE_INTERSECT_ERROR)) {
+                    Vector2 p0 = edge.origin().position();
+                    Vector2 p1 = edge.direction().to().position();
+                    Vector2 point = tip.position();
+                    if (
+                        new IsPointOnLineSegment(
+                            p0,
+                            p1,
+                            point,
+                            LINE_INTERSECT_ERROR
+                        ).check()
+                    ) {
                         CompoundEdge twin = new ReversedCompoundEdge(edge);
                         CompoundEdge fromRed =
                             new CompoundEdge.Wrapped(
