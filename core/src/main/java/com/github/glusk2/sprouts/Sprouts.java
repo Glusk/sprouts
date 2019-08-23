@@ -38,7 +38,10 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
      * <p>
      * This is multiplied by {@code lineThickness} to compute the
      * {@code tolerance} in
-     * {@link PerpDistSimpl#PerpDistSimpl(java.util.List, double)}.
+     * {@link com.github.glusk2.sprouts.geom.PerpDistSimpl#PerpDistSimpl(
+     *     java.util.List,
+     *     float
+     * )}.
      */
     private static final float PERP_DISTANCE_MODIFIER = 3f;
 

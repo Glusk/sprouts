@@ -158,4 +158,44 @@ public final class PresetRotationsTest {
             )
         );
     }
+
+    /**
+     * Checks that only one DirectedEdge per direction is added to
+     * LocalRotations.
+     */
+    @Test
+    public void onlyAddsOneEdgePerDirection() {
+        assertThat(
+            new PresetRotations(
+                new PresetVertex(Vector2.Zero, 0)
+            ).with(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(1, 1), 1)
+                ),
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(2, 2), 2)
+                )
+            ).edges()
+             .size()
+        ).isEqualTo(1);
+    }
+
+    /** Checks that DirectedEdges can be removed by direction. */
+    @Test
+    public void removesEdgeByDirection() {
+        assertThat(
+            new PresetRotations(
+                new PresetVertex(Vector2.Zero, 0)
+            ).with(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(1, 1), 1)
+                )
+            ).without(
+                new StraightLineEdge(
+                    new PresetVertex(new Vector2(2, 2), 2)
+                )
+            ).edges()
+             .size()
+        ).isEqualTo(0);
+    }
 }

@@ -94,9 +94,19 @@ public final class PresetRotations implements LocalRotations {
 
     @Override
     public LocalRotations without(final DirectedEdge... surplusEdges) {
-        SortedSet<DirectedEdge> copy = new TreeSet<DirectedEdge>(edges);
-        for (DirectedEdge surplusEdge : surplusEdges) {
-            copy.remove(surplusEdge);
+        SortedSet<DirectedEdge> copy =
+            new TreeSet<DirectedEdge>(edges.comparator());
+        for (DirectedEdge edge : edges) {
+            boolean canAdd = true;
+            for (DirectedEdge surplusEdge : surplusEdges) {
+                if (edges.comparator().compare(edge, surplusEdge) == 0) {
+                    canAdd = false;
+                    break;
+                }
+            }
+            if (canAdd) {
+                copy.add(edge);
+            }
         }
         return new PresetRotations(center, copy);
     }
