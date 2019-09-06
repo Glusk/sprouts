@@ -44,7 +44,7 @@ public interface Submove extends Iterator<Submove> {
      * Checks if {@code this} Submove is completed.
      * <p>
      * A Submove is completed if it intersects a cobweb or
-     * {@code direction().to()} connects to a Graph Vertex.
+     * {@code direction().to()} connects to a sprout.
      *
      * @return {@code true} if {@code this} Submove is completed
      */

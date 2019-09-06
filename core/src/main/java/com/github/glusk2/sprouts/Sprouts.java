@@ -7,7 +7,6 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -219,7 +218,7 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
                         origin,
                         new Polyline.WrappedList(points),
                         combState,
-                        lineThickness
+                        lineThickness * 2
                     );
                 do {
                     new RenderedSubmove(
@@ -284,17 +283,14 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
                         origin,
                         new Polyline.WrappedList(points),
                         combState,
-                        lineThickness
+                        lineThickness * 2
                     );
 
-                while (next.isCompleted() && next.hasNext()) {
+                while (next.hasNext()) {
                     next = next.next();
                 }
 
-                if (
-                    next.isCompleted()
-                    && next.direction().to().color().equals(Color.BLACK)
-                ) {
+                if (next.isCompleted()) {
                     combState = next.updatedState();
                 }
             }

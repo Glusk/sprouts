@@ -1,20 +1,24 @@
 package com.github.glusk2.sprouts;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.comb.CachedCompoundEdge;
 import com.github.glusk2.sprouts.comb.CompoundEdge;
 import com.github.glusk2.sprouts.comb.DirectedEdge;
-import com.github.glusk2.sprouts.comb.ExtendedEdge;
 import com.github.glusk2.sprouts.comb.Graph;
+import com.github.glusk2.sprouts.comb.IntersectionSegmentFace;
+import com.github.glusk2.sprouts.comb.NearestSprout;
+import com.github.glusk2.sprouts.comb.PolylineEdge;
 import com.github.glusk2.sprouts.comb.PresetVertex;
 import com.github.glusk2.sprouts.comb.ReversedCompoundEdge;
 import com.github.glusk2.sprouts.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.comb.Vertex;
+import com.github.glusk2.sprouts.comb.VoidVertex;
 import com.github.glusk2.sprouts.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.geom.Polyline;
 import com.github.glusk2.sprouts.geom.PolylinePiece;
@@ -27,11 +31,6 @@ public final class PresetSubmove implements Submove {
      * segment and a point.
      */
     private static final float LINE_INTERSECT_ERROR = .5f;
-    /**
-     * The minimal Submove length in segments at which we check for
-     * auto-complete.
-     */
-    private static final int MIN_SUBMOVE_LENGTH = 5;
     /** The Graph Vertex in which {@code this} Submove begins. */
     private final Vertex origin;
     /** The polyline approximation of the move stroke. */
@@ -43,9 +42,6 @@ public final class PresetSubmove implements Submove {
      * when near a {@code currentState} Vertex.
      */
     private final float vertexGlueRadius;
-
-    /** Completion flag. */
-    private boolean isCompleted = false;
 
     /**
      * Creates a new Submove.
@@ -76,151 +72,109 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public DirectedEdge direction() {
-        isCompleted = false;
         List<Vector2> strokePoints = stroke.points();
         if (strokePoints.isEmpty()) {
             throw
                 new IllegalStateException(
-                    "At least 1 sample points are needed to establish a "
+                    "At least 1 sample point is needed to establish a "
                      + "direction!"
                 );
         }
-
-        DirectedEdge direction =
-            new StraightLineEdge(
-                Color.BLACK,
-                new PresetVertex(
-                    Color.BLACK,
-                    strokePoints.get(0),
-                    null
+        Set<CompoundEdge> moveFace =
+            currentState.edgeFace(
+                new CachedCompoundEdge(
+                    origin,
+                    new StraightLineEdge(
+                        new PresetVertex(
+                            strokePoints.get(0),
+                            (String) null
+                        )
+                    )
                 )
             );
         for (int i = 0; i < strokePoints.size(); i++) {
-            DirectedEdge updatedDirection = null;
-            if (i == 0) {
-                updatedDirection = direction;
-            } else {
-                updatedDirection =
-                    new ExtendedEdge(
-                        new PresetVertex(
-                            Color.BLACK,
-                            strokePoints.get(i),
-                            null
-                        ),
-                        direction
-                    );
-            }
-            // Check if close to a Graph Vertex and finnish
-            Vertex v = closestToTheEnd(updatedDirection);
-            if (
-                updatedDirection.polyline().points().size()
-                > MIN_SUBMOVE_LENGTH
-                &&
-                v.position().dst(
-                    updatedDirection.to().position()
-                ) < vertexGlueRadius
-            ) {
-                isCompleted = true;
-                return new ExtendedEdge(v, updatedDirection);
-            }
-            // Check if crosses cobweb
-            Vector2 crossPoint =
-                crossPoint(
-                    currentState.edgeFace(
-                        new CachedCompoundEdge(origin, updatedDirection)
-                    ),
-                    updatedDirection
-                );
-            if (crossPoint != null) {
-                isCompleted = true;
-                return
-                    new ExtendedEdge(
-                        new PresetVertex(
-                            Color.RED,
-                            crossPoint,
-                            null
-                        ),
-                        direction
-                    );
-            }
-            direction = updatedDirection;
-        }
-        return direction;
-    }
-
-    /**
-     * Returns the intersection point between {@code move} and {@code face}.
-     *
-     * @param face a Graph face
-     * @param move a DirectedEdge move direction
-     * @return the intersection; can be null if {@code move} and {@code face}
-     *         don't cross
-     */
-    private static Vector2 crossPoint(
-        final Set<CompoundEdge> face,
-        final DirectedEdge move
-    ) {
-        Vector2 intersection = new Vector2();
-        List<Vector2> movePoints = move.polyline().points();
-        for (CompoundEdge edge : face) {
-            // Check only red links!
-            if (edge.direction().color() != Color.RED) {
-                continue;
-            }
-            List<Vector2> edgePoints =
-                new ExtendedEdge(
-                    edge.origin(),
-                    edge.direction()
-                ).polyline().points();
-            // Don't start comparing for an intersection too close to the
-            // origin
-            for (int i = 1; i < movePoints.size(); i++) {
-                for (int j = 1; j < edgePoints.size(); j++) {
-                    boolean intersects =
-                        Intersector.intersectSegments(
-                            movePoints.get(i - 1),
-                            movePoints.get(i),
-                            edgePoints.get(j - 1),
-                            edgePoints.get(j),
-                            intersection
-                        );
-                    if (intersects) {
-                        return intersection;
+            Vector2 p1 = strokePoints.get(i);
+            if (i > 0) {
+                Vector2 p0 = strokePoints.get(i - 1);
+                // Check if crosses cobweb
+                Vertex crossPoint =
+                    new IntersectionSegmentFace(moveFace, p0, p1).result();
+                if (!crossPoint.equals(new VoidVertex(null))) {
+                    // *--*----*------*---x---*---*--*
+                    // sublist 0 - p0  + crossPoint
+                    List<Vector2> returnPoints =
+                        new ArrayList<Vector2>(strokePoints.subList(0, i));
+                    returnPoints.add(crossPoint.position());
+                    // reverse list
+                    Collections.reverse(returnPoints);
+                    // trimmed polyline, get the list
+                    returnPoints =
+                        new TrimmedPolyline(
+                            new Polyline.WrappedList(returnPoints),
+                            vertexGlueRadius
+                        ).points();
+                    // reverse list
+                    Collections.reverse(returnPoints);
+                    // add back crossPoint
+                    returnPoints.add(crossPoint.position());
+                    // return
+                    Color toColor = crossPoint.color();
+                    if (toColor.equals(Color.BLACK)) {
+                        toColor = Color.GRAY;
                     }
+                    return
+                        new PolylineEdge(
+                            origin().color(),
+                            toColor,
+                            returnPoints
+                        );
                 }
             }
-        }
-        return null;
-    }
 
-    /**
-     * Finds and returns the Graph Vertex in {@code currentState} that is the
-     * closest to {@code direction.to()}.
-     *
-     * @param direction the direction of a Submove
-     * @return {@code currentState} Vertex closest to {@code direction.to()}
-     */
-    private Vertex closestToTheEnd(final DirectedEdge direction) {
-        float minDistance = Float.MAX_VALUE;
-        Vertex minVertex = null;
-        for (Vertex v : currentState.vertices()) {
-            float nextDistance = v.position().dst(direction.to().position());
-            if (nextDistance < minDistance) {
-                minDistance = nextDistance;
-                minVertex = v;
+            // Check if close to a Graph Vertex and finnish
+            Vertex v = new NearestSprout(currentState, p1).result();
+            if (v.position().dst(p1) < vertexGlueRadius) {
+                // *--*----*------*---x---*---*--*
+                // sublist 0 - p1  + v (nearestVertex)
+                List<Vector2> returnPoints =
+                    new ArrayList<Vector2>(strokePoints.subList(0, i + 1));
+                returnPoints.add(v.position());
+                // reverse list
+                Collections.reverse(returnPoints);
+                // trimmed polyline, get the list
+                returnPoints =
+                    new TrimmedPolyline(
+                        new Polyline.WrappedList(returnPoints),
+                        vertexGlueRadius
+                    ).points();
+                // reverse list
+                Collections.reverse(returnPoints);
+                // add back v (nearest vertex)
+                returnPoints.add(v.position());
+                // return
+                return
+                    new PolylineEdge(
+                        origin().color(),
+                        v.color(),
+                        returnPoints
+                    );
             }
         }
-        return minVertex;
+        return
+            new PolylineEdge(
+                origin().color(),
+                Color.CLEAR,
+                strokePoints
+            );
     }
 
     @Override
     public boolean isCompleted() {
-        if (!isReadyToRender()) {
-            return false;
+        Color tipColor = Color.CLEAR;
+        if (isReadyToRender()) {
+            tipColor = direction().to().color();
         }
-        // Needed to set the completed flag
-        direction();
-        return isCompleted;
+        return tipColor.equals(Color.BLACK) || tipColor.equals(Color.RED);
     }
 
     @Override
@@ -230,8 +184,7 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public boolean isValid() {
-        // ToDo: add logic
-        return true;
+        return !direction().to().color().equals(Color.GRAY);
     }
 
     @Override
