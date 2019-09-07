@@ -1,7 +1,6 @@
 package com.github.glusk2.sprouts;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -100,24 +99,9 @@ public final class PresetSubmove implements Submove {
                 Vertex crossPoint =
                     new IntersectionSegmentFace(moveFace, p0, p1).result();
                 if (!crossPoint.equals(new VoidVertex(null))) {
-                    // *--*----*------*---x---*---*--*
-                    // sublist 0 - p0  + crossPoint
                     List<Vector2> returnPoints =
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
                     returnPoints.add(crossPoint.position());
-                    // reverse list
-                    Collections.reverse(returnPoints);
-                    // trimmed polyline, get the list
-                    returnPoints =
-                        new TrimmedPolyline(
-                            new Polyline.WrappedList(returnPoints),
-                            vertexGlueRadius
-                        ).points();
-                    // reverse list
-                    Collections.reverse(returnPoints);
-                    // add back crossPoint
-                    returnPoints.add(crossPoint.position());
-                    // return
                     Color toColor = crossPoint.color();
                     if (toColor.equals(Color.BLACK)) {
                         toColor = Color.GRAY;
@@ -134,24 +118,9 @@ public final class PresetSubmove implements Submove {
             // Check if close to a Graph Vertex and finnish
             Vertex v = new NearestSprout(currentState, p1).result();
             if (v.position().dst(p1) < vertexGlueRadius) {
-                // *--*----*------*---x---*---*--*
-                // sublist 0 - p1  + v (nearestVertex)
                 List<Vector2> returnPoints =
-                    new ArrayList<Vector2>(strokePoints.subList(0, i + 1));
+                    new ArrayList<Vector2>(strokePoints.subList(0, i));
                 returnPoints.add(v.position());
-                // reverse list
-                Collections.reverse(returnPoints);
-                // trimmed polyline, get the list
-                returnPoints =
-                    new TrimmedPolyline(
-                        new Polyline.WrappedList(returnPoints),
-                        vertexGlueRadius
-                    ).points();
-                // reverse list
-                Collections.reverse(returnPoints);
-                // add back v (nearest vertex)
-                returnPoints.add(v.position());
-                // return
                 return
                     new PolylineEdge(
                         origin().color(),
@@ -253,14 +222,18 @@ public final class PresetSubmove implements Submove {
         if (!isCompleted()) {
             throw new IllegalStateException("Submove not yet completed!");
         }
-        float minDistance = vertexGlueRadius;
+        float minDistance = 0;
+        Vertex tip = direction().to();
+        if (!tip.color().equals(Color.RED)) {
+            minDistance = vertexGlueRadius;
+        }
         return
             new PresetSubmove(
-                direction().to(),
+                tip,
                 new TrimmedPolyline(
                     new PolylinePiece(
                         stroke,
-                        direction().to().position()
+                        tip.position()
                     ),
                     minDistance
                 ),
