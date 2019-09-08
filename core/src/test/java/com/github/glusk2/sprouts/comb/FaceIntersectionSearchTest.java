@@ -11,8 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/** IntersectionSegmentFace test class. */
-public final class IntersectionSegmentFaceTest {
+/** FaceIntersectionSearch test class. */
+public final class FaceIntersectionSearchTest {
     /** A simple face, shared by various tests. */
     private static Set<CompoundEdge> face;
 
@@ -51,7 +51,7 @@ public final class IntersectionSegmentFaceTest {
     @SuppressWarnings("checkstyle:magicnumber")
     public void detectsSimpleIntersection() {
         assertEquals(
-            new IntersectionSegmentFace(
+            new FaceIntersectionSearch(
                 face,
                 new Vector2(1, 1),
                 new Vector2(3, 1)
@@ -72,7 +72,7 @@ public final class IntersectionSegmentFaceTest {
     @SuppressWarnings("checkstyle:magicnumber")
     public void detectsThatThereIsNoIntersection() {
         assertEquals(
-            new IntersectionSegmentFace(
+            new FaceIntersectionSearch(
                 face,
                 new Vector2(3, 1),
                 new Vector2(4, 1)

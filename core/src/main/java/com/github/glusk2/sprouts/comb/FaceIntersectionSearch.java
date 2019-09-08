@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
  * Objects of this class can find the intersection between a line segment and
  * a Graph face.
  */
-public final class IntersectionSegmentFace implements VertexSearch {
+public final class FaceIntersectionSearch implements VertexSearch {
 
     /** A set of CompoundEdges that represent a Graph face. */
     private final Set<CompoundEdge> face;
@@ -27,7 +27,7 @@ public final class IntersectionSegmentFace implements VertexSearch {
      * @param p0 the first line segment boundary
      * @param p1 the second line segment boundary
      */
-    public IntersectionSegmentFace(
+    public FaceIntersectionSearch(
         final Set<CompoundEdge> face,
         final Vector2 p0,
         final Vector2 p1
@@ -45,9 +45,6 @@ public final class IntersectionSegmentFace implements VertexSearch {
      * <p>
      * The {@code color()} of the Vertex returned is the same as that of the
      * Graph {@code face} edge that the line segment {@code p0-p1} crosses.
-     * <p>
-     * The line segment {@code p0-p1} and {@code face} may intersect multiple
-     * times but only one intersection Vertex will be detected.
      * <p>
      * It is not enough for the segment to touch the face - it has to cross it
      * or no intersection will be detected.

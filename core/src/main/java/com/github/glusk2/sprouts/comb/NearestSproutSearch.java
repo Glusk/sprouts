@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * A NearestSprout object can find the nearest sprout in Graph to a
+ * A NearestSproutSearch object can find the nearest sprout in Graph to a
  * specified Vector2 position.
  */
-public final class NearestSprout implements VertexSearch {
+public final class NearestSproutSearch implements VertexSearch {
     /** The default sprout color. */
     private static final Color DEFAULT_SPROUT_COLOR = Color.BLACK;
     /** The Graph with its set of Vertices. */
@@ -21,14 +21,14 @@ public final class NearestSprout implements VertexSearch {
     private Color sproutColor;
 
     /**
-     * Constructs a new NearestSprout object by specifying the
+     * Constructs a new NearestSproutSearch object by specifying the
      * {@code graph} and {@code position}, using the default sprout color.
      *
      * @param graph the Graph with its set of Vertices
      * @param position this VertexSearch finds and returns the sprout in
      *                 {@code graph} that's nearest to {@code position}
      */
-    public NearestSprout(
+    public NearestSproutSearch(
         final Graph graph,
         final Vector2 position
     ) {
@@ -36,7 +36,7 @@ public final class NearestSprout implements VertexSearch {
     }
 
     /**
-     * Constructs a new NearestSprout object by specifying the
+     * Constructs a new NearestSproutSearch object by specifying the
      * {@code graph} and {@code position} and {@code sproutColor}.
      *
      * @param graph the Graph with its set of Vertices
@@ -44,7 +44,7 @@ public final class NearestSprout implements VertexSearch {
      *                 {@code graph} that's nearest to {@code position}
      * @param sproutColor the color of the sprout Vertices in {@code graph}
      */
-    public NearestSprout(
+    public NearestSproutSearch(
         final Graph graph,
         final Vector2 position,
         final Color sproutColor

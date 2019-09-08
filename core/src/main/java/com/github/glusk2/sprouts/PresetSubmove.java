@@ -10,8 +10,8 @@ import com.github.glusk2.sprouts.comb.CachedCompoundEdge;
 import com.github.glusk2.sprouts.comb.CompoundEdge;
 import com.github.glusk2.sprouts.comb.DirectedEdge;
 import com.github.glusk2.sprouts.comb.Graph;
-import com.github.glusk2.sprouts.comb.IntersectionSegmentFace;
-import com.github.glusk2.sprouts.comb.NearestSprout;
+import com.github.glusk2.sprouts.comb.FaceIntersectionSearch;
+import com.github.glusk2.sprouts.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.comb.PolylineEdge;
 import com.github.glusk2.sprouts.comb.PresetVertex;
 import com.github.glusk2.sprouts.comb.ReversedCompoundEdge;
@@ -97,7 +97,7 @@ public final class PresetSubmove implements Submove {
                 Vector2 p0 = strokePoints.get(i - 1);
                 // Check if crosses cobweb
                 Vertex crossPoint =
-                    new IntersectionSegmentFace(moveFace, p0, p1).result();
+                    new FaceIntersectionSearch(moveFace, p0, p1).result();
                 if (!crossPoint.equals(new VoidVertex(null))) {
                     List<Vector2> returnPoints =
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
@@ -116,7 +116,7 @@ public final class PresetSubmove implements Submove {
             }
 
             // Check if close to a Graph Vertex and finnish
-            Vertex v = new NearestSprout(currentState, p1).result();
+            Vertex v = new NearestSproutSearch(currentState, p1).result();
             if (v.position().dst(p1) < vertexGlueRadius) {
                 List<Vector2> returnPoints =
                     new ArrayList<Vector2>(strokePoints.subList(0, i));
