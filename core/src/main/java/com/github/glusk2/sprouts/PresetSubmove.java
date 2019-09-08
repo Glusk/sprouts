@@ -38,7 +38,7 @@ public final class PresetSubmove implements Submove {
     private final Graph currentState;
     /**
      * The Vertex glue radius, used to auto-complete {@code this} Submove
-     * when near a {@code currentState} Vertex.
+     * when near a sprout.
      */
     private final float vertexGlueRadius;
 
@@ -49,8 +49,7 @@ public final class PresetSubmove implements Submove {
      * @param stroke the polyline approximation of the move stroke
      * @param currentState the game state before {@code this} Submove
      * @param vertexGlueRadius the Vertex glue radius, used to auto-complete
-     *                         {@code this} Submove when near a
-     *                         {@code currentState} Vertex
+     *                         {@code this} Submove when near a sprout
      */
     public PresetSubmove(
         final Vertex origin,
@@ -95,7 +94,7 @@ public final class PresetSubmove implements Submove {
             Vector2 p1 = strokePoints.get(i);
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
-                // Check if crosses cobweb
+                // Check if crosses the face
                 Vertex crossPoint =
                     new FaceIntersectionSearch(moveFace, p0, p1).result();
                 if (!crossPoint.equals(new VoidVertex(null))) {
@@ -115,7 +114,7 @@ public final class PresetSubmove implements Submove {
                 }
             }
 
-            // Check if close to a Graph Vertex and finnish
+            // Check if close to a sprout and finnish
             Vertex v = new NearestSproutSearch(currentState, p1).result();
             if (v.position().dst(p1) < vertexGlueRadius) {
                 List<Vector2> returnPoints =
