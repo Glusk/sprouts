@@ -9,27 +9,26 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.comb.CachedCompoundEdge;
 import com.github.glusk2.sprouts.comb.CompoundEdge;
 import com.github.glusk2.sprouts.comb.DirectedEdge;
-import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.FaceIntersectionSearch;
+import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.comb.PolylineEdge;
 import com.github.glusk2.sprouts.comb.PresetVertex;
-import com.github.glusk2.sprouts.comb.ReversedCompoundEdge;
 import com.github.glusk2.sprouts.comb.StraightLineEdge;
+import com.github.glusk2.sprouts.comb.SubmoveTransformation;
+import com.github.glusk2.sprouts.comb.TransformedGraph;
 import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.comb.VoidVertex;
-import com.github.glusk2.sprouts.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.geom.Polyline;
 import com.github.glusk2.sprouts.geom.PolylinePiece;
 import com.github.glusk2.sprouts.geom.TrimmedPolyline;
 
-/** The Submove reference implementation. */
-public final class PresetSubmove implements Submove {
-    /**
-     * Maximum error margin for detection of intersection between a line
-     * segment and a point.
-     */
-    private static final float LINE_INTERSECT_ERROR = .5f;
+/**
+ * A SubmoveElement is a Submove in a sequence of Submoves that comprise a Move.
+ * <p>
+ * The first element of any such sequence is always the {@link SubmoveHead}.
+ */
+public final class SubmoveElement implements Submove {
     /** The Graph Vertex in which {@code this} Submove begins. */
     private final Vertex origin;
     /** The polyline approximation of the move stroke. */
@@ -51,7 +50,7 @@ public final class PresetSubmove implements Submove {
      * @param vertexGlueRadius the Vertex glue radius, used to auto-complete
      *                         {@code this} Submove when near a sprout
      */
-    public PresetSubmove(
+    public SubmoveElement(
         final Vertex origin,
         final Polyline stroke,
         final Graph currentState,
@@ -152,63 +151,9 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public boolean isValid() {
-        return !direction().to().color().equals(Color.GRAY);
-    }
-
-    @Override
-    public Graph updatedState() {
-        if (!isCompleted()) {
-            throw new IllegalStateException("Submove not yet completed!");
-        }
-        Graph result = currentState;
-        DirectedEdge currentDirection = direction();
-        Vertex tip = currentDirection.to();
-        if (tip.color().equals(Color.RED)) {
-            for (CompoundEdge edge : currentState.edges()) {
-                if (edge.direction().color().equals(Color.RED)) {
-                    Vector2 p0 = edge.origin().position();
-                    Vector2 p1 = edge.direction().to().position();
-                    Vector2 point = tip.position();
-                    if (
-                        new IsPointOnLineSegment(
-                            p0,
-                            p1,
-                            point,
-                            LINE_INTERSECT_ERROR
-                        ).check()
-                    ) {
-                        CompoundEdge twin = new ReversedCompoundEdge(edge);
-                        CompoundEdge fromRed =
-                            new CompoundEdge.Wrapped(
-                                edge.origin(),
-                                new StraightLineEdge(tip)
-                            );
-                        CompoundEdge fromRedRev =
-                            new ReversedCompoundEdge(fromRed);
-                        CompoundEdge redTo =
-                            new CompoundEdge.Wrapped(
-                                tip,
-                                new StraightLineEdge(edge.direction().to())
-                            );
-                        CompoundEdge redToRev = new ReversedCompoundEdge(redTo);
-                        result = result
-                            .without(edge.origin(), edge.direction())
-                            .without(twin.origin(), twin.direction())
-                            .with(fromRed.origin(), fromRed.direction())
-                            .with(fromRedRev.origin(), fromRedRev.direction())
-                            .with(redTo.origin(), redTo.direction())
-                            .with(redToRev.origin(), redToRev.direction());
-                        break;
-                    }
-                }
-            }
-        }
-        CompoundEdge reversed =
-            new ReversedCompoundEdge(origin(), currentDirection);
         return
-            result.with(origin(), currentDirection)
-                  .with(reversed.origin(), reversed.direction())
-                  .simplified();
+            isReadyToRender()
+         && !direction().to().color().equals(Color.GRAY);
     }
 
     @Override
@@ -218,8 +163,8 @@ public final class PresetSubmove implements Submove {
 
     @Override
     public Submove next() {
-        if (!isCompleted()) {
-            throw new IllegalStateException("Submove not yet completed!");
+        if (!hasNext()) {
+            throw new IllegalStateException("This is the tail Submove.");
         }
         float minDistance = 0;
         Vertex tip = direction().to();
@@ -227,7 +172,7 @@ public final class PresetSubmove implements Submove {
             minDistance = vertexGlueRadius;
         }
         return
-            new PresetSubmove(
+            new SubmoveElement(
                 tip,
                 new TrimmedPolyline(
                     new PolylinePiece(
@@ -236,7 +181,12 @@ public final class PresetSubmove implements Submove {
                     ),
                     minDistance
                 ),
-                updatedState(),
+                new TransformedGraph(
+                    new SubmoveTransformation(
+                        new CachedCompoundEdge(this),
+                        currentState
+                    )
+                ),
                 vertexGlueRadius
             );
     }
