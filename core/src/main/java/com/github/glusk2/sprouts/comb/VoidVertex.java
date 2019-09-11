@@ -61,9 +61,6 @@ public final class VoidVertex implements Vertex {
         if (this == obj) {
             return true;
         }
-        if (obj == null || !(obj instanceof VoidVertex)) {
-            return false;
-        }
-        return true;
+        return obj != null && obj instanceof VoidVertex;
     }
 }
