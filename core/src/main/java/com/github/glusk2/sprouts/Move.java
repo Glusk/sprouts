@@ -1,34 +1,34 @@
 package com.github.glusk2.sprouts;
 
-import java.util.List;
-
-import com.github.glusk2.sprouts.comb.Graph;
-
-/** A Sprouts Move consists of one or more Submoves. */
-public interface Move extends Drawable {
+/**
+ * A Sprouts Move consists of one or more Submoves.
+ * <p>
+ * The iteration of Submoves is non-standard, that is it can't be used as a
+ * for-each loop construct. The intended iteration procedure is as follows:
+ * <pre>
+ * // Move move = ...
+ * Iterator&lt;Submove&gt; it = move.iterator();
+ * while (it.hasNext()) {
+ *     Submove next = it.next();
+ *     // do work with "next"
+ *     it = next;
+ * }
+ * </pre>
+ */
+public interface Move extends Iterable<Submove> {
     /**
-     * Returns an ordered list ov {@code this} Move's Submoves.
+     * Checks if all the Submoves are completed.
+     * <p>
+     * See {@link Submove#isCompleted()} for more info.
      *
-     * @return an ordered list ov {@code this} Move's Submoves
-     */
-    List<Submove> submoves();
-
-    /**
-     * Returns a new state after {@code this} Move is drawn.
-     *
-     * @return a new state after {@code this} Move is drawn
-     */
-    Graph updatedState();
-
-    /**
-     * Checks if the last Submove ends in a sprout.
-     *
-     * @return {@code true} if the last Submove ends in a sprout
+     * @return {@code true} if all the Submoves are completed
      */
     boolean isCompleted();
 
     /**
      * Checks if all the Submoves are valid.
+     * <p>
+     * See {@link Submove#isValid()} for more info.
      *
      * @return {@code true} if all the Submoves are valid
      */

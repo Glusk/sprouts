@@ -7,7 +7,6 @@ import java.util.List;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.InitialCobweb;
+import com.github.glusk2.sprouts.comb.MoveTransformation;
+import com.github.glusk2.sprouts.comb.TransformedGraph;
 import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CurveApproximation;
@@ -97,14 +98,8 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
     /** A list of stroke points captured by the mouse or touch screen. */
     private LinkedList<Vector2> sample;
 
-    /** A curve backed by {@code sample}. */
-    private Polyline nextMove;
-
     /** The current combinatorial state of the game. */
     private Graph combState;
-
-    /** The next Submove. */
-    private Submove nextSubmove;
 
     /** The origin of the next move. */
     private Vertex origin;
@@ -214,26 +209,20 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
                 ).points();
 
             if (!points.isEmpty()) {
-                Submove next =
-                    new PresetSubmove(
-                        origin,
-                        new Polyline.WrappedList(points),
-                        combState,
-                        lineThickness
-                    );
-                do {
-                    new RenderedSubmove(
-                        next,
-                        lineThickness,
-                        CIRCLE_SEGMENT_COUNT
-                    ).renderTo(renderer);
-
-                    if (next.hasNext()) {
-                        next = next.next();
-                    } else {
-                        break;
-                    }
-                } while (true);
+                new RenderedMove(
+                    new SubmoveSequence(
+                        new SubmoveHead(
+                            new SubmoveElement(
+                                origin,
+                                new Polyline.WrappedList(points),
+                                combState,
+                                lineThickness * 2
+                            )
+                        )
+                    ),
+                    lineThickness,
+                    CIRCLE_SEGMENT_COUNT
+                ).renderTo(renderer);
             }
         }
         if (combState != null) {
@@ -279,23 +268,25 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
                 ).points();
 
             if (!points.isEmpty()) {
-                Submove next =
-                    new PresetSubmove(
-                        origin,
-                        new Polyline.WrappedList(points),
-                        combState,
-                        lineThickness
+                Move nextMove =
+                    new SubmoveSequence(
+                        new SubmoveHead(
+                            new SubmoveElement(
+                                origin,
+                                new Polyline.WrappedList(points),
+                                combState,
+                                lineThickness * 2
+                            )
+                        )
                     );
-
-                while (next.isCompleted() && next.hasNext()) {
-                    next = next.next();
-                }
-
-                if (
-                    next.isCompleted()
-                    && next.direction().to().color().equals(Color.BLACK)
-                ) {
-                    combState = next.updatedState();
+                if (nextMove.isValid() && nextMove.isCompleted()) {
+                    combState =
+                        new TransformedGraph(
+                            new MoveTransformation(
+                                nextMove,
+                                combState
+                            )
+                        );
                 }
             }
         }

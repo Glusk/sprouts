@@ -43,11 +43,11 @@ public final class RenderedSubmove implements Drawable {
         if (!submove.isReadyToRender()) {
             return;
         }
-        // Needed to set the completed flag
-        submove.direction();
 
         renderer.begin(ShapeType.Filled);
-        if (submove.isCompleted()) {
+        if (!submove.isValid()) {
+            renderer.setColor(Color.GRAY);
+        } else if (submove.isCompleted()) {
             renderer.setColor(Color.BLUE);
         } else {
             renderer.setColor(Color.GREEN);

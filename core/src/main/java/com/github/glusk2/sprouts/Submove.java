@@ -2,8 +2,8 @@ package com.github.glusk2.sprouts;
 
 import java.util.Iterator;
 
+import com.github.glusk2.sprouts.comb.CompoundEdge;
 import com.github.glusk2.sprouts.comb.DirectedEdge;
-import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.Vertex;
 
 /**
@@ -15,7 +15,7 @@ import com.github.glusk2.sprouts.comb.Vertex;
  * A Submove is dynamic in a sense that it may not yet be completed as the
  * player draws it. Method {@code isCompleted()} tests for that.
  */
-public interface Submove extends Iterator<Submove> {
+public interface Submove extends CompoundEdge, Iterator<Submove> {
     /**
      * Returns the origin of {@code this} Submove.
      * <p>
@@ -25,7 +25,7 @@ public interface Submove extends Iterator<Submove> {
      */
      Vertex origin();
 
-     /**
+    /**
      * Determines the direction of {@code this} Submove so that it can be
      * determined in which face of a Graph it is being drawn.
      *
@@ -38,13 +38,13 @@ public interface Submove extends Iterator<Submove> {
      *
      * @return a new state after {@code this} Move is drawn
      */
-    Graph updatedState();
+    // Graph updatedState();
 
     /**
      * Checks if {@code this} Submove is completed.
      * <p>
      * A Submove is completed if it intersects a cobweb or
-     * {@code direction().to()} connects to a Graph Vertex.
+     * {@code direction().to()} connects to a sprout.
      *
      * @return {@code true} if {@code this} Submove is completed
      */
