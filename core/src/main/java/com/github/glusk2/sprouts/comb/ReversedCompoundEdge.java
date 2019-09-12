@@ -1,5 +1,9 @@
 package com.github.glusk2.sprouts.comb;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.badlogic.gdx.math.Vector2;
 
 /** A CompoundEdge decorator that is the reversal of original. */
@@ -38,29 +42,17 @@ public final class ReversedCompoundEdge implements CompoundEdge {
 
     @Override
     public DirectedEdge direction() {
-        DirectedEdge result =
-            new StraightLineEdge(
+        List<Vector2> edgePoints = new ArrayList<Vector2>();
+        edgePoints.add(original.origin().position());
+        edgePoints.addAll(original.direction().polyline().points());
+        Collections.reverse(edgePoints);
+        return
+            new PolylineEdge(
+                original.origin().color(),
+                original.origin().color(),
                 original.direction().color(),
-                original.origin()
+                edgePoints.subList(1, edgePoints.size())
             );
-        Vector2[] points =
-            original.direction()
-                    .polyline()
-                    .points()
-                    .toArray(new Vector2[0]);
-        for (int i = 0; i < points.length - 1; i++) {
-            result =
-                new ExtendedEdge(
-                    false,
-                    new PresetVertex(
-                        original.direction().color(),
-                        points[i],
-                        points[i].toString()
-                    ),
-                    result
-                );
-        }
-        return result;
     }
     @Override
     public int hashCode() {

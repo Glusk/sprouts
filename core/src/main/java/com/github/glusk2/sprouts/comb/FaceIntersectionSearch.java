@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.comb;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -57,12 +58,9 @@ public final class FaceIntersectionSearch implements VertexSearch {
     public Vertex result() {
         Vector2 intersection = new Vector2();
         for (CompoundEdge edge : face) {
-            List<Vector2> edgePoints =
-                new ExtendedEdge(
-                    false,
-                    edge.origin(),
-                    edge.direction()
-                ).polyline().points();
+            List<Vector2> edgePoints = new ArrayList<Vector2>();
+            edgePoints.add(edge.origin().position());
+            edgePoints.addAll(edge.direction().polyline().points());
 
             for (int j = 1; j < edgePoints.size(); j++) {
                 boolean intersects =
