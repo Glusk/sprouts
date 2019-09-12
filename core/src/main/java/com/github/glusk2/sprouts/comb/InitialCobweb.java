@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
@@ -124,5 +125,15 @@ public final class InitialCobweb implements Graph {
     @Override
     public Graph simplified() {
         return graph.simplified();
+    }
+
+    @Override
+    public boolean isAliveSprout(final Vertex vertex) {
+        return graph.isAliveSprout(vertex);
+    }
+
+    @Override
+    public int vertexDegree(final Vertex vertex, final Color edgeColor) {
+        return graph.vertexDegree(vertex, edgeColor);
     }
 }

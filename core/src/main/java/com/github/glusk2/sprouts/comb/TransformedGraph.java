@@ -3,6 +3,7 @@ package com.github.glusk2.sprouts.comb;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /**
@@ -88,5 +89,21 @@ public final class TransformedGraph implements Graph {
             cachedTransformation = transformation.transformed();
         }
         return cachedTransformation.simplified();
+    }
+
+    @Override
+    public boolean isAliveSprout(final Vertex vertex) {
+        if (cachedTransformation == null) {
+            cachedTransformation = transformation.transformed();
+        }
+        return cachedTransformation.isAliveSprout(vertex);
+    }
+
+    @Override
+    public int vertexDegree(final Vertex vertex, final Color edgeColor) {
+        if (cachedTransformation == null) {
+            cachedTransformation = transformation.transformed();
+        }
+        return cachedTransformation.vertexDegree(vertex, edgeColor);
     }
 }
