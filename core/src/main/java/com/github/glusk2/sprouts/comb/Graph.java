@@ -3,6 +3,7 @@ package com.github.glusk2.sprouts.comb;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
 import com.github.glusk2.sprouts.Drawable;
 
 /**
@@ -78,4 +79,30 @@ public interface Graph extends Drawable {
      * @return a simplified Graph
      */
     Graph simplified();
+
+    /**
+     * Checks whether {@code vertex} is a living sprout connected to
+     * {@code this} Graph.
+     * <p>
+     * A sprout is said to be alive when it is connected to at most 3
+     * Submove edges.
+     *
+     * @param vertex the Vertex to check
+     * @return {@code true} if {@code vertex} is a living sprout connected to
+     *         {@code this} Graph
+     */
+    boolean isAliveSprout(Vertex vertex);
+
+    /**
+     * Returns the number of {@code edgeColor} edges that {@code vertex} is
+     * connected to in {@code this} Graph.
+     *
+     * @param vertex the Vertex to look up the degree for
+     * @param edgeColor the degree is computed by only considering
+     *                  {@code edgeColor} edges
+     * @return a negative integer, if {@code vertex} is not connected to
+     *         {@code this} Graph, the number of {@code edgeColor} edges
+     *         connected to {@code vertex} otherwise
+     */
+    int vertexDegree(Vertex vertex, Color edgeColor);
 }

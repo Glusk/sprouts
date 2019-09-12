@@ -22,6 +22,12 @@ public final class PresetGraph implements Graph {
      */
     private static final float DEFAULT_LINE_THICKNESS = 10;
 
+    /**
+     * If a sprout has this degree (the number of Submove edges connected to
+     * it), it is dead.
+     */
+    private static final int DEAD_SPROUT_DEGREE = 3;
+
     /** A list of Vertices and its LocalRotations. */
     private final Map<Vertex, LocalRotations> rotationsList;
     /** The thickness of the lines drawn on screen, measured in pixels. */
@@ -247,5 +253,32 @@ public final class PresetGraph implements Graph {
             }
         }
         return this;
+    }
+
+    @Override
+    public boolean isAliveSprout(final Vertex vertex) {
+        // Check if it is a sprout
+        if (!vertex.color().equals(Color.BLACK)) {
+            return false;
+        }
+        // Check if the sprout is alive
+        int degree = vertexDegree(vertex, Color.BLACK);
+        return degree >= 0 && degree < DEAD_SPROUT_DEGREE;
+    }
+
+    @Override
+    public int vertexDegree(final Vertex vertex, final Color edgeColor) {
+        // Check if it is connected to this Graph
+        if (!vertices().contains(vertex)) {
+            return -1;
+        }
+        // Compute the degree
+        int degree = 0;
+        for (CompoundEdge edge : rotationsList.get(vertex).edges()) {
+            if (edge.direction().color().equals(edgeColor)) {
+                degree++;
+            }
+        }
+        return degree;
     }
 }

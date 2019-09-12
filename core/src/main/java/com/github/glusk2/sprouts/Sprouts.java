@@ -306,7 +306,10 @@ public final class Sprouts extends InputAdapter implements ApplicationListener {
         Vector2 p =
             viewport.unproject(new Vector2(screenX, screenY));
         for (Vertex v : combState.vertices()) {
-            if (v.position().dst(p) < lineThickness) {
+            if (
+                v.position().dst(p) < lineThickness
+             && combState.isAliveSprout(v)
+            ) {
                 origin = v;
                 sample = new LinkedList<Vector2>();
                 sample.add(p);
