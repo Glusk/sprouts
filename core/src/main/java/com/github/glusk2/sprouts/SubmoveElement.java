@@ -13,6 +13,7 @@ import com.github.glusk2.sprouts.comb.FaceIntersectionSearch;
 import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.comb.PolylineEdge;
+import com.github.glusk2.sprouts.comb.PolylineIntersectionSearch;
 import com.github.glusk2.sprouts.comb.PresetVertex;
 import com.github.glusk2.sprouts.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.comb.SubmoveTransformation;
@@ -93,8 +94,27 @@ public final class SubmoveElement implements Submove {
             Vector2 p1 = strokePoints.get(i);
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
-                // Check if crosses the face
+                // Check if crosses itself
                 Vertex crossPoint =
+                    new PolylineIntersectionSearch(
+                        p0,
+                        p1,
+                        new Polyline.WrappedList(strokePoints.subList(0, i)),
+                        Color.BLACK
+                    ).result();
+                if (crossPoint.color().equals(Color.BLACK)) {
+                    List<Vector2> returnPoints =
+                        new ArrayList<Vector2>(strokePoints.subList(0, i));
+                    returnPoints.add(crossPoint.position());
+                    return
+                        new PolylineEdge(
+                            origin().color(),
+                            Color.GRAY,
+                            returnPoints
+                        );
+                }
+                // Check if crosses the face
+                crossPoint =
                     new FaceIntersectionSearch(moveFace, p0, p1).result();
                 if (!crossPoint.equals(new VoidVertex(null))) {
                     List<Vector2> returnPoints =
@@ -151,9 +171,21 @@ public final class SubmoveElement implements Submove {
 
     @Override
     public boolean isValid() {
-        return
-            isReadyToRender()
-         && !direction().to().color().equals(Color.GRAY);
+        if (!isReadyToRender()) {
+            return false;
+        }
+
+        Vertex from = origin();
+        Vertex to = direction().to();
+
+        boolean intermediate = true;
+        if (from.color().equals(Color.BLACK)) {
+            intermediate &= currentState.isAliveSprout(from);
+        }
+        if (to.color().equals(Color.BLACK)) {
+            intermediate &= currentState.isAliveSprout(to);
+        }
+        return intermediate && !to.color().equals(Color.GRAY);
     }
 
     @Override
