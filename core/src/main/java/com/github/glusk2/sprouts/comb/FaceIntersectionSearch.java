@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.geom.Polyline;
 
 /**
  * Objects of this class can find the intersection between a line segment and
@@ -56,29 +57,20 @@ public final class FaceIntersectionSearch implements VertexSearch {
      */
     @Override
     public Vertex result() {
-        Vector2 intersection = new Vector2();
         for (CompoundEdge edge : face) {
             List<Vector2> edgePoints = new ArrayList<Vector2>();
             edgePoints.add(edge.origin().position());
             edgePoints.addAll(edge.direction().polyline().points());
-
-            for (int j = 1; j < edgePoints.size(); j++) {
-                boolean intersects =
-                    Intersector.intersectSegments(
-                        p0,
-                        p1,
-                        edgePoints.get(j - 1),
-                        edgePoints.get(j),
-                        intersection
-                    );
-                if (intersects) {
-                    return
-                        new PresetVertex(
-                            edge.direction().color(),
-                            intersection,
-                            (String) null
-                        );
-                }
+            Color color = edge.direction().color();
+            Vertex result =
+                new PolylineIntersectionSearch(
+                    p0,
+                    p1,
+                    new Polyline.WrappedList(edgePoints),
+                    color
+                ).result();
+            if (result.color().equals(color)) {
+                return result;
             }
         }
         return new VoidVertex(null);
