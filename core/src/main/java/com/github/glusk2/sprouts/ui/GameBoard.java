@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts;
+package com.github.glusk2.sprouts.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 /** The Sprouts game board. */
-public final class GameBoardSheet extends Actor {
+public final class GameBoard extends Actor {
     /** The thickness of {@code this} game board border. */
     private static final float BORDER_THICKNESS = 5f;
 
@@ -22,13 +22,22 @@ public final class GameBoardSheet extends Actor {
      */
     private final ShapeRenderer renderer;
 
+    /** The "camera" of {@code this} GameBoard. */
+    private Snapshooter camera;
+
     /**
-     * Constructs a new {@code GameBoard} by specifying the {@code renderer}.
+     * Constructs a new {@code GameBoard} by specifying the {@code renderer}
+     * and the {@code camera}.
      *
      * @param renderer the {@code ShapeRenderer} object used to draw
      *                 {@code this} game board
+     * @param camera the "camera" of {@code this} GameBoard
      */
-    public GameBoardSheet(final ShapeRenderer renderer) {
+    public GameBoard(
+        final Snapshooter camera,
+        final ShapeRenderer renderer
+    ) {
+        this.camera = camera;
         this.renderer = renderer;
     }
 
@@ -43,7 +52,7 @@ public final class GameBoardSheet extends Actor {
         renderer.rect(getX(), getY(), getWidth(), getHeight());
         renderer.end();
 
-        // ToDo: render the game here
+        camera.snapshot().render(renderer);
 
         batch.begin();
     }
