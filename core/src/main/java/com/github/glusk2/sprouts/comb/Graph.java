@@ -39,6 +39,15 @@ public interface Graph extends Drawable {
     Set<Vertex> vertices();
 
     /**
+     * Creates and returns a new Graph with the {@code additionalVertex}.
+     * <p>
+     * If {@code additionalVertex} is already in {@code this} Graph, the method
+     * returns {@code this}.
+     * @param additionalVertex the Vertex to add to {@code this} Graph
+     * @return a new Graph with the {@code additionalVertex}
+     */
+    Graph with(Vertex additionalVertex);
+    /**
      * Returns a new Graph with an additional DirectedEdge.
      * <p>
      * Refer to {@link LocalRotations} interface definition for notes on

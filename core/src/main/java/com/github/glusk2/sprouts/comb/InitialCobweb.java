@@ -113,6 +113,11 @@ public final class InitialCobweb implements Graph {
     }
 
     @Override
+    public Graph with(final Vertex additionalVertex) {
+        return graph.with(additionalVertex);
+    }
+
+    @Override
     public Set<CompoundEdge> edges() {
         return graph.edges();
     }
