@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -101,24 +102,35 @@ public final class MainScreen extends ScreenAdapter {
             new ResetDialog(game, renderer, stage)
         );
 
-        TouchEventSnapshooter gameBoardListener =
-            new TouchEventSnapshooter(
-                new BeforeMove(
-                    MOVE_THICKNESS,
-                    CIRCLE_SEGMENT_COUNT
-                )
-            );
         Table toolbar = new Table().pad(TOOLBAR_PADDING);
         toolbar.left().add(resetButton).space(TOOLBAR_CELL_SPACING);
         toolbar.setHeight(resetButton.getPrefHeight() + 2 * TOOLBAR_PADDING);
 
+
+        Rectangle gameBounds =
+            new Rectangle(
+                ROOT_PADDING,
+                ROOT_PADDING,
+                stage.getViewport().getWorldWidth() - 2 * ROOT_PADDING,
+                stage.getViewport().getWorldHeight()
+                - 2 * ROOT_PADDING
+                - toolbar.getHeight()
+                - ROOT_ROW_SPACING
+            );
+        TouchEventSnapshooter gameBoardListener =
+            new TouchEventSnapshooter(
+                new BeforeMove(
+                    MOVE_THICKNESS,
+                    CIRCLE_SEGMENT_COUNT,
+                    gameBounds
+                )
+            );
         Actor gameBoard = new GameBoard(gameBoardListener, renderer);
-        gameBoard.setSize(
-            stage.getViewport().getWorldWidth() - 2 * ROOT_PADDING,
-            stage.getViewport().getWorldHeight()
-          - 2 * ROOT_PADDING
-          - toolbar.getHeight()
-          - ROOT_ROW_SPACING
+        gameBoard.setBounds(
+            gameBounds.getX(),
+            gameBounds.getY(),
+            gameBounds.getWidth(),
+            gameBounds.getHeight()
         );
 
         gameBoard.addListener(gameBoardListener);

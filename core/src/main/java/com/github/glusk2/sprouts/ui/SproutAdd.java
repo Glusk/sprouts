@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.Move;
 import com.github.glusk2.sprouts.RenderedMove;
@@ -65,6 +66,8 @@ public final class SproutAdd implements Snapshot {
      * Snapshot.
      */
     private final List<Vector2> moveSample;
+    /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
+    private final Rectangle gameBounds;
 
     /**
      * Creates a new SproutAdd Snapshot from the {@code currentState},
@@ -78,19 +81,23 @@ public final class SproutAdd implements Snapshot {
      *                   {@code this} Snapshot
      * @param moveSample the sample points of the Move that is being drawn in
      *                   {@code this} Snapshot
+     * @param gameBounds any Submove that is drawn outside of
+     *                   {@code gameBounds} is invalid
      */
     public SproutAdd(
         final Graph currentState,
         final float moveThickness,
         final int circleSegmentCount,
         final Vertex moveOrigin,
-        final List<Vector2> moveSample
+        final List<Vector2> moveSample,
+        final Rectangle gameBounds
     ) {
         this.currentState = currentState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.moveOrigin = moveOrigin;
         this.moveSample = moveSample;
+        this.gameBounds = gameBounds;
     }
 
     /**
@@ -114,7 +121,8 @@ public final class SproutAdd implements Snapshot {
                         origin,
                         stroke,
                         state,
-                        moveThickness * 2
+                        moveThickness * 2,
+                        gameBounds
                     )
                 )
             );
@@ -203,10 +211,17 @@ public final class SproutAdd implements Snapshot {
                 new BeforeMove(
                     stateAfterSecondMove,
                     moveThickness,
-                    circleSegmentCount
+                    circleSegmentCount,
+                    gameBounds
                 );
         }
-        return new BeforeMove(currentState, moveThickness, circleSegmentCount);
+        return
+            new BeforeMove(
+                currentState,
+                moveThickness,
+                circleSegmentCount,
+                gameBounds
+            );
     }
 
     @Override

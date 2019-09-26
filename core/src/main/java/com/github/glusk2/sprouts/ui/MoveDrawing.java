@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.Move;
 import com.github.glusk2.sprouts.RenderedMove;
@@ -65,6 +66,8 @@ public final class MoveDrawing implements Snapshot {
      * Snapshot.
      */
     private final List<Vector2> moveSample;
+    /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
+    private final Rectangle gameBounds;
 
     /**
      * Creates a new MoveDrawing Snapshot from the {@code currentState},
@@ -78,19 +81,23 @@ public final class MoveDrawing implements Snapshot {
      *                   in {@code this} Snapshot
      * @param moveSample the sample points of the Move that is being drawn
      *                   in {@code this} Snapshot
+     * @param gameBounds any Submove that is drawn outside of
+     *                   {@code gameBounds} is invalid
      */
     public MoveDrawing(
         final Graph currentState,
         final float moveThickness,
         final int circleSegmentCount,
         final Vertex moveOrigin,
-        final List<Vector2> moveSample
+        final List<Vector2> moveSample,
+        final Rectangle gameBounds
     ) {
         this.currentState = currentState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.moveOrigin = moveOrigin;
         this.moveSample = moveSample;
+        this.gameBounds = gameBounds;
     }
 
     /**
@@ -113,7 +120,8 @@ public final class MoveDrawing implements Snapshot {
                             SPLINE_SEGMENT_COUNT
                         ),
                         currentState,
-                        moveThickness * 2
+                        moveThickness * 2,
+                        gameBounds
                     )
                 )
             );
@@ -134,10 +142,17 @@ public final class MoveDrawing implements Snapshot {
                     moveThickness,
                     circleSegmentCount,
                     moveOrigin,
-                    moveSample
+                    moveSample,
+                    gameBounds
                 );
         }
-        return new BeforeMove(currentState, moveThickness, circleSegmentCount);
+        return
+            new BeforeMove(
+                currentState,
+                moveThickness,
+                circleSegmentCount,
+                gameBounds
+            );
     }
 
     @Override
@@ -158,7 +173,8 @@ public final class MoveDrawing implements Snapshot {
                     moveThickness,
                     circleSegmentCount,
                     moveOrigin,
-                    newSample
+                    newSample,
+                    gameBounds
                 );
         }
         return this;

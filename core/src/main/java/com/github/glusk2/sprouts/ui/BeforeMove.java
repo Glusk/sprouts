@@ -3,6 +3,7 @@ package com.github.glusk2.sprouts.ui;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.comb.Graph;
 import com.github.glusk2.sprouts.comb.InitialCobweb;
@@ -22,6 +23,8 @@ public final class BeforeMove implements Snapshot {
     private final int circleSegmentCount;
     /** The Graph that a Move will be drawn to. */
     private final Graph currentState;
+     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
+    private final Rectangle gameBounds;
 
     /**
      * Creates a new Snapshot, using the default initial state.
@@ -29,10 +32,13 @@ public final class BeforeMove implements Snapshot {
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
+     * @param gameBounds any Submove that is drawn outside of
+     *                   {@code gameBounds} is invalid
      */
     public BeforeMove(
         final float moveThickness,
-        final int circleSegmentCount
+        final int circleSegmentCount,
+        final Rectangle gameBounds
     ) {
         this(
             new InitialCobweb(
@@ -40,7 +46,8 @@ public final class BeforeMove implements Snapshot {
                 circleSegmentCount
             ),
             moveThickness,
-            circleSegmentCount
+            circleSegmentCount,
+            gameBounds
         );
     }
 
@@ -52,15 +59,19 @@ public final class BeforeMove implements Snapshot {
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
+     * @param gameBounds any Submove that is drawn outside of
+     *                   {@code gameBounds} is invalid
      */
     public BeforeMove(
         final Graph currentState,
         final float moveThickness,
-        final int circleSegmentCount
+        final int circleSegmentCount,
+        final Rectangle gameBounds
     ) {
         this.currentState = currentState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
+        this.gameBounds = gameBounds;
     }
 
     @Override
@@ -76,7 +87,8 @@ public final class BeforeMove implements Snapshot {
                         moveThickness,
                         circleSegmentCount,
                         v,
-                        new LinkedList<Vector2>()
+                        new LinkedList<Vector2>(),
+                        gameBounds
                     );
             }
         }
