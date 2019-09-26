@@ -16,11 +16,8 @@ import com.badlogic.gdx.math.Vector2;
  * {@link #points()} returns an empty list.
  */
 public final class PolylinePiece implements Polyline {
-    /**
-     * Maximum error margin for detection of intersection between a polyline
-     * segment and {@code point}.
-     */
-    private static final float SEGMENT_INTERSECT_ERROR = .5f;
+    /** The default value for {@code segmentIntersectError}. */
+    private static final float DEFAULT_SEGMENT_INTERSECT_ERROR = .5f;
     /** The Polyline to cut. */
     private final Polyline original;
     /** The point at which to cut {@code original}. */
@@ -30,10 +27,16 @@ public final class PolylinePiece implements Polyline {
      * ({@code true} - the first half, {@code false} - the second half).
      */
     private final boolean pieceFlag;
+    /**
+     * Maximum error margin for detection of intersection between a polyline
+     * segment and {@code point}.
+     */
+    private final float segmentIntersectError;
 
     /**
      * Constructs <strong>the second half</strong> PolylinePiece from
-     * {@code original} that is cut at the {@code cuttingPoint}.
+     * {@code original} that is cut at the {@code cuttingPoint}, using the
+     * default segment intersect error.
      * <p>
      * Equivalent to:
      * <pre>
@@ -44,7 +47,7 @@ public final class PolylinePiece implements Polyline {
      * @param cuttingPoint the point at which to cut {@code original}
      */
     public PolylinePiece(final Polyline original, final Vector2 cuttingPoint) {
-        this(original, cuttingPoint, false);
+        this(original, cuttingPoint, false, DEFAULT_SEGMENT_INTERSECT_ERROR);
     }
 
     /**
@@ -56,15 +59,20 @@ public final class PolylinePiece implements Polyline {
      * @param pieceFlag a flag that indicates which half this PolylinePiece
      *                  represents ({@code true} - the first half,
      *                  {@code false} - the second half)
+     * @param segmentIntersectError maximum error margin for detection of
+     *                              intersection between a polyline segment and
+     *                              {@code point}
      */
     public PolylinePiece(
         final Polyline original,
         final Vector2 cuttingPoint,
-        final boolean pieceFlag
+        final boolean pieceFlag,
+        final float segmentIntersectError
     ) {
         this.original = original;
         this.cuttingPoint = cuttingPoint;
         this.pieceFlag = pieceFlag;
+        this.segmentIntersectError = segmentIntersectError;
     }
 
     @Override
@@ -78,7 +86,7 @@ public final class PolylinePiece implements Polyline {
                     p0,
                     p1,
                     cuttingPoint,
-                    SEGMENT_INTERSECT_ERROR
+                    segmentIntersectError
                 ).check()
             ) {
                 if (pieceFlag) {

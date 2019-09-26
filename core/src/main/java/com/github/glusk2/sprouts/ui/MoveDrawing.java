@@ -12,8 +12,6 @@ import com.github.glusk2.sprouts.SubmoveElement;
 import com.github.glusk2.sprouts.SubmoveHead;
 import com.github.glusk2.sprouts.SubmoveSequence;
 import com.github.glusk2.sprouts.comb.Graph;
-import com.github.glusk2.sprouts.comb.MoveTransformation;
-import com.github.glusk2.sprouts.comb.TransformedGraph;
 import com.github.glusk2.sprouts.comb.Vertex;
 import com.github.glusk2.sprouts.geom.BezierCurve;
 import com.github.glusk2.sprouts.geom.CurveApproximation;
@@ -130,17 +128,13 @@ public final class MoveDrawing implements Snapshot {
     public Snapshot touchUp(final Vector2 position) {
         Move nextMove = moveFromSampleAndOrigin();
         if (nextMove.isValid() && nextMove.isCompleted()) {
-            // ToDo: return SproutAdd snapshot instead
             return
-                new BeforeMove(
-                    new TransformedGraph(
-                        new MoveTransformation(
-                            nextMove,
-                            currentState
-                        )
-                    ),
+                new SproutAdd(
+                    currentState,
                     moveThickness,
-                    circleSegmentCount
+                    circleSegmentCount,
+                    moveOrigin,
+                    moveSample
                 );
         }
         return new BeforeMove(currentState, moveThickness, circleSegmentCount);
