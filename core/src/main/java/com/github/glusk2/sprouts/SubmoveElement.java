@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.comb.CachedCompoundEdge;
 import com.github.glusk2.sprouts.comb.CompoundEdge;
@@ -42,8 +43,21 @@ public final class SubmoveElement implements Submove {
      */
     private final float vertexGlueRadius;
 
+    /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
+    private final Rectangle gameBounds;
+
     /**
      * Creates a new Submove.
+     * <p>
+     * This constructor uses the default bounding box rectangle:
+     * <pre>
+     * new Rectangle(
+     *     0,
+     *     0,
+     *     Float.POSITIVE_INFINITY,
+     *     Float.POSITIVE_INFINITY
+     * )
+     * </pre>
      *
      * @param origin the Graph Vertex in which {@code this} Submove begins
      * @param stroke the polyline approximation of the move stroke
@@ -57,10 +71,43 @@ public final class SubmoveElement implements Submove {
         final Graph currentState,
         final float vertexGlueRadius
     ) {
+        this(
+            origin,
+            stroke,
+            currentState,
+            vertexGlueRadius,
+            new Rectangle(
+                0,
+                0,
+                Float.POSITIVE_INFINITY,
+                Float.POSITIVE_INFINITY
+            )
+        );
+    }
+
+    /**
+     * Creates a new Submove.
+     *
+     * @param origin the Graph Vertex in which {@code this} Submove begins
+     * @param stroke the polyline approximation of the move stroke
+     * @param currentState the game state before {@code this} Submove
+     * @param vertexGlueRadius the Vertex glue radius, used to auto-complete
+     *                         {@code this} Submove when near a sprout
+     * @param gameBounds any Submove that is drawn outside of
+     *                   {@code gameBounds} is invalid
+     */
+    public SubmoveElement(
+        final Vertex origin,
+        final Polyline stroke,
+        final Graph currentState,
+        final float vertexGlueRadius,
+        final Rectangle gameBounds
+    ) {
         this.origin = origin;
         this.stroke = stroke;
         this.currentState = currentState;
         this.vertexGlueRadius = vertexGlueRadius;
+        this.gameBounds = gameBounds;
     }
 
     @Override
@@ -92,6 +139,14 @@ public final class SubmoveElement implements Submove {
             );
         for (int i = 0; i < strokePoints.size(); i++) {
             Vector2 p1 = strokePoints.get(i);
+            if (!gameBounds.contains(p1)) {
+                return
+                    new PolylineEdge(
+                        origin().color(),
+                        Color.GRAY,
+                        new ArrayList<Vector2>(strokePoints.subList(0, i))
+                    );
+            }
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
                 // Check if crosses itself
@@ -219,7 +274,8 @@ public final class SubmoveElement implements Submove {
                         currentState
                     )
                 ),
-                vertexGlueRadius
+                vertexGlueRadius,
+                gameBounds
             );
     }
 }
