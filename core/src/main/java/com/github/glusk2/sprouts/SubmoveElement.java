@@ -240,6 +240,9 @@ public final class SubmoveElement implements Submove {
         if (to.color().equals(Color.BLACK)) {
             intermediate &= currentState.isAliveSprout(to);
         }
+        if (from.equals(to)) {
+            intermediate &= currentState.vertexDegree(from, Color.BLACK) < 2;
+        }
         return intermediate && !to.color().equals(Color.GRAY);
     }
 
