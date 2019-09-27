@@ -32,6 +32,8 @@ public class HtmlLauncher extends GwtApplication {
             Window.setMargin("0");
             Window.addResizeHandler(new ResizeListener());
             cfg.preferFlash = false;
+
+            cfg.antialiasing = true;
             return cfg;
         }
         
