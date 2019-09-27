@@ -19,6 +19,7 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: "checkstyle"
 
     version = '1.0'
     ext {
