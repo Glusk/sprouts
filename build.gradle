@@ -18,6 +18,44 @@ buildscript {
     }
 }
 
+rootProject.gradle.projectsEvaluated {
+    Set<Project> javaSubprojects = rootProject.subprojects
+    if (!javaSubprojects.isEmpty()) {
+        rootProject.task("aggregateJavadocs", type: Javadoc) {
+            description = 'Aggregates Javadoc API documentation of all subprojects.'
+            dependsOn javaSubprojects.javadoc
+
+            options.addStringOption("sourcepath", "")
+            options.memberLevel = JavadocMemberLevel.PUBLIC
+            options.links("https://libgdx.badlogicgames.com/ci/nightlies/docs/api/")
+            options.links("http://www.gwtproject.org/javadoc/latest/")
+            options.links("https://docs.oracle.com/javase/8/docs/api/")
+            options.linksOffline("http://d.android.com/reference", "$androidHome/docs/reference")
+            source javaSubprojects.javadoc.source
+            destinationDir rootProject.file("$rootProject.buildDir/docs/javadoc")
+            classpath = rootProject.files(javaSubprojects.javadoc.classpath)
+        }
+    }
+}
+
+def androidHome() {
+    def localProperties = project.file("local.properties")
+    if (localProperties.exists()) {
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        def sdkDir = properties.getProperty('sdk.dir')
+        if (sdkDir) {
+            return sdkDir
+        } else {
+            return "$System.env.ANDROID_HOME"
+        }
+    } else {
+        return "$System.env.ANDROID_HOME"
+    }
+}
+
 allprojects {
     apply plugin: "checkstyle"
 
@@ -29,6 +67,7 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
+        androidHome = androidHome()
     }
 
     repositories {

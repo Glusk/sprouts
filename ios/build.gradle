@@ -4,7 +4,7 @@ sourceCompatibility = '1.7'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-	mainClassName = "com.github.glusk2.sprouts.IOSLauncher"
+	mainClassName = "com.github.glusk2.sprouts.ios.IOSLauncher"
 }
 
 launchIPhoneSimulator.dependsOn build

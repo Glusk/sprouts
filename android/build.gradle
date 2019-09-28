@@ -17,7 +17,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.github.glusk2.sprouts"
+        applicationId "com.github.glusk2.sprouts.android"
         minSdkVersion 9
         targetSdkVersion 28
         versionCode 1
@@ -48,6 +48,19 @@ task checkstyle(type: Checkstyle) {
     classpath = files()
 }
 check.dependsOn "checkstyle"
+
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.sourceFiles
+
+    configurations.implementation.setCanBeResolved(true)
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.implementation
+
+    options.links("https://libgdx.badlogicgames.com/ci/nightlies/docs/api/")
+    options.links("https://docs.oracle.com/javase/8/docs/api/")
+    options.linksOffline("http://d.android.com/reference","$rootProject.androidHome/docs/reference")
+}
 
 // called every time gradle gets executed, takes the native dependencies of
 // the natives configuration, and extracts them to the proper libs/ folders
@@ -85,24 +98,7 @@ tasks.whenTaskAdded { packageTask ->
 }
 
 task run(type: Exec) {
-    def path
-    def localProperties = project.file("../local.properties")
-    if (localProperties.exists()) {
-        Properties properties = new Properties()
-        localProperties.withInputStream { instr ->
-            properties.load(instr)
-        }
-        def sdkDir = properties.getProperty('sdk.dir')
-        if (sdkDir) {
-            path = sdkDir
-        } else {
-            path = "$System.env.ANDROID_HOME"
-        }
-    } else {
-        path = "$System.env.ANDROID_HOME"
-    }
-
-    def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.github.glusk2.sprouts/com.github.glusk2.sprouts.AndroidLauncher'
+    def adb = "$rootProject.androidHome/platform-tools/adb"
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.github.glusk2.sprouts/com.github.glusk2.sprouts.android.AndroidLauncher'
 }
 

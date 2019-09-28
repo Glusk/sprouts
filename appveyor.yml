@@ -17,6 +17,7 @@ install:
   - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "platform-tools"
   - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "build-tools;28.0.3"
   - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "platforms;android-28"
+  - echo y | "%ANDROID_HOME%\tools\bin\sdkmanager.bat" "docs"
 
 build_script:
   - gradlew.bat clean build connectedCheck

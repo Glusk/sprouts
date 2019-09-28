@@ -4,8 +4,8 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules 'com.github.glusk2.sprouts.GdxDefinition'
-    devModules 'com.github.glusk2.sprouts.GdxDefinitionSuperdev'
+    modules 'com.github.glusk2.sprouts.html.GdxDefinition'
+    devModules 'com.github.glusk2.sprouts.html.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
     compiler {
@@ -68,7 +68,7 @@ task dist(dependsOn: [clean, compileGwt]) {
 }
 
 javadoc {
-  options.addStringOption("sourcepath", "")
+    options.addStringOption("sourcepath", "")
 }
 
 task addSource {
