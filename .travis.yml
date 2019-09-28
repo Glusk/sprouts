@@ -3,7 +3,7 @@ android:
   components:
     - build-tools-28.0.3
     - android-28
-    - docs
+    - doc
 jdk: oraclejdk8
 dist: trusty
 
