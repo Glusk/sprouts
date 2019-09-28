@@ -2,7 +2,7 @@ package com.github.glusk2.sprouts.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.github.glusk2.sprouts.Sprouts;
+import com.github.glusk2.sprouts.core.Sprouts;
 
 /** A desktop application main entry point. */
 public final class DesktopLauncher {
