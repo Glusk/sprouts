@@ -27,7 +27,7 @@ download_if_not_exist() {
 
 project="glusk2/sprouts"
 desktop="desktop/build/libs/sprouts-$TRAVIS_TAG.jar"
-android="android/build/outputs/apk/sprouts-$TRAVIS_TAG-unaligned.apk"
+android="android/build/outputs/apk/release/sprouts-$TRAVIS_TAG-unaligned.apk"
 html="sprouts-$TRAVIS_TAG.zip"
 
 
