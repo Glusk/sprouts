@@ -31,17 +31,25 @@ before_deploy:
   - ./gradlew html:dist
   - zip -r sprouts-$TRAVIS_TAG.zip ./html/build/dist/
 deploy:
-  provider: releases
-  api_key:
-    secure: $DEPLOYMENT_KEY
-  file:
-    # Define which files should be deployed to GitHub
-    - desktop/build/libs/sprouts-$TRAVIS_TAG.jar
-    - android/build/outputs/apk/sprouts-$TRAVIS_TAG-unaligned.apk
-    - sprouts-$TRAVIS_TAG.zip
-  on:
-    tags: true
-    repo: Glusk2/sprouts
-    branch: master
-    condition: $TRAVIS_TAG =~ ^v\d+\.\d+\.\d+.*$ # Only deploy tags that match something like v1.0.0
-
+  - provider: releases
+    api_key:
+      secure: $DEPLOYMENT_KEY
+    file:
+      # Define which files should be deployed to GitHub
+      - desktop/build/libs/sprouts-$TRAVIS_TAG.jar
+      - android/build/outputs/apk/sprouts-$TRAVIS_TAG-unaligned.apk
+      - sprouts-$TRAVIS_TAG.zip
+    on:
+      tags: true
+      repo: Glusk2/sprouts
+      branch: master
+      condition: $TRAVIS_TAG =~ ^v\d+\.\d+\.\d+.*$ # Only deploy tags that match something like v1.0.0
+  - provider: script
+    api_key:
+      secure: $BUTLER_API_KEY
+    script: bash deploy.sh
+    on:
+      tags: true
+      repo: Glusk2/sprouts
+      branch: master
+      condition: $TRAVIS_TAG =~ ^v\d+\.\d+\.\d+.*$ # Only deploy tags that match something like v1.0.0
