@@ -59,7 +59,7 @@ def androidHome() {
 allprojects {
     apply plugin: "checkstyle"
 
-    version = '1.0'
+    version = '0.7.0'
     ext {
         appName = "sprouts"
         gdxVersion = '1.9.10'
