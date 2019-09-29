@@ -39,6 +39,7 @@ deploy:
       - desktop/build/libs/sprouts-$TRAVIS_TAG.jar
       - android/build/outputs/apk/release/sprouts-$TRAVIS_TAG-unaligned.apk
       - sprouts-$TRAVIS_TAG.zip
+    skip_cleanup: true
     on:
       tags: true
       repo: Glusk2/sprouts
@@ -48,6 +49,7 @@ deploy:
     api_key:
       secure: $BUTLER_API_KEY
     script: bash deploy.sh
+    skip_cleanup: true
     on:
       tags: true
       repo: Glusk2/sprouts
