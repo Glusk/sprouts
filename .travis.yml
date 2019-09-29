@@ -23,7 +23,7 @@ before_install:
 before_deploy:
   # Generate a packaged jar for the desktop-project and rename it to include the tag
   - ./gradlew desktop:dist
-  - mv desktop/build/libs/desktop-1.0.jar desktop/build/libs/sprouts-$TRAVIS_TAG.jar
+  - mv desktop/build/libs/desktop-.*.jar desktop/build/libs/sprouts-$TRAVIS_TAG.jar
   # Generate a packaged apk for the android-project and rename it (this apk is unsigned/unaligned)
   - ./gradlew android:assembleRelease
   - mv android/build/outputs/apk/android-release-unsigned.apk android/build/outputs/apk/sprouts-$TRAVIS_TAG-unaligned.apk
