@@ -56,6 +56,9 @@ public final class HtmlLauncher extends GwtApplication {
 
     @Override
     public ApplicationListener createApplicationListener() {
-        return new Sprouts();
+        return new Sprouts(
+            Window.getClientWidth(),
+            Window.getClientHeight()
+        );
     }
 }

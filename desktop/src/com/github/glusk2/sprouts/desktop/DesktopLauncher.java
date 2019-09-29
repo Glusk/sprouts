@@ -20,6 +20,12 @@ public final class DesktopLauncher {
             new LwjglApplicationConfiguration();
         config.useHDPI = true;
         config.samples = 2;
-        new LwjglApplication(new Sprouts(), config);
+        new LwjglApplication(
+            new Sprouts(
+                LwjglApplicationConfiguration.getDesktopDisplayMode().width,
+                LwjglApplicationConfiguration.getDesktopDisplayMode().height
+            ),
+            config
+        );
     }
 }
