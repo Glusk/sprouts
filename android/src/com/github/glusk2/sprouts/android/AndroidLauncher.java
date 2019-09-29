@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.android;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
@@ -14,6 +15,14 @@ public final class AndroidLauncher extends AndroidApplication {
         AndroidApplicationConfiguration config =
             new AndroidApplicationConfiguration();
         config.numSamples = 2;
-        initialize(new Sprouts(), config);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        initialize(
+            new Sprouts(
+                displayMetrics.widthPixels,
+                displayMetrics.heightPixels
+            ),
+            config
+        );
     }
 }

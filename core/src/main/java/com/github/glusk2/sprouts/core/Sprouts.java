@@ -6,12 +6,10 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** Sprouts main application class. */
 public final class Sprouts extends Game {
-
-    /** Application default world width in pixels. */
-    private static final int DEFAULT_WIDTH = 1280;
-    /** Application default world height in pixels. */
-    private static final int DEFAULT_HEIGHT = 720;
-
+    /** Application screen width in pixels. */
+    private final int screenWidth;
+    /** Application screen height in pixels. */
+    private final int screenHeight;
     /**
      * A single {@code ShapeRenderer} that is used by all {@code Game} screens.
      * <p>
@@ -20,13 +18,24 @@ public final class Sprouts extends Game {
      */
     private ShapeRenderer renderer;
 
+    /**
+     * Creates a new Game by specifying the screen dimensions.
+     *
+     * @param worldWidth  Application screen width in pixels
+     * @param worldHeight Application screen height in pixels
+     */
+    public Sprouts(final int worldWidth, final int worldHeight) {
+        this.screenWidth = worldWidth;
+        this.screenHeight = worldHeight;
+    }
+
     @Override
     public void create() {
         renderer = new ShapeRenderer();
         this.setScreen(
             new MainScreen(
                 this,
-                new FitViewport(DEFAULT_WIDTH, DEFAULT_HEIGHT),
+                new FitViewport(screenWidth, screenHeight),
                 renderer
             )
         );
