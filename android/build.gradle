@@ -23,18 +23,29 @@ android {
         versionCode 1
         versionName "$rootProject.version"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        if (System.getenv("TRAVIS")) {
+            release {
+                storeFile = file("release.keystore")
+                storePassword = System.getenv("keystore_password")
+                keyAlias = System.getenv("keystore_alias")
+                keyPassword = System.getenv("keystore_alias_password")
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            if (System.getenv("TRAVIS")) {
+                signingConfig signingConfigs.release
+            }
         }
     }
 }

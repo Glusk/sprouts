@@ -15,6 +15,8 @@ cache:
 
 # Setup environment
 before_install:
+  - openssl aes-256-cbc -K $encrypted_90f3693921bb_key -iv $encrypted_90f3693921bb_iv
+    -in android/release.keystore.enc -out android/release.keystore -d
   - chmod +x gradlew
 
 # Default gradle task will be run automatically on build, no need to define it
@@ -24,9 +26,9 @@ before_deploy:
   # Generate a packaged jar for the desktop-project and rename it to include the tag
   - ./gradlew desktop:dist
   - mv desktop/build/libs/desktop-*.jar desktop/build/libs/sprouts-$TRAVIS_TAG.jar
-  # Generate a packaged apk for the android-project and rename it (this apk is unsigned/unaligned)
+  # Generate a packaged apk for the android-project and rename it
   - ./gradlew android:assembleRelease
-  - mv android/build/outputs/apk/release/android-release-unsigned.apk android/build/outputs/apk/release/sprouts-$TRAVIS_TAG-unaligned.apk
+  - mv android/build/outputs/apk/release/android-release.apk android/build/outputs/apk/release/sprouts-$TRAVIS_TAG.apk
   # Generate and zip deployment files for the HTML project
   - ./gradlew html:dist
   - zip -r sprouts-$TRAVIS_TAG.zip ./html/build/dist/
@@ -37,7 +39,7 @@ deploy:
     file:
       # Define which files should be deployed to GitHub
       - desktop/build/libs/sprouts-$TRAVIS_TAG.jar
-      - android/build/outputs/apk/release/sprouts-$TRAVIS_TAG-unaligned.apk
+      - android/build/outputs/apk/release/sprouts-$TRAVIS_TAG.apk
       - sprouts-$TRAVIS_TAG.zip
     skip_cleanup: true
     on:
