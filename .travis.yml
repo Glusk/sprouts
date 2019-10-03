@@ -40,6 +40,7 @@ deploy:
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     on:
+      repo: Glusk2/sprouts
       branch: master
   - provider: releases
     api_key:
