@@ -23,6 +23,8 @@ before_install:
 
 # Deployment to GitHub-releases
 before_deploy:
+  # Generate javadocs
+  - ./gradlew aggregateJavadocs
   # Generate a packaged jar for the desktop-project and rename it to include the tag
   - ./gradlew desktop:dist
   - mv desktop/build/libs/desktop-*.jar desktop/build/libs/sprouts-$TRAVIS_TAG.jar
@@ -33,6 +35,13 @@ before_deploy:
   - ./gradlew html:dist
   - zip -r sprouts-$TRAVIS_TAG.zip ./html/build/dist/
 deploy:
+  - provider: pages
+    local_dir: build/docs/javadoc
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+      repo: Glusk2/sprouts
+      branch: master
   - provider: releases
     api_key:
       secure: $DEPLOYMENT_KEY
