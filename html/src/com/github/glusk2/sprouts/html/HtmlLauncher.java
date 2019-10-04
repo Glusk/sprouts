@@ -4,7 +4,9 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
+import com.badlogic.gdx.backends.gwt.preloader.Preloader;
 import com.github.glusk2.sprouts.core.Sprouts;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Window;
@@ -53,6 +55,14 @@ public final class HtmlLauncher extends GwtApplication {
         }
     }
     // END OF CODE FOR RESIZABLE APPLICATION
+
+    @Override
+    public Preloader.PreloaderCallback getPreloaderCallback() {
+        return
+            createPreloaderPanel(
+                GWT.getHostPageBaseURL() + "logo_preload.png"
+            );
+    }
 
     @Override
     public ApplicationListener createApplicationListener() {
