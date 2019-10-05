@@ -110,7 +110,11 @@ public final class PresetGraph implements Graph {
                 lineThickness,
                 circleSegmentCount
             );
-            renderer.setColor(Color.WHITE);
+            if (isAliveSprout(v)) {
+                renderer.setColor(Color.WHITE);
+            } else {
+                renderer.setColor(Color.GRAY);
+            }
             renderer.circle(
                 v.position().x,
                 v.position().y,
