@@ -14,20 +14,19 @@ built with [libGDX](https://github.com/libgdx/libgdx).
 ## Getting started
 
 These instructions will get you a copy of the project up and running on your
-local machine for development and testing purposes. See deployment for notes
-on how to deploy the project on a live system.
+local machine for development and testing purposes.
 
 ### Prerequisites
 
 You need the following before installing Sprouts:
 
-- Java 8 (or later)
-- [Android SDK](https://developer.android.com/studio/#command-tools)
-  - required packages:
-    - `platforms;android-28`
-    - `platform-tools`
-    - `build-tools;28.0.3`
-    - `docs` (optional, required to generate Javadocs)
+-   Java 8 (or later)
+-   [Android SDK](https://developer.android.com/studio/#command-tools)
+    -   required packages:
+        -   `platforms;android-28`
+        -   `platform-tools`
+        -   `build-tools;28.0.3`
+        -   `docs` (optional, required to generate Javadocs)
 
 Here is how you can install all of the required Android SDK packages in one
 line
@@ -57,30 +56,32 @@ desktop), you have to run additional commands.
 
 ### Building distributables
 
-- Android
+-   Android
 
-  ```bash
-  ./gradlew android:assembleDebug
-  ```
+    ```bash
+    ./gradlew android:assembleDebug
+    ```
 
-  The debug `.apk` is generated in `android/build/outputs/apk/debug/`
-- Desktop
+    The debug `.apk` is generated in `android/build/outputs/apk/debug/`
 
-  ```bash
-  ./gradlew desktop:dist
-  ```
+-   Desktop
 
-  The executable `.jar` is generated in `desktop/build/libs/`
-- HTML
+    ```bash
+    ./gradlew desktop:dist
+    ```
 
-  ```bash
-  ./gradlew html:dist
-  ```
+    The executable `.jar` is generated in `desktop/build/libs/`
 
-  The static web content (JS + HTML + CSS) files are generated in `/html/build/dist/`
-- iOS
+-   HTML
 
-  Todo!
+    ```bash
+    ./gradlew html:dist
+    ```
+
+    The static web content (JS + HTML + CSS) files are generated in `/html/build/dist/`
+
+-   iOS
+    Todo!
 
 ## Documentation
 
