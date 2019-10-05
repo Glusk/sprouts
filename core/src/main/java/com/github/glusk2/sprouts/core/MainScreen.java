@@ -3,12 +3,17 @@ package com.github.glusk2.sprouts.core;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Event;
+import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
@@ -22,6 +27,13 @@ import com.github.glusk2.sprouts.core.ui.TouchEventSnapshooter;
  * The main screen of the application with the toolbar and the game board.
  */
 public final class MainScreen extends ScreenAdapter {
+    /** Starting sprouts slider minimum value. */
+    private static final int SLIDER_MIN = 2;
+    /** Starting sprouts slider maximum value. */
+    private static final int SLIDER_MAX = 7;
+    /** Starting sprouts slider step value. */
+    private static final int SLIDER_STEP = 1;
+
     /** The spacing between the elements in a toolbar. */
     private static final int TOOLBAR_CELL_SPACING = 10;
     /** The padding of the toolbar row. */
@@ -59,9 +71,13 @@ public final class MainScreen extends ScreenAdapter {
     /** The root object of Actors on {@code this} screen. */
     private Stage stage;
 
+    /** The number of starting sprouts to generate. */
+    private int numOfSprouts;
+
     /**
      * Constructs a new {@code MainScreen} of the Game by specifying the
-     * {@code game}, {@code viewport} and the {@code renderer}.
+     * {@code game}, {@code viewport}, {@code renderer} and the
+     * {@code numOfSprouts}.
      * <p>
      * The {@code renderer} object is not disposed of in
      * {@code this.dispose()}.
@@ -70,15 +86,18 @@ public final class MainScreen extends ScreenAdapter {
      * @param viewport the viewport of {@code this} screen
      * @param renderer the {@code ShapeRenderer} object used to draw the game
      *                 board
+     * @param numOfSprouts the number of starting sprouts to generate
      */
     public MainScreen(
         final Game game,
         final Viewport viewport,
-        final ShapeRenderer renderer
+        final ShapeRenderer renderer,
+        final int numOfSprouts
     ) {
         this.game = game;
         this.viewport = viewport;
         this.renderer = renderer;
+        this.numOfSprouts = numOfSprouts;
     }
 
     /**
@@ -91,19 +110,44 @@ public final class MainScreen extends ScreenAdapter {
     public void show() {
         stage = new Stage(viewport);
 
+        Skin skin =
+            new Skin(
+                Gdx.files.internal("default/skin/uiskin.json")
+            );
+
+        final Label sliderLabel = new Label("" + numOfSprouts, skin);
+        sliderLabel.setColor(Color.BLACK);
+
+        final Slider slider =
+            new Slider(
+                SLIDER_MIN,
+                SLIDER_MAX,
+                SLIDER_STEP,
+                false,
+                skin
+            );
+        slider.addListener(new EventListener() {
+            @Override
+            public boolean handle(final Event event) {
+                sliderLabel.setText("" + (int) slider.getValue());
+                return true;
+            }
+        });
+        slider.setValue(numOfSprouts);
+
         TextButton resetButton =
             new TextButton(
-                "Reset",
-                new Skin(
-                    Gdx.files.internal("default/skin/uiskin.json")
-                )
+                "New game",
+                skin
             );
         resetButton.addListener(
-            new ResetDialog(game, renderer, stage)
+            new ResetDialog(game, renderer, stage, slider)
         );
 
         Table toolbar = new Table().pad(TOOLBAR_PADDING);
         toolbar.left().add(resetButton).space(TOOLBAR_CELL_SPACING);
+        toolbar.add(sliderLabel).space(TOOLBAR_CELL_SPACING);
+        toolbar.add(slider);
         toolbar.setHeight(resetButton.getPrefHeight() + 2 * TOOLBAR_PADDING);
 
 
@@ -122,6 +166,7 @@ public final class MainScreen extends ScreenAdapter {
                 new BeforeMove(
                     MOVE_THICKNESS,
                     CIRCLE_SEGMENT_COUNT,
+                    (int) slider.getValue(),
                     gameBounds
                 )
             );

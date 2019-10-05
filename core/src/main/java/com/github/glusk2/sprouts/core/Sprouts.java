@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 /** Sprouts main application class. */
 public final class Sprouts extends Game {
+    /** The number of sprouts displayed in the game shown on app start. */
+    private static final int NUM_OF_PRESET_SPROUTS = 2;
     /** Application screen width in pixels. */
     private final int screenWidth;
     /** Application screen height in pixels. */
@@ -36,7 +38,8 @@ public final class Sprouts extends Game {
             new MainScreen(
                 this,
                 new FitViewport(screenWidth, screenHeight),
-                renderer
+                renderer,
+                NUM_OF_PRESET_SPROUTS
             )
         );
     }

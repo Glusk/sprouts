@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.InitialCobweb;
+import com.github.glusk2.sprouts.core.comb.GraphCreation;
+import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 
 /**
@@ -32,18 +33,24 @@ public final class BeforeMove implements Snapshot {
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
+     * @param numOfSprouts the number of starting sprouts to generate
      * @param gameBounds any Submove that is drawn outside of
      *                   {@code gameBounds} is invalid
      */
     public BeforeMove(
         final float moveThickness,
         final int circleSegmentCount,
+        final int numOfSprouts,
         final Rectangle gameBounds
     ) {
         this(
-            new InitialCobweb(
-                moveThickness,
-                circleSegmentCount
+            new TransformedGraph(
+                new GraphCreation(
+                    numOfSprouts,
+                    moveThickness,
+                    circleSegmentCount,
+                    gameBounds
+                )
             ),
             moveThickness,
             circleSegmentCount,
