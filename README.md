@@ -1,50 +1,93 @@
+# Sprouts
+
+![logo](android/res/drawable-xxhdpi/ic_launcher.png)
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/239591577a9a4a83ab80bbd2f6fcfdea)](https://app.codacy.com/app/Glusk2/sprouts?utm_source=github.com&utm_medium=referral&utm_content=Glusk2/sprouts&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.com/Glusk2/sprouts.svg?branch=master)](https://travis-ci.com/Glusk2/sprouts)
 [![Build status](https://ci.appveyor.com/api/projects/status/8p0xficdfjn90odb/branch/master?svg=true)](https://ci.appveyor.com/project/Glusk2/sprouts/branch/master)
-[![](https://tokei.rs/b1/github/Glusk2/sprouts)](https://github.com/Glusk2/sprouts)
+[![LoC](https://tokei.rs/b1/github/Glusk2/sprouts)](https://github.com/Glusk2/sprouts)
 
-# Compiling
-Prerequisites:
-- Java 8
+A multi-platform implementation of
+[Sprouts](https://en.wikipedia.org/wiki/Sprouts_(game)),
+built with [libGDX](https://github.com/libgdx/libgdx).
+
+## Getting started
+
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes. See deployment for notes
+on how to deploy the project on a live system.
+
+### Prerequisites
+
+You need the following before installing Sprouts:
+
+- Java 8 (or later)
 - [Android SDK](https://developer.android.com/studio/#command-tools)
+  - required packages:
+    - `platforms;android-28`
+    - `platform-tools`
+    - `build-tools;28.0.3`
+    - `docs` (optional, required to generate Javadocs)
 
-Update the `PATH` *environment variable* with the JDK `bin` folder
-([help](https://stackoverflow.com/questions/1672281/environment-variables-for-java-installation)).
+Here is how you can install all of the required Android SDK packages in one
+line
 
-Unzip Android SDK and set `ANDROID_HOME` to the location of unzipped files.
-
-Run this from the command line:
-
-``` bash
-# On Windows
-# cd %ANDROID_HOME%/tools/bin
-# sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3" "docs"
-
-# On Unix
-cd ANDROID_HOME/tools/bin
-./sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3" "docs"
-
+```bash
+$: ./ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3" "docs"
 ```
 
-Now you are ready to clone...
-```
+### Building
+
+Get a fresh copy of the project
+
+```bash
 git clone https://github.com/Glusk2/sprouts.git
 cd sprouts
 ```
-...and build the project:
-``` bash
-# On Windows
-# gradlew build
 
-# On Unix
-chmod +x gradlew 
-./gradlew build
+The following command builds the project and runs all tests
+
+```bash
+chmod +x gradlew
+./gradlew build connectedCheck
 ```
 
-Refer to [`.travis.yml`](https://github.com/Glusk2/sprouts/blob/master/.travis.yml)
-script to target specific builds (see `before_deploy`, `deploy`).
+If you want to build one of the distributables (`.apk` for Android, `.jar` for
+desktop), you have to run additional commands.
 
-# IDE integration
+### Building distributables
+
+- Android
+
+  ```bash
+  ./gradlew android:assembleDebug
+  ```
+
+  The debug `.apk` is generated in `android/build/outputs/apk/debug/`
+- Desktop
+
+  ```bash
+  ./gradlew desktop:dist
+  ```
+
+  The executable `.jar` is generated in `desktop/build/libs/`
+- HTML
+
+  ```bash
+  ./gradlew html:dist
+  ```
+
+  The static web content (JS + HTML + CSS) files are generated in `/html/build/dist/`
+- iOS
+
+  Todo!
+
+## Documentation
+
+The Javadoc for the latest build of the `master` branch is readily available
+[here](https://glusk2.github.io/sprouts/).
+
+## IDE integration
 
 You can find help on how to setup various IDEs for `libGDX` on their official
 [page](https://libgdx.badlogicgames.com/documentation/gettingstarted/Setting%20Up.html).
