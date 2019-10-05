@@ -8,13 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.github.glusk2.sprouts.core.MainScreen;
 
 /**
- * A "reset" button's InputListener.
+ * A "New game" button's InputListener.
  * <p>
- * A "reset game" Dialog is shown on click, enabling any player to reset the
- * current game.
+ * A ResetDialog is shown on click, enabling any player to start a new game.
  */
 public final class ResetDialog extends InputListener {
     /** The Game to show the new Screen to once the reset is confirmed. */
@@ -23,28 +23,34 @@ public final class ResetDialog extends InputListener {
     private final ShapeRenderer renderer;
     /** The stage to "pin" the "reset game" Dialog to. */
     private final Stage stage;
+    /** The slider to pick the number of sprouts for the new game with. */
+    private final Slider slider;
 
     /**
-     * Creates a new "reset" button InputListener.
+     * Creates a "New game" button InputListener.
      *
      * @param game the Game to show the new Screen to once the reset is
      *             confirmed
      * @param renderer the ShapeRenderer to use in the new Screen after the
      *                 reset
      * @param stage the stage to "pin" the "reset game" Dialog to
+     * @param slider the slider to pick the number of sprouts for the new game
+     *               with
      */
     public ResetDialog(
         final Game game,
         final ShapeRenderer renderer,
-        final Stage stage
+        final Stage stage,
+        final Slider slider
     ) {
         this.game = game;
         this.renderer = renderer;
         this.stage = stage;
+        this.slider = slider;
     }
 
     /**
-     * Creates and shows a new "reset game" Dialog to the {@code stage}.
+     * Creates and shows a ResetDialog to the {@code stage}.
      * <p>
      * {@inheritDoc}
      */
@@ -68,14 +74,21 @@ public final class ResetDialog extends InputListener {
                             new MainScreen(
                                 game,
                                 stage.getViewport(),
-                                renderer
+                                renderer,
+                                (int) slider.getValue()
                             )
                         );
                     }
                 }
             }
         };
-        dialog.text("Are you sure you want to reset the game?");
+        dialog.text(
+            new StringBuilder()
+                .append("Are you sure you want start a new game?")
+                .append("\r\n")
+                .append("The current game will be lost.")
+                .toString()
+        );
         dialog.button("Yes", true);
         dialog.button("No", false);
 
