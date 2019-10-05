@@ -21,6 +21,7 @@ local machine for development and testing purposes.
 You need the following before installing Sprouts:
 
 -   Java 8 (or later)
+
 -   [Android SDK](https://developer.android.com/studio/#command-tools)
     -   required packages:
         -   `platforms;android-28`
