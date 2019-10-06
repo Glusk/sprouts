@@ -16,7 +16,7 @@ prepare_butler() {
 
 prepare_and_push() {
     echo "Push $3 build to itch.io..."
-    ./butler push $2 $1:$3
+    ./butler push $2 $1:$3 --userversion "${TRAVIS_TAG}"
 }
 
 download_if_not_exist() {
@@ -33,9 +33,9 @@ html="sprouts-$TRAVIS_TAG.zip"
 
 prepare_butler
 
-prepare_and_push $project $desktop "windows-linux-mac-stable" --userversion "${TRAVIS_TAG}"
-prepare_and_push $project $android "android" --userversion "${TRAVIS_TAG}"
-prepare_and_push $project $html "html" --userversion "${TRAVIS_TAG}"
+prepare_and_push $project $desktop "windows-linux-mac-stable" 
+prepare_and_push $project $android "android"
+prepare_and_push $project $html "html"
 
 echo "Done."
 exit 0
