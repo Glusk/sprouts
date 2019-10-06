@@ -33,9 +33,9 @@ html="sprouts-$TRAVIS_TAG.zip"
 
 prepare_butler
 
-prepare_and_push $project $desktop "windows-linux-mac-stable" --userversion $TRAVIS_TAG
-prepare_and_push $project $android "android" --userversion $TRAVIS_TAG
-prepare_and_push $project $html "html" --userversion $TRAVIS_TAG
+prepare_and_push $project $desktop "windows-linux-mac-stable" --userversion "${TRAVIS_TAG}"
+prepare_and_push $project $android "android" --userversion "${TRAVIS_TAG}"
+prepare_and_push $project $html "html" --userversion "${TRAVIS_TAG}"
 
 echo "Done."
 exit 0
