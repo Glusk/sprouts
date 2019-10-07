@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector2;
  * <p>
  * A curve consists of one or more <em>splines</em>. Each spline can be divided
  * to a certain number of straight line segments. The greater the segment
- * countgit , the smoother the approximation.
+ * count, the smoother the approximation.
  */
 public final class CurveApproximation implements Polyline {
 
