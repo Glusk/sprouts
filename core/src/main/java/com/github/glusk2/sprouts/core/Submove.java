@@ -34,13 +34,6 @@ public interface Submove extends CompoundEdge, Iterator<Submove> {
     DirectedEdge direction();
 
     /**
-     * Returns a new state after {@code this} Move is drawn.
-     *
-     * @return a new state after {@code this} Move is drawn
-     */
-    // Graph updatedState();
-
-    /**
      * Checks if {@code this} Submove is completed.
      * <p>
      * A Submove is completed if it intersects a cobweb or
