@@ -147,6 +147,19 @@ public final class SubmoveElement implements Submove {
                         new ArrayList<Vector2>(strokePoints.subList(0, i))
                     );
             }
+            // Check if close to a sprout and finnish
+            Vertex v = new NearestSproutSearch(currentState, p1).result();
+            if (v.position().dst(p1) < vertexGlueRadius) {
+                List<Vector2> returnPoints =
+                    new ArrayList<Vector2>(strokePoints.subList(0, i));
+                returnPoints.add(v.position());
+                return
+                    new PolylineEdge(
+                        origin().color(),
+                        v.color(),
+                        returnPoints
+                    );
+            }
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
                 // Check if crosses itself
@@ -186,20 +199,6 @@ public final class SubmoveElement implements Submove {
                             returnPoints
                         );
                 }
-            }
-
-            // Check if close to a sprout and finnish
-            Vertex v = new NearestSproutSearch(currentState, p1).result();
-            if (v.position().dst(p1) < vertexGlueRadius) {
-                List<Vector2> returnPoints =
-                    new ArrayList<Vector2>(strokePoints.subList(0, i));
-                returnPoints.add(v.position());
-                return
-                    new PolylineEdge(
-                        origin().color(),
-                        v.color(),
-                        returnPoints
-                    );
             }
         }
         return
