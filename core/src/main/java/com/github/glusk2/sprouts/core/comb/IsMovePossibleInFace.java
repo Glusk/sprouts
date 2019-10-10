@@ -61,8 +61,11 @@ public final class IsMovePossibleInFace implements Check {
 
         int faceLives = 0;
         for (Vertex v : faceVertices) {
-            faceLives +=
-                MAXIMUM_SPROUT_LIVES - gameState.vertexDegree(v, Color.BLACK);
+            if (v.color().equals(Color.BLACK)) {
+                faceLives +=
+                    MAXIMUM_SPROUT_LIVES
+                  - gameState.vertexDegree(v, Color.BLACK);
+            }
         }
         return faceLives >= MINIMUM_FACE_LIVES;
     }
