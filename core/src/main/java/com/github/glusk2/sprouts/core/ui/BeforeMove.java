@@ -2,11 +2,16 @@ package com.github.glusk2.sprouts.core.ui;
 
 import java.util.LinkedList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.GraphCreation;
+import com.github.glusk2.sprouts.core.comb.IsMovePossible;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 
@@ -83,6 +88,9 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public Snapshot touchDown(final Vector2 position) {
+        if (!new IsMovePossible(currentState).check()) {
+            return this;
+        }
         for (Vertex v : currentState.vertices()) {
             if (
                 v.position().dst(position) < 2 * moveThickness
@@ -115,5 +123,24 @@ public final class BeforeMove implements Snapshot {
     @Override
     public void render(final ShapeRenderer renderer) {
         currentState.renderTo(renderer);
+        if (!new IsMovePossible(currentState).check()) {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
+            Color overlayColor = Color.WHITE.cpy();
+            overlayColor.a = 1 / 2f;
+
+            renderer.begin(ShapeType.Filled);
+            renderer.setColor(overlayColor);
+            renderer.rect(
+                gameBounds.getX(),
+                gameBounds.getY(),
+                gameBounds.getWidth(),
+                gameBounds.getHeight()
+            );
+            renderer.end();
+
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        }
     }
 }
