@@ -22,7 +22,12 @@ before_install:
 # Default gradle task will be run automatically on build, no need to define it
 
 after_success:
+  # Send coverage report to coveralls
   - ./gradlew core:jacocoTestReport core:coveralls
+  # Send coverage report to codacy
+  - curl -Ls -o codacy-coverage-reporter "$(curl -Ls https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r '.assets | map({name, browser_download_url} | select(.name | contains("codacy-coverage-reporter-linux"))) | .[0].browser_download_url')"
+  - chmod +x codacy-coverage-reporter
+  - ./codacy-coverage-reporter report -l Java -r core/build/reports/jacoco/test/jacocoTestReport.xml
 
 # Deployment to GitHub-releases
 before_deploy:
