@@ -21,6 +21,9 @@ before_install:
 
 # Default gradle task will be run automatically on build, no need to define it
 
+after_success:
+  - ./gradlew core:jacocoTestReport core:coveralls
+
 # Deployment to GitHub-releases
 before_deploy:
   # Generate javadocs

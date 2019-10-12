@@ -13,7 +13,8 @@ buildscript {
         classpath 'org.wisepersist:gwt-gradle-plugin:1.0.9'
         classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.7'
-        
+        classpath "gradle.plugin.com.github.kt3k.coveralls:coveralls-gradle-plugin:2.8.4"
+
 
     }
 }
@@ -79,6 +80,7 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 }
+
 
 project(":desktop") {
     apply plugin: "java-library"
@@ -151,7 +153,8 @@ project(":html") {
 
 project(":core") {
     apply plugin: "java-library"
-
+    apply plugin: "jacoco"
+    apply plugin: "com.github.kt3k.coveralls"
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -159,5 +162,16 @@ project(":core") {
         
         testCompile "org.assertj:assertj-core:3.12.2"
         testCompile "junit:junit:4.11"
+    }
+
+    jacocoTestReport {
+        additionalSourceDirs = files(sourceSets.main.allSource.srcDirs)
+        sourceDirectories = files(sourceSets.main.allSource.srcDirs)
+        classDirectories =  files(sourceSets.main.output)
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+        }
     }
 }
