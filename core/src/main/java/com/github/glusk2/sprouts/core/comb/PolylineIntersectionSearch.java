@@ -90,8 +90,7 @@ public final class PolylineIntersectionSearch implements VertexSearch {
                 return
                     new PresetVertex(
                         intersectionColor,
-                        intersection,
-                        (String) null
+                        intersection
                     );
             }
         }

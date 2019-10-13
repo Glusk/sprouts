@@ -103,8 +103,7 @@ public final class GraphCreation implements GraphTransformation {
                         clockPointer.cpy().rotate(
                             1f * i / numOfSprouts * FULL_CIRCLE
                         )
-                    ),
-                    (String) null
+                    )
                 );
         }
 

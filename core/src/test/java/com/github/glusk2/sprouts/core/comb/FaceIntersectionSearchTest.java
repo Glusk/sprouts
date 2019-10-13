@@ -20,10 +20,10 @@ public final class FaceIntersectionSearchTest {
     @BeforeClass
     public static void setupFace() {
         face = new HashSet<CompoundEdge>();
-        Vertex v0 = new PresetVertex(Vector2.Zero, "00");
-        Vertex v1 = new PresetVertex(new Vector2(2, 0), "20");
-        Vertex v2 = new PresetVertex(new Vector2(2, 2), "22");
-        Vertex v3 = new PresetVertex(new Vector2(0, 2), "02");
+        Vertex v0 = new PresetVertex(Vector2.Zero);
+        Vertex v1 = new PresetVertex(new Vector2(2, 0));
+        Vertex v2 = new PresetVertex(new Vector2(2, 2));
+        Vertex v3 = new PresetVertex(new Vector2(0, 2));
         face.add(
             new CompoundEdge.Wrapped(
                 new StraightLineEdge(v0, v1)
@@ -58,8 +58,7 @@ public final class FaceIntersectionSearchTest {
             ).result(),
             new PresetVertex(
                 Color.RED,
-                new Vector2(2, 1),
-                "21"
+                new Vector2(2, 1)
             )
         );
     }

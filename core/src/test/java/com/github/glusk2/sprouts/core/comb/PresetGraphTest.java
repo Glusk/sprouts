@@ -21,15 +21,15 @@ public final class PresetGraphTest {
     @SuppressWarnings("checkstyle:magicnumber")
     @Test
     public void buildsCorrectFaces() {
-        Vertex v1 = new PresetVertex(new Vector2(4, 0), 1);
-        Vertex v2 = new PresetVertex(new Vector2(0, 0), 2);
+        Vertex v1 = new PresetVertex(new Vector2(4, 0));
+        Vertex v2 = new PresetVertex(Vector2.Zero);
 
-        Vertex v4 = new PresetVertex(new Vector2(2, 0), 4);
-        Vertex v5 = new PresetVertex(new Vector2(1, -1), 5);
-        Vertex v6 = new PresetVertex(new Vector2(0, -2), 6);
-        Vertex v7 = new PresetVertex(new Vector2(0, 2), 7);
+        Vertex v4 = new PresetVertex(new Vector2(2, 0));
+        Vertex v5 = new PresetVertex(new Vector2(1, -1));
+        Vertex v6 = new PresetVertex(new Vector2(0, -2));
+        Vertex v7 = new PresetVertex(new Vector2(0, 2));
 
-        Vertex v9 = new PresetVertex(new Vector2(6, 0), 9);
+        Vertex v9 = new PresetVertex(new Vector2(6, 0));
 
         Map<Vertex, LocalRotations> rotationsList =
             new HashMap<Vertex, LocalRotations>();

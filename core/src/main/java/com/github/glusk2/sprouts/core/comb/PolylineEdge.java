@@ -104,8 +104,7 @@ public final class PolylineEdge implements DirectedEdge {
         return
             new PresetVertex(
                 fromColor,
-                polyline.points().get(0),
-                null
+                polyline.points().get(0)
             );
     }
 
@@ -115,8 +114,7 @@ public final class PolylineEdge implements DirectedEdge {
         return
             new PresetVertex(
                 toColor,
-                polyline.points().get(lastPointIndex),
-                null
+                polyline.points().get(lastPointIndex)
             );
     }
 

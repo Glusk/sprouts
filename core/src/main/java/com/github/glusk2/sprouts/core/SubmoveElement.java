@@ -131,8 +131,7 @@ public final class SubmoveElement implements Submove {
                     origin,
                     new StraightLineEdge(
                         new PresetVertex(
-                            strokePoints.get(0),
-                            (String) null
+                            strokePoints.get(0)
                         )
                     )
                 )

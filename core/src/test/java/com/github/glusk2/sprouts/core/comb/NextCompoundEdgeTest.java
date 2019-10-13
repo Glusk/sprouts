@@ -19,7 +19,7 @@ public final class NextCompoundEdgeTest {
                 new HashMap<Vertex, LocalRotations>(),
                 new CompoundEdge.Wrapped(
                     new StraightLineEdge(
-                        new PresetVertex(Vector2.Zero, 0)
+                        new PresetVertex(Vector2.Zero)
                     )
                 )
             ).direction()
@@ -33,13 +33,13 @@ public final class NextCompoundEdgeTest {
     public void throwsExceptionOnNullValue() {
         Map<Vertex, LocalRotations> rotationsList =
             new HashMap<Vertex, LocalRotations>();
-        rotationsList.put(new PresetVertex(Vector2.Zero, 0), null);
+        rotationsList.put(new PresetVertex(Vector2.Zero), null);
         assertThat(
             new NextCompoundEdge(
                 rotationsList,
                 new CompoundEdge.Wrapped(
                     new StraightLineEdge(
-                        new PresetVertex(Vector2.Zero, 0)
+                        new PresetVertex(Vector2.Zero)
                     )
                 )
             ).direction()

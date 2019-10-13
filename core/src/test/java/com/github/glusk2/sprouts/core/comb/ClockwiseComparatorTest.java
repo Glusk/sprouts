@@ -17,7 +17,7 @@ public final class ClockwiseComparatorTest {
         Comparator<DirectedEdge> comparator =
             new ClockwiseComparator(
                 new PresetVertex(
-                    new Vector2(0, 0),
+                    Vector2.Zero,
                     "v"
                 )
             );

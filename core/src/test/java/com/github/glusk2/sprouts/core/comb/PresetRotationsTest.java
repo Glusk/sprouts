@@ -19,7 +19,7 @@ public final class PresetRotationsTest {
         List<CompoundEdge> edges =
             new PresetRotations(
                 new PresetVertex(
-                    new Vector2(0, 0),
+                    Vector2.Zero,
                     "v"
                 )
             ).with(
@@ -81,25 +81,21 @@ public final class PresetRotationsTest {
             new CompoundEdge.Wrapped(
                 new StraightLineEdge(
                     new PresetVertex(
-                        new Vector2(0, 0),
-                        "v"
+                        Vector2.Zero
                     ),
                     new PresetVertex(
-                        new Vector2(1, 1),
-                        "1"
+                        new Vector2(1, 1)
                     )
                 )
             ),
             new PresetRotations(
                 new PresetVertex(
-                    new Vector2(0, 0),
-                    "v"
+                    Vector2.Zero
                 )
             ).next(
                 new StraightLineEdge(
                     new PresetVertex(
-                        new Vector2(1, 1),
-                        "1"
+                        new Vector2(1, 1)
                     )
                 )
             )
@@ -115,14 +111,14 @@ public final class PresetRotationsTest {
     public void differentiatesBetweenEdgesThatEndInTheSameVertex() {
         assertThat(
             new PresetRotations(
-                new PresetVertex(Vector2.Zero, 0)
+                new PresetVertex(Vector2.Zero)
             ).with(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(10, 10), 10)
+                    new PresetVertex(new Vector2(10, 10))
                 ),
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(3, 4), "34"),
-                    new PresetVertex(new Vector2(10, 10), 10)
+                    new PresetVertex(new Vector2(3, 4)),
+                    new PresetVertex(new Vector2(10, 10))
                 )
             ).edges()
         ).hasSize(2);
@@ -136,24 +132,24 @@ public final class PresetRotationsTest {
     public void findsNextForTheSameDirection() {
         assertThat(
             new PresetRotations(
-                new PresetVertex(Vector2.Zero, 0)
+                new PresetVertex(Vector2.Zero)
             ).with(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(1, 1), 1)
+                    new PresetVertex(new Vector2(1, 1))
                 ),
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(-1, 1), -1)
+                    new PresetVertex(new Vector2(-1, 1))
                 )
             ).next(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(2, 2), 2)
+                    new PresetVertex(new Vector2(2, 2))
                 )
             )
         ).isEqualTo(
             new CompoundEdge.Wrapped(
-                new PresetVertex(Vector2.Zero, 0),
+                new PresetVertex(Vector2.Zero),
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(-1, 1), -1)
+                    new PresetVertex(new Vector2(-1, 1))
                 )
             )
         );
@@ -167,13 +163,13 @@ public final class PresetRotationsTest {
     public void onlyAddsOneEdgePerDirection() {
         assertThat(
             new PresetRotations(
-                new PresetVertex(Vector2.Zero, 0)
+                new PresetVertex(Vector2.Zero)
             ).with(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(1, 1), 1)
+                    new PresetVertex(new Vector2(1, 1))
                 ),
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(2, 2), 2)
+                    new PresetVertex(new Vector2(2, 2))
                 )
             ).edges()
              .size()
@@ -185,14 +181,14 @@ public final class PresetRotationsTest {
     public void removesEdgeByDirection() {
         assertThat(
             new PresetRotations(
-                new PresetVertex(Vector2.Zero, 0)
+                new PresetVertex(Vector2.Zero)
             ).with(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(1, 1), 1)
+                    new PresetVertex(new Vector2(1, 1))
                 )
             ).without(
                 new StraightLineEdge(
-                    new PresetVertex(new Vector2(2, 2), 2)
+                    new PresetVertex(new Vector2(2, 2))
                 )
             ).edges()
              .size()
