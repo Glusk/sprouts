@@ -95,6 +95,6 @@ public final class PolylineIntersectionSearch implements VertexSearch {
                     );
             }
         }
-        return new VoidVertex(null);
+        return new VoidVertex();
     }
 }

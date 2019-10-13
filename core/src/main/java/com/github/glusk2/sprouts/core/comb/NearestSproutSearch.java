@@ -69,7 +69,7 @@ public final class NearestSproutSearch implements VertexSearch {
     @Override
     public Vertex result() {
         float minDistance = Float.MAX_VALUE;
-        Vertex minVertex = new VoidVertex(null);
+        Vertex minVertex = new VoidVertex();
         for (Vertex v : graph.vertices()) {
             if (v.color().equals(sproutColor)) {
                 float nextDistance = v.position().dst(position);

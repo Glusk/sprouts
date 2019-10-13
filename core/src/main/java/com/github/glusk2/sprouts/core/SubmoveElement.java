@@ -184,7 +184,7 @@ public final class SubmoveElement implements Submove {
                 // Check if crosses the face
                 crossPoint =
                     new FaceIntersectionSearch(moveFace, p0, p1).result();
-                if (!crossPoint.equals(new VoidVertex(null))) {
+                if (!crossPoint.equals(new VoidVertex())) {
                     List<Vector2> returnPoints =
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
                     returnPoints.add(crossPoint.position());

@@ -77,7 +77,7 @@ public final class FaceIntersectionSearchTest {
                 new Vector2(3, 1),
                 new Vector2(4, 1)
             ).result(),
-            new VoidVertex(null)
+            new VoidVertex()
         );
     }
 }
