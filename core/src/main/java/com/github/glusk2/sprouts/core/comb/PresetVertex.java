@@ -5,6 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 
 /** Read-only, struct-like Vertex implementation. */
 public final class PresetVertex implements Vertex {
+    /** The default Vertex label. */
+    private static final String DEFAULT_LABEL = "<unlabeled>";
     /** The default Vertex color. */
     private static final Color DEFAULT_COLOR = Color.BLACK;
     /** The color of {@code this} Vertex. */
@@ -14,6 +16,29 @@ public final class PresetVertex implements Vertex {
     /** Numeric label of {@code this} vertex. */
     private final String label;
 
+    /**
+     * Constructs a new Vertex with the specified position and the default
+     * color and label.
+     *
+     * @param position position of the Vertex in a 2-dimensional space
+     */
+    public PresetVertex(final Vector2 position) {
+        this(position, DEFAULT_LABEL);
+    }
+
+    /**
+     * Constructs a new Vertex with the specified color and position, using the
+     * default label.
+     *
+     * @param color color of the Vertex
+     * @param position position of the Vertex in a 2-dimensional space
+     */
+    public PresetVertex(
+        final Color color,
+        final Vector2 position
+    ) {
+        this(color, position, DEFAULT_LABEL);
+    }
     /**
      * Constructs a new Vertex with specified {@code position} and a numeric
      * {@code label}. The color of {@code this} Vertex is set to default.
