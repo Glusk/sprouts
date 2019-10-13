@@ -54,22 +54,14 @@ public final class ReversedCompoundEdge implements CompoundEdge {
                 edgePoints.subList(1, edgePoints.size())
             );
     }
+
     @Override
     public int hashCode() {
-        return (origin().hashCode() + "-" + direction().hashCode()).hashCode();
+        return new CompoundEdge.Wrapped(origin(), direction()).hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || !(obj instanceof CompoundEdge)) {
-            return false;
-        }
-        CompoundEdge that = (CompoundEdge) obj;
-        return
-            origin().equals(that.origin())
-            && direction().equals(that.direction());
+        return new CompoundEdge.Wrapped(origin(), direction()).equals(obj);
     }
 }

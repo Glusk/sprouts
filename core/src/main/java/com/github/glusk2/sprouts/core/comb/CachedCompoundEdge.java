@@ -13,8 +13,6 @@ public final class CachedCompoundEdge implements CompoundEdge {
     private Vertex origin;
     /** Cached direction of {@code original}. */
     private DirectedEdge direction;
-    /** Cached hashCode() of {@code original}. */
-    private Integer hashCode;
 
     /**
      * Constructs a new CachedCompoundEdge by wrapping {@code origin} and
@@ -59,25 +57,11 @@ public final class CachedCompoundEdge implements CompoundEdge {
 
     @Override
     public int hashCode() {
-        if (hashCode == null) {
-            hashCode = (
-                origin().hashCode() + "-" + direction().hashCode()
-            ).hashCode();
-        }
-        return hashCode;
+        return new CompoundEdge.Wrapped(origin(), direction()).hashCode();
     }
 
     @Override
     public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || !(obj instanceof CompoundEdge)) {
-            return false;
-        }
-        CompoundEdge that = (CompoundEdge) obj;
-        return
-            origin().equals(that.origin())
-            && direction().equals(that.direction());
+        return new CompoundEdge.Wrapped(origin(), direction()).equals(obj);
     }
 }
