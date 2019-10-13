@@ -1,6 +1,6 @@
 package com.github.glusk2.sprouts.core.comb;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -13,62 +13,26 @@ public final class ReversedCompoundEdgeTest {
      * {@code direction} edge is properly reversed.
      */
     @Test
-    public void reversesVertexToSinglePointLineEdge() {
-        CompoundEdge actual =
-            new ReversedCompoundEdge(
-                new PresetVertex(
-                    new Vector2(0, 0),
-                    0
-                ),
-                new StraightLineEdge(
-                    new PresetVertex(
-                        new Vector2(1, 1),
-                        1
-                    )
-                )
-            );
-        CompoundEdge expected =
+    public void properlyReversesCompoundEdgeWithSinglePointDirection() {
+        assertEquals(
+            "CompoundEdge was not properly reversed!",
             new CompoundEdge.Wrapped(
                 new PresetVertex(
-                    new Vector2(1, 1),
-                    1
+                    new Vector2(1, 1)
                 ),
                 new StraightLineEdge(
                     new PresetVertex(
-                        new Vector2(0, 0),
-                        0
+                        Vector2.Zero
                     )
                 )
-            );
-        assertThat(actual.origin())
-            .isEqualTo(expected.origin());
-        assertThat(actual.direction().from())
-            .isEqualTo(expected.direction().from());
-        assertThat(actual.direction().to())
-            .isEqualTo(expected.direction().to());
-        assertThat(
+            ),
             new ReversedCompoundEdge(
                 new PresetVertex(
-                    new Vector2(0, 0),
-                    0
+                    Vector2.Zero
                 ),
                 new StraightLineEdge(
                     new PresetVertex(
-                        new Vector2(1, 1),
-                        1
-                    )
-                )
-            )
-        ).isEqualTo(
-            new CompoundEdge.Wrapped(
-                new PresetVertex(
-                    new Vector2(1, 1),
-                    1
-                ),
-                new StraightLineEdge(
-                    new PresetVertex(
-                        new Vector2(0, 0),
-                        0
+                        new Vector2(1, 1)
                     )
                 )
             )
