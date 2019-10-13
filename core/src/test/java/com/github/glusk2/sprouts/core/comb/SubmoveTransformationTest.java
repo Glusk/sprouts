@@ -21,15 +21,14 @@ public final class SubmoveTransformationTest {
     @SuppressWarnings("checkstyle:magicnumber")
     @Test
     public void splitsTheCobwebOnIntersection() {
-        Vertex s0 = new PresetVertex(new Vector2(2, 0), "s0");
-        Vertex s1 = new PresetVertex(new Vector2(0, 0), "s1");
-        Vertex s2 = new PresetVertex(new Vector2(0, 2), "s2");
+        Vertex s0 = new PresetVertex(new Vector2(2, 0));
+        Vertex s1 = new PresetVertex(Vector2.Zero);
+        Vertex s2 = new PresetVertex(new Vector2(0, 2));
 
         Vertex c0 =
             new PresetVertex(
                 Color.RED,
-                new Vector2(0, 1),
-                "c0"
+                new Vector2(0, 1)
             );
 
         Map<Vertex, LocalRotations> rotationsList =

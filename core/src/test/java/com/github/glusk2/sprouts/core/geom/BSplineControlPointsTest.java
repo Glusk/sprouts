@@ -68,7 +68,7 @@ public final class BSplineControlPointsTest {
     public void worksWithThreeSamplePoints() {
         List<Vector2> actual = new BSplineControlPoints(
             Arrays.<Vector2>asList(
-                new Vector2(0, 0),
+                Vector2.Zero,
                 new Vector2(1.5f, 3f),
                 new Vector2(4, 4)
             )
@@ -76,7 +76,7 @@ public final class BSplineControlPointsTest {
 
         List<Vector2> expected =
             Arrays.<Vector2>asList(
-                new Vector2(0, 0),
+                Vector2.Zero,
                 new Vector2(1.25f, 3.5f),
                 new Vector2(4, 4)
             );

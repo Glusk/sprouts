@@ -73,6 +73,6 @@ public final class FaceIntersectionSearch implements VertexSearch {
                 return result;
             }
         }
-        return new VoidVertex(null);
+        return new VoidVertex();
     }
 }

@@ -174,8 +174,7 @@ public final class SproutAdd implements Snapshot {
             Vertex sproutToAdd =
                 new PresetVertex(
                     Color.BLACK,
-                    position,
-                    (String) null
+                    position
                 );
             Graph stateWithSprout = currentState.with(sproutToAdd);
 

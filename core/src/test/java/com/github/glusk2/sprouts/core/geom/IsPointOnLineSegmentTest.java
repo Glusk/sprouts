@@ -15,7 +15,7 @@ public final class IsPointOnLineSegmentTest {
         assertTrue(
             "Point falsely deemed not to be on the line segment!",
             new IsPointOnLineSegment(
-                new Vector2(0, 0),
+                Vector2.Zero,
                 new Vector2(2, 0),
                 new Vector2(1, 0),
                 0
@@ -32,7 +32,7 @@ public final class IsPointOnLineSegmentTest {
         assertFalse(
             "Point falsely deemed to be on the line segment!",
             new IsPointOnLineSegment(
-                new Vector2(0, 0),
+                Vector2.Zero,
                 new Vector2(1, 0),
                 new Vector2(2, 0),
                 0
