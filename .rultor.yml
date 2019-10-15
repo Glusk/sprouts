@@ -1,13 +1,13 @@
 architect:
   - Glusk2
 docker:
-  image: mingc/android-build-box:1.12.0
+  image: "mingc/android-build-box:1.12.0"
 release:
   script:
-    - chmod +x gradlew
+    - "chmod +x gradlew"
     # Increment versionCode
-    - perl -i.orig -pe '/versionCode/ && s/(\d+)/$1+1 . $2/e' android/build.gradle
+    - "perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle"
     # Strip tag of the "v" prefix
-    - version=${tag#"v"}
+    - "version=${tag#'v'}"
     # Bump project version
-    - ./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$version -Prelease.newVersion=$version-SNAPSHOT
+    - "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$version -Prelease.newVersion=$version-SNAPSHOT"
