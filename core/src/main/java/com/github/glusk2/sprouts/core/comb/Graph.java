@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
-import com.github.glusk2.sprouts.core.Drawable;
+import com.github.glusk2.sprouts.core.util.RenderBatch;
 
 /**
  * A Graph is a combinatorial representation of a game of Sprouts.
  */
-public interface Graph extends Drawable {
+public interface Graph extends RenderBatch {
     /**
      * Returns the faces of this Graph.
      * <p>

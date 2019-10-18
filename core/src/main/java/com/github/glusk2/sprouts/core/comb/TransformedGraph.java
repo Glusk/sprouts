@@ -28,11 +28,11 @@ public final class TransformedGraph implements Graph {
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
         if (cachedTransformation == null) {
             cachedTransformation = transformation.transformed();
         }
-        cachedTransformation.renderTo(renderer);
+        cachedTransformation.render(renderer);
     }
 
     @Override

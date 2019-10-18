@@ -186,8 +186,8 @@ public final class MoveDrawing implements Snapshot {
             moveFromSampleAndOrigin(),
             moveThickness,
             circleSegmentCount
-        ).renderTo(renderer);
+        ).render(renderer);
 
-        currentState.renderTo(renderer);
+        currentState.render(renderer);
     }
 }

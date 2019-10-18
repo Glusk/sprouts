@@ -6,9 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.util.RenderBatch;
 
 /** Represents a Submove drawn on the screen. */
-public final class RenderedSubmove implements Drawable {
+public final class RenderedSubmove implements RenderBatch {
     /** The wrapped Submove to draw. */
     private final Submove submove;
     /** The thickness of the line drawn. */
@@ -18,6 +19,11 @@ public final class RenderedSubmove implements Drawable {
      * segments.
      */
     private final int circleSegmentCount;
+    /**
+     * A flag that specifies whether this Submove is being rendered in a
+     * parent batch as part of a Move.
+     */
+    private final boolean isNestedBatch;
 
     /**
      * Constructs a new RenderedSubmove from the Submove and the rendering
@@ -27,24 +33,31 @@ public final class RenderedSubmove implements Drawable {
      * @param lineThickness the thickness of the line drawn
      * @param circleSegmentCount the number of segments for the circles between
      *                           adjacent line segments
+     * @param isNestedBatch a flag that specifies whether this Submove is being
+     *                      rendered in parent batch as part of a Move
      */
     public RenderedSubmove(
         final Submove submove,
         final float lineThickness,
-        final int circleSegmentCount
+        final int circleSegmentCount,
+        final boolean isNestedBatch
     ) {
         this.submove = submove;
         this.lineThickness = lineThickness;
         this.circleSegmentCount = circleSegmentCount;
+        this.isNestedBatch = isNestedBatch;
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
         if (!submove.isReadyToRender()) {
             return;
         }
 
-        renderer.begin(ShapeType.Filled);
+        if (!isNestedBatch) {
+            renderer.begin(ShapeType.Filled);
+        }
+
         if (!submove.isValid()) {
             renderer.setColor(Color.GRAY);
         } else if (submove.isCompleted()) {
@@ -69,6 +82,9 @@ public final class RenderedSubmove implements Drawable {
                 circleSegmentCount
             );
         }
-        renderer.end();
+
+        if (!isNestedBatch) {
+            renderer.end();
+        }
     }
 }

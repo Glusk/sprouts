@@ -75,7 +75,7 @@ public final class PresetGraph implements Graph {
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
         Set<CompoundEdge> drawnEdges = new HashSet<CompoundEdge>();
         renderer.begin(ShapeType.Filled);
         for (CompoundEdge edge : edges()) {

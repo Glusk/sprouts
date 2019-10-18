@@ -234,8 +234,8 @@ public final class SproutAdd implements Snapshot {
             moveFromOriginAndStroke(currentState, moveOrigin, stroke()),
             moveThickness,
             circleSegmentCount
-        ).renderTo(renderer);
+        ).render(renderer);
 
-        currentState.renderTo(renderer);
+        currentState.render(renderer);
     }
 }
