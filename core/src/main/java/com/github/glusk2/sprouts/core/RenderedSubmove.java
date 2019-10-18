@@ -1,11 +1,10 @@
 package com.github.glusk2.sprouts.core;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.comb.CompoundPolyline;
+import com.github.glusk2.sprouts.core.geom.PolylineBatch;
 import com.github.glusk2.sprouts.core.util.RenderBatch;
 
 /** Represents a Submove drawn on the screen. */
@@ -58,30 +57,21 @@ public final class RenderedSubmove implements RenderBatch {
             renderer.begin(ShapeType.Filled);
         }
 
+        Color polylineColor = null;
         if (!submove.isValid()) {
-            renderer.setColor(Color.GRAY);
+            polylineColor = Color.GRAY;
         } else if (submove.isCompleted()) {
-            renderer.setColor(Color.BLUE);
+            polylineColor = Color.BLUE;
         } else {
-            renderer.setColor(Color.GREEN);
+            polylineColor = Color.GREEN;
         }
-        List<Vector2> points = submove.direction().polyline().points();
-        for (int i = 0; i < points.size(); i++) {
-            Vector2 p1 = null;
-            if (i == 0) {
-                p1 = submove.origin().position();
-            } else {
-                p1 = points.get(i - 1);
-            }
-            Vector2 p2 = points.get(i);
-            renderer.rectLine(p1, p2, lineThickness);
-            renderer.circle(
-                p2.x,
-                p2.y,
-                lineThickness / 2,
-                circleSegmentCount
-            );
-        }
+        new PolylineBatch(
+            new CompoundPolyline(submove),
+            polylineColor,
+            lineThickness,
+            circleSegmentCount,
+            isNestedBatch
+        ).render(renderer);
 
         if (!isNestedBatch) {
             renderer.end();
