@@ -2,6 +2,7 @@ package com.github.glusk2.sprouts.core.geom;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.util.Check;
 
 /**
  * This class represents a check that tests whether the {@code point} lies on a
@@ -11,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
  * bounds, it is <em>not</em> considered part of the segment by {@code this}
  * check.
  */
-public final class IsPointOnLineSegment {
+public final class IsPointOnLineSegment implements Check {
 
     /**  The first endpoint of the line segment. */
     private final Vector2 p0;
@@ -59,7 +60,7 @@ public final class IsPointOnLineSegment {
     }
 
     /**
-     * Returns a boolean evaluation of {@code this} check.
+     * {@inheritDoc}
      * <p>
      * <strong>Note:</strong> if the {@code point} lies on one of the segment
      * bounds, it is <em>not</em> considered part of the segment by
@@ -68,6 +69,7 @@ public final class IsPointOnLineSegment {
      * @return {@code true} if {@code point} is on line segment {@code p0-p1},
      *         {@code false} otherwise.
      */
+    @Override
     public boolean check() {
         boolean isPointOnLine =
             Intersector.distanceSegmentPoint(p0, p1, point) <= maximumError;
