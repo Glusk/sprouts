@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
  * Objects that implement this interface must also override hashCode() and
  * equals().
  */
-public interface Vertex extends Colorable {
+public interface Vertex extends ColorTag {
     /**
      * Returns the position of {@code this} vertex in a 2-dimensional space.
      * <p>

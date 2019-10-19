@@ -122,7 +122,7 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public void render(final ShapeRenderer renderer) {
-        currentState.renderTo(renderer);
+        currentState.render(renderer);
         if (!new IsMovePossible(currentState).check()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);

@@ -3,9 +3,11 @@ package com.github.glusk2.sprouts.core;
 import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.github.glusk2.sprouts.core.util.RenderBatch;
 
 /** A RenderedMove renders the move by rendering all of its Submoves. */
-public final class RenderedMove implements Drawable {
+public final class RenderedMove implements RenderBatch {
     /** The wrapped Move to draw. */
     private final Move move;
     /** The thickness of the line drawn. */
@@ -36,16 +38,19 @@ public final class RenderedMove implements Drawable {
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
+        renderer.begin(ShapeType.Filled);
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
             Submove next = it.next();
             new RenderedSubmove(
                 next,
                 lineThickness,
-                circleSegmentCount
-            ).renderTo(renderer);
+                circleSegmentCount,
+                true
+            ).render(renderer);
             it = next;
         }
+        renderer.end();
     }
 }

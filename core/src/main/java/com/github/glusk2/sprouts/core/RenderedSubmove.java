@@ -1,14 +1,14 @@
 package com.github.glusk2.sprouts.core;
 
-import java.util.List;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.comb.CompoundPolyline;
+import com.github.glusk2.sprouts.core.geom.PolylineBatch;
+import com.github.glusk2.sprouts.core.util.RenderBatch;
 
 /** Represents a Submove drawn on the screen. */
-public final class RenderedSubmove implements Drawable {
+public final class RenderedSubmove implements RenderBatch {
     /** The wrapped Submove to draw. */
     private final Submove submove;
     /** The thickness of the line drawn. */
@@ -18,6 +18,11 @@ public final class RenderedSubmove implements Drawable {
      * segments.
      */
     private final int circleSegmentCount;
+    /**
+     * A flag that specifies whether this Submove is being rendered in a
+     * parent batch as part of a Move.
+     */
+    private final boolean isNestedBatch;
 
     /**
      * Constructs a new RenderedSubmove from the Submove and the rendering
@@ -27,48 +32,49 @@ public final class RenderedSubmove implements Drawable {
      * @param lineThickness the thickness of the line drawn
      * @param circleSegmentCount the number of segments for the circles between
      *                           adjacent line segments
+     * @param isNestedBatch a flag that specifies whether this Submove is being
+     *                      rendered in parent batch as part of a Move
      */
     public RenderedSubmove(
         final Submove submove,
         final float lineThickness,
-        final int circleSegmentCount
+        final int circleSegmentCount,
+        final boolean isNestedBatch
     ) {
         this.submove = submove;
         this.lineThickness = lineThickness;
         this.circleSegmentCount = circleSegmentCount;
+        this.isNestedBatch = isNestedBatch;
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
         if (!submove.isReadyToRender()) {
             return;
         }
 
-        renderer.begin(ShapeType.Filled);
+        if (!isNestedBatch) {
+            renderer.begin(ShapeType.Filled);
+        }
+
+        Color polylineColor = null;
         if (!submove.isValid()) {
-            renderer.setColor(Color.GRAY);
+            polylineColor = Color.GRAY;
         } else if (submove.isCompleted()) {
-            renderer.setColor(Color.BLUE);
+            polylineColor = Color.BLUE;
         } else {
-            renderer.setColor(Color.GREEN);
+            polylineColor = Color.GREEN;
         }
-        List<Vector2> points = submove.direction().polyline().points();
-        for (int i = 0; i < points.size(); i++) {
-            Vector2 p1 = null;
-            if (i == 0) {
-                p1 = submove.origin().position();
-            } else {
-                p1 = points.get(i - 1);
-            }
-            Vector2 p2 = points.get(i);
-            renderer.rectLine(p1, p2, lineThickness);
-            renderer.circle(
-                p2.x,
-                p2.y,
-                lineThickness / 2,
-                circleSegmentCount
-            );
+        new PolylineBatch(
+            new CompoundPolyline(submove),
+            polylineColor,
+            lineThickness,
+            circleSegmentCount,
+            isNestedBatch
+        ).render(renderer);
+
+        if (!isNestedBatch) {
+            renderer.end();
         }
-        renderer.end();
     }
 }

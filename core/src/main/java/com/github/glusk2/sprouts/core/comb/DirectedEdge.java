@@ -10,7 +10,7 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
  * Objects that implement this interface must also override hashCode() and
  * equals().
  */
-public interface DirectedEdge extends Colorable {
+public interface DirectedEdge extends ColorTag {
     /**
      * Returns the source Vertex of {@code this} DirectedEdge. The source
      * Vertex represents the <em>beginning</em> of a graph connection.

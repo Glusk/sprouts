@@ -10,7 +10,7 @@ import java.util.Set;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.geom.PolylineBatch;
 
 /** A reference Graph implementation. */
 public final class PresetGraph implements Graph {
@@ -75,29 +75,18 @@ public final class PresetGraph implements Graph {
     }
 
     @Override
-    public void renderTo(final ShapeRenderer renderer) {
+    public void render(final ShapeRenderer renderer) {
         Set<CompoundEdge> drawnEdges = new HashSet<CompoundEdge>();
         renderer.begin(ShapeType.Filled);
         for (CompoundEdge edge : edges()) {
             if (!drawnEdges.contains(edge)) {
-                renderer.setColor(edge.direction().color());
-                List<Vector2> points = edge.direction().polyline().points();
-                for (int i = 0; i < points.size(); i++) {
-                    Vector2 p1 = null;
-                    if (i == 0) {
-                        p1 = edge.origin().position();
-                    } else {
-                        p1 = points.get(i - 1);
-                    }
-                    Vector2 p2 = points.get(i);
-                    renderer.rectLine(p1, p2, lineThickness);
-                    renderer.circle(
-                        p2.x,
-                        p2.y,
-                        lineThickness / 2,
-                        circleSegmentCount
-                    );
-                }
+                new PolylineBatch(
+                    new CompoundPolyline(edge),
+                    edge.direction().color(),
+                    lineThickness,
+                    circleSegmentCount,
+                    true
+                ).render(renderer);
                 drawnEdges.add(edge);
                 drawnEdges.add(new ReversedCompoundEdge(edge));
             }
