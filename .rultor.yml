@@ -7,5 +7,7 @@ release:
     - "chmod +x gradlew"
     # Increment versionCode
     - "perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle"
-    # Bump project version
-    - "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=$tag -Prelease.newVersion=$tag-SNAPSHOT"
+    # Update project version to $tag
+    - "echo '$tag' | ./gradlew updateVersion"
+    # Commit new version and versionCode
+    - "git commit -am 'Release: $tag'"
