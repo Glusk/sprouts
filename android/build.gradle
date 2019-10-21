@@ -70,7 +70,7 @@ task javadoc(type: Javadoc) {
 
     options.links("https://libgdx.badlogicgames.com/ci/nightlies/docs/api/")
     options.links("https://docs.oracle.com/javase/8/docs/api/")
-    options.linksOffline("http://d.android.com/reference","$rootProject.androidHome/docs/reference")
+    options.linksOffline("http://d.android.com/reference","$android.sdkDirectory/docs/reference")
 }
 
 // called every time gradle gets executed, takes the native dependencies of
@@ -109,7 +109,7 @@ tasks.whenTaskAdded { packageTask ->
 }
 
 task run(type: Exec) {
-    def adb = "$rootProject.androidHome/platform-tools/adb"
+    def adb = "$android.sdkDirectory/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.github.glusk2.sprouts/com.github.glusk2.sprouts.android.AndroidLauncher'
 }
 

@@ -34,7 +34,7 @@ rootProject.gradle.projectsEvaluated {
             options.links("https://libgdx.badlogicgames.com/ci/nightlies/docs/api/")
             options.links("http://www.gwtproject.org/javadoc/latest/")
             options.links("https://docs.oracle.com/javase/8/docs/api/")
-            options.linksOffline("http://d.android.com/reference", "$androidHome/docs/reference")
+            options.linksOffline("http://d.android.com/reference", androidHome()+"/docs/reference")
             source javaSubprojects.javadoc.source
             destinationDir rootProject.file("$rootProject.buildDir/docs/javadoc")
             classpath = rootProject.files(javaSubprojects.javadoc.classpath)
@@ -53,10 +53,10 @@ def androidHome() {
         if (sdkDir) {
             return sdkDir
         } else {
-            return "$System.env.ANDROID_HOME"
+            return System.getenv("ANDROID_HOME")
         }
     } else {
-        return "$System.env.ANDROID_HOME"
+        return System.getenv("ANDROID_HOME")
     }
 }
 
@@ -71,7 +71,6 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        androidHome = androidHome()
     }
 
     repositories {
