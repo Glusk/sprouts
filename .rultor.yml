@@ -9,6 +9,6 @@ release:
     # Increment versionCode
     - "perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle"
     # Update project version to $tag
-    - "echo '$tag' | ./gradlew updateVersion"
+    - ./gradlew updateVersion -Prelease.useAutomaticVersion=true -PnewVersion=$tag
     # Commit new version and versionCode
-    - "git commit -am 'Release: $tag'"
+    - git commit -am "Release $tag"
