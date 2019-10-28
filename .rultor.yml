@@ -14,4 +14,3 @@ release:
     - ./gradlew build connectedCheck
     # Commit new version and versionCode
     - git commit -am "Release $tag"
-    - git push origin master
