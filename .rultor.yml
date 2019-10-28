@@ -10,5 +10,8 @@ release:
     - "perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle"
     # Update project version to $tag
     - ./gradlew updateVersion -Prelease.useAutomaticVersion=true -PnewVersion=$tag
+    # Build the project
+    - ./gradlew build connectedCheck
     # Commit new version and versionCode
     - git commit -am "Release $tag"
+    - git push origin master
