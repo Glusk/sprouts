@@ -53,7 +53,7 @@ public final class PresetRotations implements LocalRotations {
         final SortedSet<DirectedEdge> edges
     ) {
         this.center = center;
-        this.edges = new TreeSet<DirectedEdge>(edges);
+        this.edges = cloneEdges(edges);
     }
 
     @Override
@@ -84,17 +84,20 @@ public final class PresetRotations implements LocalRotations {
     }
 
     /**
-     * Creates and returns a copy of {@code this.edges}.
+     * Creates and returns a copy of {@code original}.
      * <p>
-     * The copy uses the same Comparator as {@code this.edges}.
+     * The copy uses the same Comparator as {@code original}.
      *
-     * @return a new SortedSet, containing all the elements from
-     *         {@code this.edges}
+     * @param original the Sorted set to copy
+     * @return a new SortedSet, containing all the elements of
+     *         {@code original}
      */
-    private SortedSet<DirectedEdge> cloneEdges() {
+    private static SortedSet<DirectedEdge> cloneEdges(
+        final SortedSet<DirectedEdge> original
+    ) {
         SortedSet<DirectedEdge> copy =
-            new TreeSet<DirectedEdge>(edges.comparator());
-        for (DirectedEdge edge : edges) {
+            new TreeSet<DirectedEdge>(original.comparator());
+        for (DirectedEdge edge : original) {
             copy.add(edge);
         }
         return copy;
@@ -102,7 +105,7 @@ public final class PresetRotations implements LocalRotations {
 
     @Override
     public LocalRotations with(final DirectedEdge... additionalEdges) {
-        SortedSet<DirectedEdge> copy = cloneEdges();
+        SortedSet<DirectedEdge> copy = cloneEdges(this.edges);
         for (DirectedEdge additionalEdge : additionalEdges) {
             copy.add(additionalEdge);
         }
@@ -111,7 +114,7 @@ public final class PresetRotations implements LocalRotations {
 
     @Override
     public LocalRotations without(final DirectedEdge... surplusEdges) {
-        SortedSet<DirectedEdge> copy = cloneEdges();
+        SortedSet<DirectedEdge> copy = cloneEdges(this.edges);
         for (DirectedEdge surplusEdge : surplusEdges) {
             copy.remove(surplusEdge);
         }
