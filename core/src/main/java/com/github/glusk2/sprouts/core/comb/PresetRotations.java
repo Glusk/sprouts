@@ -83,9 +83,26 @@ public final class PresetRotations implements LocalRotations {
         throw new AssertionError("Programming error!");
     }
 
+    /**
+     * Creates and returns a copy of {@code this.edges}.
+     * <p>
+     * The copy uses the same Comparator as {@code this.edges}.
+     *
+     * @return a new SortedSet, containing all the elements from
+     *         {@code this.edges}
+     */
+    private SortedSet<DirectedEdge> cloneEdges() {
+        SortedSet<DirectedEdge> copy =
+            new TreeSet<DirectedEdge>(edges.comparator());
+        for (DirectedEdge edge : edges) {
+            copy.add(edge);
+        }
+        return copy;
+    }
+
     @Override
     public LocalRotations with(final DirectedEdge... additionalEdges) {
-        SortedSet<DirectedEdge> copy = new TreeSet<DirectedEdge>(edges);
+        SortedSet<DirectedEdge> copy = cloneEdges();
         for (DirectedEdge additionalEdge : additionalEdges) {
             copy.add(additionalEdge);
         }
@@ -94,19 +111,9 @@ public final class PresetRotations implements LocalRotations {
 
     @Override
     public LocalRotations without(final DirectedEdge... surplusEdges) {
-        SortedSet<DirectedEdge> copy =
-            new TreeSet<DirectedEdge>(edges.comparator());
-        for (DirectedEdge edge : edges) {
-            boolean canAdd = true;
-            for (DirectedEdge surplusEdge : surplusEdges) {
-                if (edges.comparator().compare(edge, surplusEdge) == 0) {
-                    canAdd = false;
-                    break;
-                }
-            }
-            if (canAdd) {
-                copy.add(edge);
-            }
+        SortedSet<DirectedEdge> copy = cloneEdges();
+        for (DirectedEdge surplusEdge : surplusEdges) {
+            copy.remove(surplusEdge);
         }
         return new PresetRotations(center, copy);
     }
