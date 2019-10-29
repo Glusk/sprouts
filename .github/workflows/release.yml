@@ -1,0 +1,54 @@
+on:
+  issue_comment:
+    types: [created]
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: contains(${{ github.event.comment.body }}, 'Github, please release version:')
+    env:
+      COMMENT_BODY: ${{ github.event.comment.body }}
+      MSG_REGEX: "Github, please release version: v[0-9]+.[0-9]+.[0-9]+"
+      TAG_REGEX: "v[0-9]+.[0-9]+.[0-9]+"
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@master
+      - name: Install Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 12
+      - name: Install Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.0.2
+      - name: Install Android packages
+        run: ./$ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3"
+      - name: Initialize Git user
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - name: Test new release
+        run: |
+          # Get the tag from ${{ github.event.comment.body }}
+          tag=$(echo $COMMENT_BODY | grep -E "$MSG_REGEX" | grep -Eo "$TAG_REGEX")
+          if [[ $tag == "" ]]; then return -1; fi
+          # Strip the 'v' prefix from the tag for version
+          version=${tag#"v"}
+          # Bump versions
+          perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle
+          chmod +x gradlew
+          ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version
+          # Build the project
+          ./gradlew build connectedCheck
+          if [[ $? ]]
+          then
+            # Tag the new version
+            git commit -am "Bumped project version to $tag"
+            git tag -a $tag -m "Release $tag"
+            # Bump to snapshot
+            ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version-SNAPSHOT
+            git commit -am "Bumped project version to $tag-SNAPSHOT"
+          else
+            return -1
+          fi
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
