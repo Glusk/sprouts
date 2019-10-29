@@ -18,7 +18,7 @@ jobs:
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.2
       - name: Install Android packages
-        run: .$ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3"
+        run: $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.3"
       - name: Initialize Git user
         run: |
           git config --local user.email "action@github.com"
