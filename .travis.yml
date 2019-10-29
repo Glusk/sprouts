@@ -63,7 +63,7 @@ deploy:
       tags: true
       repo: Glusk2/sprouts
       branch: master
-      condition: $TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+.*$ # Only deploy tags that match something like 1.0.0
+      condition: $TRAVIS_TAG =~ ^v[0-9]+.[0-9]+.[0-9]+.*$ # Only deploy tags that match something like 1.0.0
   - provider: script
     api_key:
       secure: $BUTLER_API_KEY
@@ -73,4 +73,4 @@ deploy:
       tags: true
       repo: Glusk2/sprouts
       branch: master
-      condition: $TRAVIS_TAG =~ ^[0-9]+.[0-9]+.[0-9]+.*$ # Only deploy tags that match something like 1.0.0
+      condition: $TRAVIS_TAG =~ ^v[0-9]+.[0-9]+.[0-9]+.*$ # Only deploy tags that match something like 1.0.0
