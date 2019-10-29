@@ -14,7 +14,7 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v1
         with:
-          java-version: 12
+          java-version: 8
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.0.2
       - name: Install Android packages
