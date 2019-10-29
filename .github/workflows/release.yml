@@ -3,6 +3,7 @@ on:
     types: [created]
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
     if: contains(github.event.comment.body, 'Github, please release version:')
     env:
