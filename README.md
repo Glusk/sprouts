@@ -2,7 +2,7 @@
 
 ![logo](android/res/drawable-xxhdpi/ic_launcher.png)
 
-[![DevOps By Rultor.com](http://www.rultor.com/b/yegor256/rultor)](http://www.rultor.com/p/Glusk2/sprouts)
+[![Actions Status](https://github.com/Glusk2/sprouts/workflows/Automated%20Comment%20Release/badge.svg?event=issue_comment)](https://github.com/Glusk2/sprouts/actions)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/239591577a9a4a83ab80bbd2f6fcfdea)](https://app.codacy.com/app/Glusk2/sprouts?utm_source=github.com&utm_medium=referral&utm_content=Glusk2/sprouts&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.com/Glusk2/sprouts.svg?branch=master)](https://travis-ci.com/Glusk2/sprouts)
