@@ -12,6 +12,7 @@ import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.DirectedEdge;
 import com.github.glusk2.sprouts.core.comb.FaceIntersectionSearch;
 import com.github.glusk2.sprouts.core.comb.Graph;
+import com.github.glusk2.sprouts.core.comb.IsMovePossibleInFace;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.PolylineEdge;
 import com.github.glusk2.sprouts.core.comb.PolylineIntersectionSearch;
@@ -31,6 +32,11 @@ import com.github.glusk2.sprouts.core.geom.TrimmedPolyline;
  * The first element of any such sequence is always the {@link SubmoveHead}.
  */
 public final class SubmoveElement implements Submove {
+    /**
+     * The maximum Submove length (in line segments) allowed to draw when
+     * drawing in a face that has a less than 2 sprout lives.
+     */
+    private static final int INVALID_WINDOW = 7;
     /** The Graph Vertex in which {@code this} Submove begins. */
     private final Vertex origin;
     /** The polyline approximation of the move stroke. */
@@ -137,6 +143,20 @@ public final class SubmoveElement implements Submove {
                 )
             );
         for (int i = 0; i < strokePoints.size(); i++) {
+            if (
+                i >= INVALID_WINDOW
+             && !new IsMovePossibleInFace(
+                    currentState,
+                    moveFace
+                ).check()
+            ) {
+                return
+                    new PolylineEdge(
+                        origin().color(),
+                        Color.GRAY,
+                        new ArrayList<Vector2>(strokePoints.subList(0, i))
+                    );
+            }
             Vector2 p1 = strokePoints.get(i);
             if (!gameBounds.contains(p1)) {
                 return
