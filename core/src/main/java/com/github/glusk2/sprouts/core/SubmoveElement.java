@@ -12,7 +12,7 @@ import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.DirectedEdge;
 import com.github.glusk2.sprouts.core.comb.FaceIntersectionSearch;
 import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.IsMovePossibleInFace;
+import com.github.glusk2.sprouts.core.comb.IsSubmovePossibleInFace;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.PolylineEdge;
 import com.github.glusk2.sprouts.core.comb.PolylineIntersectionSearch;
@@ -145,7 +145,8 @@ public final class SubmoveElement implements Submove {
         for (int i = 0; i < strokePoints.size(); i++) {
             if (
                 i >= INVALID_WINDOW
-             && !new IsMovePossibleInFace(
+             && !new IsSubmovePossibleInFace(
+                    origin().color().equals(Color.BLACK),
                     currentState,
                     moveFace
                 ).check()

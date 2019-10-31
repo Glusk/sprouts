@@ -24,7 +24,7 @@ public final class IsMovePossible implements Check {
     public boolean check() {
         List<Set<CompoundEdge>> faces = gameState.faces();
         for (Set<CompoundEdge> face : faces) {
-            if (new IsMovePossibleInFace(gameState, face).check()) {
+            if (new IsSubmovePossibleInFace(gameState, face).check()) {
                 return true;
             }
         }

@@ -10,15 +10,12 @@ import com.github.glusk2.sprouts.core.util.Check;
  * A check that tests whether a Move is possible in the {@code face} of
  * the {@code gameState}.
  */
-public final class IsMovePossibleInFace implements Check {
+public final class IsSubmovePossibleInFace implements Check {
     /** Maximum sprout lives. */
     private static final int MAXIMUM_SPROUT_LIVES = 3;
-    /**
-     * The minimum amount of total sprouts in a face that a valid move is
-     * still possible.
-     */
-    private static final int MINIMUM_FACE_LIVES = 2;
 
+    /** Specifies whether the {@code origin()} of the Submove is a sprout. */
+    private final boolean isOriginSprout;
     /** The Graph that the {@code face} belongs to. */
     private final Graph gameState;
     /** A Set of CompoundEdges that comprise a face of the {@code gameState}. */
@@ -27,15 +24,43 @@ public final class IsMovePossibleInFace implements Check {
     /**
      * Creates a new Check by specifying the {@code gameState} and the
      * {@code face}.
+     * <p>
+     * This constructor assumes that the origin of the Submove <em>is</em> a
+     * sprout.
      *
      * @param gameState the Graph that the {@code face} belongs to
      * @param face a Set of CompoundEdges that comprise a face of the
      *             {@code gameState}
      */
-    public IsMovePossibleInFace(
+    public IsSubmovePossibleInFace(
         final Graph gameState,
         final Set<CompoundEdge> face
     ) {
+        this(
+            true,
+            gameState,
+            face
+        );
+    }
+    /**
+     * Creates a new Check by specifying the {@code gameState} and the
+     * {@code face}.
+     * <p>
+     * This constructor does not assume whether the Submove origin is a
+     * sprout or not - {@code isOriginSprout} specifies that.
+     *
+     * @param isOriginSprout specifies whether the {@code origin()} of the
+     *                       Submove is a sprout
+     * @param gameState the Graph that the {@code face} belongs to
+     * @param face a Set of CompoundEdges that comprise a face of the
+     *             {@code gameState}
+     */
+    public IsSubmovePossibleInFace(
+        final boolean isOriginSprout,
+        final Graph gameState,
+        final Set<CompoundEdge> face
+    ) {
+        this.isOriginSprout = isOriginSprout;
         this.gameState = gameState;
         this.face = face;
     }
@@ -67,6 +92,9 @@ public final class IsMovePossibleInFace implements Check {
                   - gameState.vertexDegree(v, Color.BLACK);
             }
         }
-        return faceLives >= MINIMUM_FACE_LIVES;
+        if (isOriginSprout) {
+            return faceLives >= 2;
+        }
+        return faceLives >= 1;
     }
 }
