@@ -91,6 +91,14 @@ desktop), you have to run additional commands.
 The Javadoc for the latest build of the `master` branch is readily available
 [here](https://glusk2.github.io/sprouts/).
 
+## Releases
+
+Releasing new version is fully automated. To initiate a new release, simply post a
+new comment to any issue with the following format: 
+
+>Github, please release version: `<tag>`
+
+where `<tag>` matches the following regular expression: `^v[0-9]+.[0-9]+.[0-9]+`
 ## IDE integration
 
 You can find help on how to setup various IDEs for `libGDX` on their official
