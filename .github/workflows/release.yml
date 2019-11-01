@@ -10,6 +10,10 @@ jobs:
       MSG_REGEX: "Github, please release version: v[0-9]+.[0-9]+.[0-9]+"
       TAG_REGEX: "v[0-9]+.[0-9]+.[0-9]+"
     steps:
+      - name: Debug
+        run: echo "$GITHUB_CONTEXT"; return -1
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
       - 
         name: "Notify that a new release has been started"
         run: |-
