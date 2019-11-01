@@ -10,15 +10,11 @@ jobs:
       MSG_REGEX: "Github, please release version: v[0-9]+.[0-9]+.[0-9]+"
       TAG_REGEX: "v[0-9]+.[0-9]+.[0-9]+"
     steps:
-      - name: Debug
-        run: echo "$GITHUB_CONTEXT"; return -1
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
       - 
         name: "Notify that a new release has been started"
         run: |-
             curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.comment.id }}/comments \
+            --url ${{ github.event.comment.issue_url }}/comments \
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
@@ -61,7 +57,7 @@ jobs:
             git commit -am "Bumped project version to $tag-SNAPSHOT"
             # Notify
             curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.comment.id }}/comments \
+            --url --url ${{ github.event.comment.issue_url }}/comments \
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
@@ -75,7 +71,7 @@ jobs:
         if: failure()
         run: |-
             curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.comment.id }}/comments \
+            --url ${{ github.event.comment.issue_url }}/comments \
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
