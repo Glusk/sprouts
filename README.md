@@ -89,7 +89,7 @@ desktop), you have to run additional commands.
 ## Documentation
 
 The Javadoc for the latest build of the `master` branch is readily available
-[here](https://glusk2.github.io/sprouts/).
+[here](https://glusk.github.io/sprouts/).
 
 ## Releases
 
