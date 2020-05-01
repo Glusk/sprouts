@@ -14,11 +14,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.github.glusk2.sprouts.core.comb.PolylineIntersectionSearch;
-import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
-import com.github.glusk2.sprouts.core.geom.Polyline;
 
 /** A standalone application to test curve sampling and smoothing. */
 public final class TestCurve extends InputAdapter
@@ -142,18 +139,6 @@ public final class TestCurve extends InputAdapter
                 ),
                 SPLINE_SEGMENT_COUNT
             ).points();
-
-        for(int j = 0; j < 4; j++) {
-            for (int i = 1; i < points.size(); i++) {
-                Vertex crossPoint =
-                    new PolylineIntersectionSearch(
-                        points.get(i - 1),
-                        points.get(i),
-                        new Polyline.WrappedList(points.subList(0, i)),
-                        Color.BLACK
-                    ).result();
-            }
-        }
 
         renderer.begin(ShapeType.Filled);
         renderer.setProjectionMatrix(camera.combined);
