@@ -8,16 +8,14 @@ Sprouts. The program should:
 -   detect when the game has ended (detect whether there are any valid moves
     left to draw)
 
-## Design Overview
-
-### Framework choice
+## Framework choice
 
 LibGDX framework was chosen because it is a cross-platform game development
 framework and because I (@Glusk) was most familiar with the Java programming
 language. Alternative frameworks may include: Unity, Unreal Engine,... They
 all seemed too feature-rich for a simple 2D drawing game.
 
-### Curve drawing
+## Curve drawing
 
 The program shall sample a touch or a mouse pointer as the user is dragging
 to connect two sprouts with a curve. Sampling and smoothing shall occur in
@@ -59,6 +57,109 @@ result of (5.), connected together by straight black line segments.
 The test application can be found here:
 [`TestCurve.java`](core/src/main/java/com/github/glusk2/sprouts/core/test/TestCurve.java)
 
-### Reference
+## Game modeling
+
+The most natural way to represent a game position is to use a graph, having
+sprouts as its vertices and the curves that a player draws as its edges.
+
+We want to have a [*connected*](https://en.wikipedia.org/wiki/Connectivity_(graph_theory))
+graph - a graph with a single [*component*](https://en.wikipedia.org/wiki/Component_(graph_theory)).
+That way we can differentiate between the combinatorially different moves.
+
+Consider the following moves with the same endpoints:
+
+![Move](resources/Move.png)
+
+---
+
+![AlternateMove](resources/AlternateMove.png)
+
+We have no mechanism to distinguish between the two moves.
+
+Because sprouts are not connected at the start of the game, we introduce
+"dummy" edges, called *the cobweb*. Such edges may be intersected by the moves
+that the players draw. By convention, we will mark cobweb edges and vertices red.
+
+Now we have a connected structure the entire time and we can easily
+discriminate between the moves that start and end in the same sprout:
+
+![Move](resources/MoveCobweb.png)
+
+---
+
+![AlternateMove](resources/AlternateMoveCobweb.png)
+
+We can consider two different representation of the game: *geometric* and
+*combinatorial*.
+
+### Geometric representation
+
+Geometric representation consists of curves and points drawn on the screen.
+The following classes can be used to model that:
+
+- `Vector2` (part of libGDX)
+- [`Polyline`](core/src/main/java/com/github/glusk2/sprouts/core/geom/Polyline.java)
+
+### Combinatorial representation
+
+A combinatorial representation if a more abstract view of the game. Essentially
+it is a graph.
+
+#### Vertices
+| Label | Position | Color |
+|---|---|---|
+| `v1` | `(x1, y1)` | black |
+| `v2` | `(x2, y2)` | black |
+| `v3` | `(x3, y3)` | black |
+
+Possible design:
+``` java
+Map<String, VertexAttributes> vertices;
+
+public final class VertexAttributes {
+    public final Vector2 position;
+    public final Color color;
+
+    public VertexAttributes(Vector2 position, Color color) {
+        this.position = position;
+        this.color = color;
+    }
+}
+```
+
+#### Edges
+| Endpoints | Polyline | Color |
+|---|---|---|
+| `v1,v2` | `(x1, y1), ..., (x2, y2)` | black |
+| `v2,v3` | `(x2, y2), ..., (x3, y3)` | black |
+
+Possible design:
+``` java
+Map<Set<String>, EdgeAttributes> edges;
+
+public final class EdgeAttributes {
+    // Should be unmodifiable
+    public final LinkedList<Vector2> polyline;
+    public final Color color;
+
+    public VertexAttributes(LinkedList<Vector2> polyline, Color color) {
+        this.polyline = polyline;
+        this.color = color;
+    }
+}
+```
+
+The use of `LinkedList` seemed right because of `getFirst()` and `getLast()`
+methods. These methods will come in handy when figuring out the polyline
+direction in relation to its endpoints. Besides, we don't need random access.
+
+#### Local Rotations
+```
+v1: v2
+v2: v1, v3
+v3: v2
+```
+
+## Reference
 
 - [LibGDX | Guidelines | Performance considerations](https://libgdx.badlogicgames.com/documentation/hacking/Contributing.html#performance-considerations)
