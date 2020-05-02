@@ -40,7 +40,7 @@ The above stages occur every time a drag is detected by the program. Sample
 from (1.) is created only once per stroke but all the other stages (2.-5.)
 repeat as more stroke points are sampled. This is inefficient. As the curve is
 being drawn, smoothening and approximation only needs to occur on a sublist
-near the end of the sample. But that leads to other issues, such as glueing the
+near the end of the sample. But that leads to other issues, such as merging the
 already smoothened and approximated part of the curve with the updated end.
 
 Time complexities of the simplification algorithms are `O(n)` where `n` is
