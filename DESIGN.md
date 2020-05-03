@@ -97,8 +97,8 @@ We can consider two different representation of the game: *geometric* and
 Geometric representation consists of curves and points drawn on the screen.
 The following classes can be used to model that:
 
-- `Vector2` (part of libGDX)
-- [`Polyline`](core/src/main/java/com/github/glusk2/sprouts/core/geom/Polyline.java)
+- `Vector2` - points
+- `List<Vector2>` - polylines
 
 ### Combinatorial representation
 
@@ -133,6 +133,15 @@ public final class VertexAttributes {
 | `v1,v2` | `(x1, y1), ..., (x2, y2)` | black |
 | `v2,v3` | `(x2, y2), ..., (x3, y3)` | black |
 
+At some point during the game, we can detect 2 connections with the same
+endpoints but different polylines (a cobweb edge and a player-drawn curve).
+
+![EqualEndpoints](resources/EqualEndpoints.png)
+
+As a rule, the red edge always needs to be removed in such situations. This
+simplifies the combinatorial representation and the overall design (because
+we can ensure that the endpoints point to exactly one edge).
+
 Possible design:
 ``` java
 Map<Set<String>, EdgeAttributes> edges;
@@ -147,17 +156,84 @@ public final class EdgeAttributes {
         this.color = color;
     }
 }
+
+VertexAttributes fromAttr = vertices.get(from);
+VertexAttributes toAttr = vertices.get(to);
+EdgeAttributes edge = edges.get(<from, to>);
+//DirectedPath path = new DirectedPath(from, to, edge);
+
+DirectedEdge {
+    DirectedEdge(
+        String from, String to, Map<?> edges, Map<?> vertices
+    ) {
+        this(from, to, edges.get(<from, to>), vertices.get(from), vertices.get(to))
+    }
+    DirectedEdge(String from, String to, EdgeAttributes edge, VertexAttributes fromAttr, VertexAttributes toAttr) {
+        this(from, to, new DirectedPath(fromAttr, toAttr))
+    }
+
+    DirectedEdge(String from, String to, DirectedPath path) {
+    }
+
+    String from()
+    String to()
+    DirectedPath path()
+}
+
+public final class DirectedPath implements Iterable<Vector2> {
+    public DirectedPath(
+        VertexAttributes from,
+        VertexAttributes to,
+        EdgeAttributes edge
+    ) {
+       this.from = from;
+       this.to = to;
+       this.edge = edge;
+    }
+    public Iterator<Vector2> iterator() {
+        if (
+            from.position.equals(edge.polyline.getFirst()) &&
+            to.position.equals(edge.polyline.getLast())
+        ) {
+            return edge.polyline.iterator();
+        }
+        else if (
+            to.position.equals(edge.polyline.getFirst()) &&
+            from.position.equals(edge.polyline.getLast())
+        ) {
+            return edge.polyline.descendingIterator();
+        }
+        throw new IllegalArgumentException();
+    }
+ }
 ```
 
-The use of `LinkedList` seemed right because of `getFirst()` and `getLast()`
-methods. These methods will come in handy when figuring out the polyline
-direction in relation to its endpoints. Besides, we don't need random access.
+The use of `LinkedList` seemed right because of `getFirst()`, `getLast()` and
+`descendingIterator()` methods. These methods come in handy when figuring out
+the polyline direction in relation to its endpoints. Besides, we don't need
+random access.
 
 #### Local Rotations
 ```
 v1: v2
 v2: v1, v3
 v3: v2
+```
+
+Possible design:
+
+``` java
+Map<String, Set<String>> adjacencyList;
+
+// How to produce a sorted list DirectedEdges
+// that share a common origin?
+
+// 1. generate Directed Edges
+// Iterate the set for a certain mapping in `adjacencyList`
+   // generate pairs: <map key, set item> --> <from, to>
+   // new DirectedEdge(from, to, Map<?> edges, Map<?> vertices)
+
+// 2. sort DirectedEdges in radial order
 ```
 
 ## Reference
