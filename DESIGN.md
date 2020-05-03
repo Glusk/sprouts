@@ -133,15 +133,6 @@ public final class VertexAttributes {
 | `v1,v2` | `(x1, y1), ..., (x2, y2)` | black |
 | `v2,v3` | `(x2, y2), ..., (x3, y3)` | black |
 
-At some point during the game, we can detect 2 connections with the same
-endpoints but different polylines (a cobweb edge and a player-drawn curve).
-
-![EqualEndpoints](resources/EqualEndpoints.png)
-
-As a rule, the red edge always needs to be removed in such situations. This
-simplifies the combinatorial representation and the overall design (because
-we can ensure that the endpoints point to exactly one edge).
-
 Possible design:
 ``` java
 Map<Set<String>, EdgeAttributes> edges;
@@ -156,7 +147,20 @@ public final class EdgeAttributes {
         this.color = color;
     }
 }
+```
 
+At some point during the game, we can detect 2 connections with the same
+endpoints but different polylines (a cobweb edge and a player-drawn curve).
+
+![EqualEndpoints](resources/EqualEndpoints.png)
+
+As a rule, the red edge always needs to be removed in such situations. This
+simplifies the combinatorial representation and the overall design (because
+we can ensure that the endpoints point to exactly one edge).
+
+A concept of a *directed edge* is also needed:
+
+``` java
 VertexAttributes fromAttr = vertices.get(from);
 VertexAttributes toAttr = vertices.get(to);
 EdgeAttributes edge = edges.get(<from, to>);
