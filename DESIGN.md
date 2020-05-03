@@ -102,7 +102,7 @@ The following classes can be used to model that:
 
 ### Combinatorial representation
 
-A combinatorial representation if a more abstract view of the game. Essentially
+A combinatorial representation is a more abstract view of the game. Essentially
 it is a graph.
 
 #### Vertices
