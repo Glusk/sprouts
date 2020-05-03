@@ -161,27 +161,38 @@ we can ensure that the endpoints point to exactly one edge).
 A concept of a *directed edge* is also needed:
 
 ``` java
-VertexAttributes fromAttr = vertices.get(from);
-VertexAttributes toAttr = vertices.get(to);
-EdgeAttributes edge = edges.get(<from, to>);
-//DirectedPath path = new DirectedPath(from, to, edge);
-
-DirectedEdge {
-    DirectedEdge(
-        String from, String to, Map<?> edges, Map<?> vertices
+public final class DirectedEdge {
+    public DirectedEdge(
+        String from,
+        String to,
+        Map<Set<String>, EdgeAttributes> edges,
+        Map<String, VertexAttributes> vertices
     ) {
-        this(from, to, edges.get(<from, to>), vertices.get(from), vertices.get(to))
+        this(
+            from,
+            to,
+            edges.get(<from, to>),
+            vertices.get(from),
+            vertices.get(to)
+        );
     }
-    DirectedEdge(String from, String to, EdgeAttributes edge, VertexAttributes fromAttr, VertexAttributes toAttr) {
+    public DirectedEdge(
+        String from,
+        String to,
+        EdgeAttributes edge,
+        VertexAttributes fromAttr,
+        VertexAttributes toAttr
+    ) {
         this(from, to, new DirectedPath(fromAttr, toAttr))
     }
-
-    DirectedEdge(String from, String to, DirectedPath path) {
+    public DirectedEdge(String from, String to, DirectedPath path) {
+        this.from = from;
+        this.to = to;
+        this.path = path;
     }
-
-    String from()
-    String to()
-    DirectedPath path()
+    public String from();
+    public String to();
+    public DirectedPath path();
 }
 
 public final class DirectedPath implements Iterable<Vector2> {
