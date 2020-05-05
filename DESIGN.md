@@ -89,21 +89,14 @@ discriminate between the moves that start and end in the same sprout:
 
 ![AlternateMove](resources/AlternateMoveCobweb.png)
 
-We can consider two different representation of the game: *geometric* and
-*combinatorial*.
+We can consider two different representation of the game position:
+**geometric** and **combinatorial**.
 
-### Geometric representation
+A geometric representation deals with geometry - the position of the points,
+the list of points that constitute a polyline.
 
-Geometric representation consists of curves and points drawn on the screen.
-The following classes can be used to model that:
-
-- `Vector2` - points
-- `List<Vector2>` - polylines
-
-### Combinatorial representation
-
-A combinatorial representation is a more abstract view of the game. Essentially
-it is a graph.
+A combinatorial representation is a more abstract view of the game. It deals
+with the graph that represents the game position.
 
 #### Vertices
 | Label | Position | Color |
@@ -112,7 +105,40 @@ it is a graph.
 | `v2` | `(x2, y2)` | black |
 | `v3` | `(x3, y3)` | black |
 
-Possible design:
+A simple design like this will not work:
+```java
+Set<Vertex> vertices;
+
+public final class Vertex {
+    public Vertex(String label, Vector2 position, Color color) {
+        this.label = label;
+        this.position = position;
+        this.color = color;
+    }
+    /* Getters */
+    public String label();
+    public Vector2 position();
+    public Color color();
+
+    public int hashCode() {
+        return label().hashCode();
+    }
+    public boolean equals(Object that) {
+        return this.label().equals(that.label());
+    }
+}
+```
+We can consider a geometrical representation of a vertex (a `label, position`
+pair) and a combinatorial representation (a `label, color` pair). The design
+proposed above couples the representations into a single object.
+
+This is not always desireable. If we want to update the color or the position
+of the vertex we have to either make `Vertex` mutable or locate and update all
+occurrences of the old `Vertex` object with the new `Vertex` object that
+contains the updated values. Both options seem hacky.
+
+A decoupling of a vertex from its attributes is needed:
+
 ``` java
 Map<String, VertexAttributes> vertices;
 
