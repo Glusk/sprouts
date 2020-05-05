@@ -128,14 +128,10 @@ public final class Vertex {
     }
 }
 ```
-We can consider a geometrical representation of a vertex (a `label, position`
-pair) and a combinatorial representation (a `label, color` pair). The design
-proposed above couples the representations into a single object.
-
-This is not always desireable. If we want to update the color or the position
-of the vertex we have to either make `Vertex` mutable or locate and update all
-occurrences of the old `Vertex` object with the new `Vertex` object that
-contains the updated values. Both options seem hacky.
+If we want to update the color or the position of the vertex we have to either
+make `Vertex` mutable or locate and update all occurrences of the old `Vertex`
+object with the new `Vertex` object that contains the updated values. Both
+options seem hacky. 
 
 A decoupling of a vertex from its attributes is needed:
 
