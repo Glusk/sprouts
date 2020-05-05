@@ -79,7 +79,7 @@ by the moves that the players draw. By convention, we will mark cobweb edges
 and vertices red. We now have a connected structure the entire time and we can
 easily discriminate between the moves that start and end in the same sprout.
 
----
+### Representation of a position
 
 We can consider two different representation of the game position:
 **geometric** and **combinatorial**.
@@ -170,7 +170,9 @@ endpoints but different polylines (a cobweb edge and a player-drawn curve).
 
 As a rule, the red edge always needs to be removed in such situations. This
 simplifies the combinatorial representation and the overall design (because
-we can ensure that the endpoints point to exactly one edge).
+we can ensure that the endpoints point to exactly one edge). To test 2 edges
+for equality we only need to compare the endpoint vertices and not the
+polylines!
 
 A concept of a *directed edge* is also needed:
 
@@ -207,6 +209,9 @@ public final class DirectedEdge {
     public String from();
     public String to();
     public Iterable<Vector2> path();
+    public DirectedEdge rev() {
+        return new DirectedEdge(to, from, edges, vertices);
+    }
 }
 
 public final class DirectedPath implements Iterable<Vector2> {
@@ -253,16 +258,24 @@ Possible design:
 
 ``` java
 Map<String, Set<String>> adjacencyList;
+Map<Set<String>, EdgeAttributes> edges;
+Map<String, VertexAttributes> vertices;
+public final class LocalRotations {
+    public LocalRotations(adjacencyList, edges, vertices) {}
 
-// How to produce a sorted list DirectedEdges
-// that share a common origin?
-
-// 1. generate Directed Edges
-// Iterate the set for a certain mapping in `adjacencyList`
-   // generate pairs: <map key, set item> --> <from, to>
-   // new DirectedEdge(from, to, Map<?> edges, Map<?> vertices)
-
-// 2. sort DirectedEdges in radial order
+    public DirectedEdge next(DirectedEdge fi) {
+        String v1 = fi.from();
+        // generate DirectedEdges for adjacencyList.get(v1);
+        List<DirectedEdge> edges = new ArrayList<DirectedEdge>();
+        for (String v2 : adjacencyList.get(v1)) {
+            edges.add(new DirectedEdge(v1, v2, edges, vertices));
+        }
+        // add fi to the list
+        edges.add(fi);
+        // sort the list
+        // find the next DirectedEdge after fi and return it
+    }
+}
 ```
 
 ## Reference
