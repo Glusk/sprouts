@@ -66,28 +66,20 @@ We want to have a [*connected*](https://en.wikipedia.org/wiki/Connectivity_(grap
 graph - a graph with a single [*component*](https://en.wikipedia.org/wiki/Component_(graph_theory)).
 That way we can differentiate between the combinatorially different moves.
 
-Consider the following moves with the same endpoints:
+### Cobweb
 
-![Move](resources/Move.png)
+![Moves With And Without Cobweb](resources/MovesWithAndWithoutCobweb.png)
 
----
-
-![AlternateMove](resources/AlternateMove.png)
-
-We have no mechanism to distinguish between the two moves.
+Consider 2 moves with the same endpoints (A1 and B1). We have no mechanism to
+distinguish between the two moves.
 
 Because sprouts are not connected at the start of the game, we introduce
-"dummy" edges, called *the cobweb*. Such edges may be intersected by the moves
-that the players draw. By convention, we will mark cobweb edges and vertices red.
-
-Now we have a connected structure the entire time and we can easily
-discriminate between the moves that start and end in the same sprout:
-
-![Move](resources/MoveCobweb.png)
+"dummy" edges, called *the cobweb* (A2 and B2). Such edges may be intersected
+by the moves that the players draw. By convention, we will mark cobweb edges
+and vertices red. We now have a connected structure the entire time and we can
+easily discriminate between the moves that start and end in the same sprout.
 
 ---
-
-![AlternateMove](resources/AlternateMoveCobweb.png)
 
 We can consider two different representation of the game position:
 **geometric** and **combinatorial**.
@@ -207,14 +199,14 @@ public final class DirectedEdge {
     ) {
         this(from, to, new DirectedPath(fromAttr, toAttr))
     }
-    public DirectedEdge(String from, String to, DirectedPath path) {
+    public DirectedEdge(String from, String to, Iterable<Vector2> path) {
         this.from = from;
         this.to = to;
         this.path = path;
     }
     public String from();
     public String to();
-    public DirectedPath path();
+    public Iterable<Vector2> path();
 }
 
 public final class DirectedPath implements Iterable<Vector2> {
