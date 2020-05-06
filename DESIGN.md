@@ -149,14 +149,22 @@ public final class VertexAttributes {
 
 Possible design:
 ``` java
-Map<Set<String>, EdgeAttributes> edges;
+Map<Endpoints, EdgeAttributes> edges;
 
+public final class Endpoints {
+    public Endpoints(String v1, String v2) {
+        this.v1 = v1;
+        this.v2 = v2;
+    }
+    boolean equals(Object that);
+    int hashCode();
+}
 public final class EdgeAttributes {
     // Should be unmodifiable
     public final LinkedList<Vector2> polyline;
     public final Color color;
 
-    public VertexAttributes(LinkedList<Vector2> polyline, Color color) {
+    public EdgeAttributes(LinkedList<Vector2> polyline, Color color) {
         this.polyline = polyline;
         this.color = color;
     }
@@ -181,13 +189,13 @@ public final class DirectedEdge {
     public DirectedEdge(
         String from,
         String to,
-        Map<Set<String>, EdgeAttributes> edges,
+        Map<Endpoints, EdgeAttributes> edges,
         Map<String, VertexAttributes> vertices
     ) {
         this(
             from,
             to,
-            edges.get(<from, to>),
+            edges.get(new Endpoints(from, to)),
             vertices.get(from),
             vertices.get(to)
         );
@@ -258,7 +266,7 @@ Possible design:
 
 ``` java
 Map<String, Set<String>> adjacencyList;
-Map<Set<String>, EdgeAttributes> edges;
+Map<Endpoints, EdgeAttributes> edges;
 Map<String, VertexAttributes> vertices;
 public final class LocalRotations {
     public LocalRotations(adjacencyList, edges, vertices) {}
@@ -266,15 +274,39 @@ public final class LocalRotations {
     public DirectedEdge next(DirectedEdge fi) {
         String v1 = fi.from();
         // generate DirectedEdges for adjacencyList.get(v1);
-        List<DirectedEdge> edges = new ArrayList<DirectedEdge>();
+        List<DirectedEdge> lr = new ArrayList<DirectedEdge>();
         for (String v2 : adjacencyList.get(v1)) {
-            edges.add(new DirectedEdge(v1, v2, edges, vertices));
+            lr.add(new DirectedEdge(v1, v2, edges, vertices));
         }
-        // add fi to the list
-        edges.add(fi);
+        // add fi to the list (only if not present)
+        if (!adjacencyList.get(v1).contains(fi.to())) {
+            lr.add(fi);
+        }
         // sort the list
         // find the next DirectedEdge after fi and return it
     }
+}
+```
+
+#### Faces
+
+| Boundary |
+|---|
+| `v1, v2, v3` |
+| `v2, v4` |
+
+A graph face is uniquely defined by the ordered sequence of its boundary vertices.
+
+We need to be able to:
+- 1. check whether a cobweb edge is located in two faces
+- 2. query a face by on one of its boundary arrows (DirectedEdges)
+
+``` java
+public class Face {
+    public Face(LinkedList<String> vertexBoundary) {
+    }
+    public boolean contains(DirectedEdge arrow);
+    public boolean contains(Endpoints edge);
 }
 ```
 
