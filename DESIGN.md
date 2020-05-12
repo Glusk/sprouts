@@ -274,16 +274,18 @@ public final class LocalRotations {
     public DirectedEdge next(DirectedEdge fi) {
         String v1 = fi.from();
         // generate DirectedEdges for adjacencyList.get(v1);
-        List<DirectedEdge> lr = new ArrayList<DirectedEdge>();
+        TreeSet<DirectedEdge> lr = new TreeSet<DirectedEdge>(/*new RadialComparator(v1)*/);
         for (String v2 : adjacencyList.get(v1)) {
             lr.add(new DirectedEdge(v1, v2, edges, vertices));
         }
-        // add fi to the list (only if not present)
-        if (!adjacencyList.get(v1).contains(fi.to())) {
-            lr.add(fi);
-        }
-        // sort the list
+        // add fi to the set
+        lr.add(fi);
         // find the next DirectedEdge after fi and return it
+        DirectedEge next = lr.higher(fi);
+        if (next == null) {
+            next = lr.first();
+        }
+        return next;
     }
 }
 ```
@@ -298,8 +300,8 @@ public final class LocalRotations {
 A graph face is uniquely defined by the ordered sequence of its boundary vertices.
 
 We need to be able to:
-- 1. check whether a cobweb edge is located in two faces
-- 2. query a face by on one of its boundary arrows (DirectedEdges)
+1.   check whether a cobweb edge is located in two faces
+2.   query a face by on one of its boundary arrows (DirectedEdges)
 
 ``` java
 public class Face {
@@ -309,6 +311,45 @@ public class Face {
     public boolean contains(Endpoints edge);
 }
 ```
+
+#### Graph
+
+This is the central piece of the game model, linking the above
+concepts together.
+
+When a player draws a curve, it can be thought of as a sequence of one or more
+submoves. Each submove starts and ends in a sprout or a cobweb point (if a
+submove intersects the cobweb). We can model such submoves as adding edges
+to a graph.
+
+Once a submove is completed, check:
+1.   if the graph already contains a red edge with the same endpoints as the
+     submove
+     -   if so, remove the red edge
+2.   check if any two faces share a red edge
+     -   remove at most one such edge
+3.   remove a red point with no red edges
+
+First design draft:
+
+``` java
+public final class Graph {
+    private Map<String, Set<String>> adjacencyList;
+    private Map<Endpoints, EdgeAttributes> edges;
+    private Map<String, VertexAttributes> vertices;
+
+    public Set<Face> faces();
+    public boolean contains(Endpoints edge)
+    public Graph with(Endpoints endpoints, EdgeAttributes attributes);
+    public Graph without(Endpoints edge);
+    public Graph with(String vertex);
+    public Graph without(String vertex);
+}
+```
+
+This is not a really good design because it features too many similar methods.
+But the alternatives are worse and have been toyed with before:
+[#57](https://github.com/Glusk/sprouts/issues/57).
 
 ## Reference
 
