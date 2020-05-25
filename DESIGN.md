@@ -325,7 +325,7 @@ public class Faces {
 #### Graph
 
 We need an object that will keep track of `edges`, `vertices`
-and `localRotations`.
+and `adjacencyList`.
 
 Possible design:
 
