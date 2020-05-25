@@ -312,17 +312,46 @@ public class Face {
 }
 ```
 
+There should also be a separate object called `Faces` that can compute
+all of the faces of a given `Graph`:
+
+``` java
+public class Faces {
+    public Faces(Graph graph) {...}
+    public Set<Face> faces() {...}
+}
+```
+
 #### Graph
 
-This is the central piece of the game model, linking the above
-concepts together.
+We need an object that will keep track of `edges`, `vertices`
+and `localRotations`.
+
+Possible design:
+
+``` java
+public interface Graph {
+    Map<String, Set<String>> adjacencyList();
+    Map<Endpoints, EdgeAttributes> edges();
+    Map<String, VertexAttributes> vertices();
+
+    Faces faces();
+
+    /* These should be special implementations of the Graph interface
+    public Graph with(Endpoints endpoints, EdgeAttributes attributes);
+    public Graph without(Endpoints edge);
+    public Graph with(String vertex, VertexAttributes attributes);
+    public Graph without(String vertex);
+    */
+}
+```
 
 When a player draws a curve, it can be thought of as a sequence of one or more
 submoves. Each submove starts and ends in a sprout or a cobweb point (if a
 submove intersects the cobweb). We can model such submoves as adding edges
 to a graph.
 
-Once a submove is completed, check:
+`Graph` can be simplified after each submove. Once a submove is completed, check:
 1.   if the graph already contains a red edge with the same endpoints as the
      submove
      -   if so, remove the red edge
@@ -330,26 +359,18 @@ Once a submove is completed, check:
      -   remove at most one such edge
 3.   remove a red point with no red edges
 
-First design draft:
+This logic could be contained in a separate object:
 
 ``` java
-public final class Graph {
-    private Map<String, Set<String>> adjacencyList;
-    private Map<Endpoints, EdgeAttributes> edges;
-    private Map<String, VertexAttributes> vertices;
-
-    public Set<Face> faces();
-    public boolean contains(Endpoints edge)
-    public Graph with(Endpoints endpoints, EdgeAttributes attributes);
-    public Graph without(Endpoints edge);
-    public Graph with(String vertex);
-    public Graph without(String vertex);
+public final class CobwebSimplification {
+    public CobwebSimplification(
+        Graph graph,
+        Endpoints submoveEndpoints,
+        EdgeAttributes submoveEdgeAttributes
+    ) {...}
+    public Graph simplified();
 }
 ```
-
-This is not a really good design because it features too many similar methods.
-But the alternatives are worse and have been toyed with before:
-[#57](https://github.com/Glusk/sprouts/issues/57).
 
 ## Reference
 
