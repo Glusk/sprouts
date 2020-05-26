@@ -57,7 +57,7 @@ result of (5.), connected together by straight black line segments.
 The test application can be found here:
 [`TestCurve.java`](core/src/main/java/com/github/glusk2/sprouts/core/test/TestCurve.java)
 
-## Game modeling
+## Game position modeling
 
 The most natural way to represent a game position is to use a graph, having
 sprouts as its vertices and the curves that a player draws as its edges.
@@ -79,18 +79,7 @@ by the moves that the players draw. By convention, we will mark cobweb edges
 and vertices red. We now have a connected structure the entire time and we can
 easily discriminate between the moves that start and end in the same sprout.
 
-### Representation of a position
-
-We can consider two different representation of the game position:
-**geometric** and **combinatorial**.
-
-A geometric representation deals with geometry - the position of the points,
-the list of points that constitute a polyline.
-
-A combinatorial representation is a more abstract view of the game. It deals
-with the graph that represents the game position.
-
-#### Vertices
+### Vertices
 | Label | Position | Color |
 |---|---|---|
 | `v1` | `(x1, y1)` | black |
@@ -120,7 +109,7 @@ public final class Vertex {
     }
 }
 ```
-If we want to update the color or the position of the vertex we have to either
+If we want to update color or position of a vertex, we have to either
 make `Vertex` mutable or locate and update all occurrences of the old `Vertex`
 object with the new `Vertex` object that contains the updated values. Both
 options seem hacky. 
@@ -141,7 +130,7 @@ public final class VertexAttributes {
 }
 ```
 
-#### Edges
+### Edges
 | Endpoints | Polyline | Color |
 |---|---|---|
 | `v1,v2` | `(x1, y1), ..., (x2, y2)` | black |
@@ -156,6 +145,7 @@ public final class Endpoints {
         this.v1 = v1;
         this.v2 = v2;
     }
+    Set<String> endpoints();
     boolean equals(Object that);
     int hashCode();
 }
@@ -255,7 +245,7 @@ The use of `LinkedList` seemed right because of `getFirst()`, `getLast()` and
 the polyline direction in relation to its endpoints. Besides, we don't need
 random access.
 
-#### Local Rotations
+### Local Rotations
 ```
 v1: v2
 v2: v1, v3
@@ -290,7 +280,7 @@ public final class LocalRotations {
 }
 ```
 
-#### Faces
+### Faces
 
 | Boundary |
 |---|
@@ -322,7 +312,7 @@ public class Faces {
 }
 ```
 
-#### Graph
+### Graph
 
 We need an object that will keep track of `edges`, `vertices`
 and `adjacencyList`.
