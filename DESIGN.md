@@ -141,11 +141,16 @@ Possible design:
 Map<Endpoints, EdgeAttributes> edges;
 
 public final class Endpoints {
+    private Set<String> endpoints;
     public Endpoints(String v1, String v2) {
-        this.v1 = v1;
-        this.v2 = v2;
+        this(new HashSet<String>(Arrays.asList(v1, v2)));
     }
-    Set<String> endpoints();
+    private Endpoints(Set<String> endpoints) {
+        this.endpoints = endpoints;
+    }
+
+    /** Returns the endpoints pair as an array. */
+    String[] endpoints();
     boolean equals(Object that);
     int hashCode();
 }
