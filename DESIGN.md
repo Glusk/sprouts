@@ -260,14 +260,18 @@ v3: v2
 Possible design:
 
 ``` java
-Map<String, Set<String>> adjacencyList;
 Map<Endpoints, EdgeAttributes> edges;
 Map<String, VertexAttributes> vertices;
 public final class LocalRotations {
-    public LocalRotations(adjacencyList, edges, vertices) {}
+    public LocalRotations(edges, vertices) {}
+
+    private Map<String, Set<String>> adjacencyList() {...}
 
     public DirectedEdge next(DirectedEdge fi) {
         String v1 = fi.from();
+
+        Map<String, Set<String>> adjacencyList = adjacencyList();
+        
         // generate DirectedEdges for adjacencyList.get(v1);
         TreeSet<DirectedEdge> lr = new TreeSet<DirectedEdge>(/*new RadialComparator(v1)*/);
         for (String v2 : adjacencyList.get(v1)) {
@@ -314,30 +318,25 @@ all of the faces of a given `Graph`:
 public class Faces {
     public Faces(Graph graph) {...}
     public Set<Face> faces() {...}
+    /**
+     * Look for the first red edge that resides in two separate faces and
+     * return it. If no such edge exists, return null.
+    */
+    public Endpoints firstSharedRedEdge() {...}
 }
 ```
 
 ### Graph
 
-We need an object that will keep track of `edges`, `vertices`
-and `adjacencyList`.
+We need an object that will keep track of `edges`, `vertices`.
 
 Possible design:
 
 ``` java
 public interface Graph {
-    Map<String, Set<String>> adjacencyList();
     Map<Endpoints, EdgeAttributes> edges();
     Map<String, VertexAttributes> vertices();
-
     Faces faces();
-
-    /* These should be special implementations of the Graph interface
-    public Graph with(Endpoints endpoints, EdgeAttributes attributes);
-    public Graph without(Endpoints edge);
-    public Graph with(String vertex, VertexAttributes attributes);
-    public Graph without(String vertex);
-    */
 }
 ```
 
@@ -346,26 +345,44 @@ submoves. Each submove starts and ends in a sprout or a cobweb point (if a
 submove intersects the cobweb). We can model such submoves as adding edges
 to a graph.
 
-`Graph` can be simplified after each submove. Once a submove is completed, check:
-1.   if the graph already contains a red edge with the same endpoints as the
-     submove
-     -   if so, remove the red edge
-2.   check if any two faces share a red edge
-     -   remove at most one such edge
-3.   remove a red point with no red edges
+#### Preset Graph
 
-This logic could be contained in a separate object:
+A special implementation of the Graph interface with preset edges and vertices,
+used for testing and caching.
 
-``` java
-public final class CobwebSimplification {
-    public CobwebSimplification(
-        Graph graph,
-        Endpoints submoveEndpoints,
-        EdgeAttributes submoveEdgeAttributes
-    ) {...}
-    public Graph simplified();
-}
-```
+#### Initial Graph
+
+An implementation of the Graph interface that generates `n` sprouts
+(black vertices) and connects them into a *single component* graph. The points
+generated in this way will not be random but that doesn't really matter.
+
+The most straight-forward way to do this is to draw a circle, and generate `n`
+points on the circle, equidistant from one another, and connect them in order.
+The first and last point should not be connected so that the Graph will only
+have one component.
+
+#### Graph After A Submove
+
+An implementation of the Graph interface that applies a submove
+(a directed edge) to an existing graph.
+
+Graph can be simplified after each submove.
+
+Before the submove is applied, check if the existing graph already contains
+a red edge with the same endpoints as the submove. If so, remove the red edge
+and apply the submove.
+
+Once the submove is applied, check if any two faces share a red edge. If so,
+remove at most one such edge.
+
+Finally, remove any red points with no red edges.
+
+#### Graph After Adding A Middle Sprout
+
+An implementation of the Graph interface that splits one of the black edges
+in two by adding a new sprout on the connection.
+
+If the new sprout is close to a red point, paint it black.
 
 ## Reference
 
