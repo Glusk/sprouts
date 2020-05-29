@@ -155,6 +155,10 @@ public final class Labels {
 }
 ```
 
+Initial sprouts will be labeled from `v(n-1)` to `v0` where `n` is the number
+of sprouts. For example, if `n` is equal to `3`, we have: `v-2`, `v-1` and
+`v0`. All subsequent labels will have a positive integer postfix.
+
 ### Edges
 | Endpoints | Polyline | Color |
 |---|---|---|
