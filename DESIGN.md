@@ -130,6 +130,31 @@ public final class VertexAttributes {
 }
 ```
 
+There also has to be some sort of mechanism in place that will generate unique
+vertex labels. One way to do so would be:
+`label = "v" + atomicInteger.incrementAndGet();`.
+
+ **Note**: new graph vertices will only need to be generated when:
+   - there's an intersection between a submove and a cobweb edge
+   - player adds a middle sprout
+
+Since the application runs in a single thread, there is no need for an atomic
+integer. A simple design like this would suffice:
+
+``` java
+public final class Label {
+    public Label(int counter)
+
+    String label() {
+        return "v" + counter;
+    }
+
+    Label next() {
+        return new Label(counter + 1);
+    }
+}
+```
+
 ### Edges
 | Endpoints | Polyline | Color |
 |---|---|---|
@@ -262,15 +287,19 @@ Possible design:
 ``` java
 Map<Endpoints, EdgeAttributes> edges;
 Map<String, VertexAttributes> vertices;
-public final class LocalRotations {
-    public LocalRotations(edges, vertices) {}
 
-    private Map<String, Set<String>> adjacencyList() {...}
+public final class AdjacencyList {
+    public AdjacencyList(edges) {...}
+    public Map<String, Set<String>> list() {...}
+}
+
+public final class LocalRotations {
+    public LocalRotations(edges, vertices, adjacencyList) {}
 
     public DirectedEdge next(DirectedEdge fi) {
         String v1 = fi.from();
 
-        Map<String, Set<String>> adjacencyList = adjacencyList();
+        Map<String, Set<String>> adjacencyList = adjacencyList.list();
         
         // generate DirectedEdges for adjacencyList.get(v1);
         TreeSet<DirectedEdge> lr = new TreeSet<DirectedEdge>(/*new RadialComparator(v1)*/);
@@ -383,6 +412,22 @@ An implementation of the Graph interface that splits one of the black edges
 in two by adding a new sprout on the connection.
 
 If the new sprout is close to a red point, paint it black.
+
+#### Vertex degree
+
+A degree of a vertex is a number of edges that are incident to the vertex.
+We also wish to specify the color of the incident edges that we wish to count.
+
+Possible design:
+
+``` java
+public final class VertexDegree extends Number {
+    public VertexDegree(edges, vertexLabel, edgeColor) {
+        this(edges, new AdjacencyList(edges), vertexLabel, edgeColor);
+    }
+    public VertexDegree(edges, adjacencyList, vertexLabel, edgeColor) {...}
+}
+```
 
 ## Reference
 
