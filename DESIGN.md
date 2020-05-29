@@ -142,15 +142,15 @@ Since the application runs in a single thread, there is no need for an atomic
 integer. A simple design like this would suffice:
 
 ``` java
-public final class Label {
-    public Label(int counter)
+public final class Labels {
+    public Labels(int counter)
 
-    String label() {
+    String current() {
         return "v" + counter;
     }
 
     Label next() {
-        return new Label(counter + 1);
+        return new Labels(counter + 1);
     }
 }
 ```
