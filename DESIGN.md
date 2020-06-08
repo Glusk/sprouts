@@ -143,9 +143,10 @@ integer. A simple design like this would suffice:
 
 ``` java
 public final class Label {
-    public Label(int id)
+    public Label(int id) {...}
 
-    String current() {
+    @Override
+    String toString() {
         return "v" + id;
     }
 
