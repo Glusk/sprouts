@@ -362,7 +362,11 @@ public class Faces {
 
 ### Graph
 
-We need an object that will keep track of `edges`, `vertices`.
+We need an object that will keep track of `edges`, `vertices`. *Edges* and
+*vertices* are the *single source of truth* - that is, any change made to
+the Graph can be done by updating its vertices or edges and all other objects
+(local rotations, faces, directed edges, ...) can be rebuild to reflect the
+change.
 
 Possible design:
 
@@ -370,7 +374,6 @@ Possible design:
 public interface Graph {
     Map<Endpoints, EdgeAttributes> edges();
     Map<String, VertexAttributes> vertices();
-    Faces faces();
 }
 ```
 
