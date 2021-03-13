@@ -181,6 +181,11 @@ public final class MoveDrawing implements Snapshot {
     }
 
     @Override
+    public Graph currentState() {
+        return this.currentState;
+    }
+
+    @Override
     public void render(final ShapeRenderer renderer) {
         new RenderedMove(
             moveFromSampleAndOrigin(),

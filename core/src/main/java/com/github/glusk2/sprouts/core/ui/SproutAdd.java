@@ -229,6 +229,11 @@ public final class SproutAdd implements Snapshot {
     }
 
     @Override
+    public Graph currentState() {
+        return this.currentState;
+    }
+
+    @Override
     public void render(final ShapeRenderer renderer) {
         new RenderedMove(
             moveFromOriginAndStroke(currentState, moveOrigin, stroke()),

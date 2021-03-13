@@ -121,6 +121,11 @@ public final class BeforeMove implements Snapshot {
     }
 
     @Override
+    public Graph currentState() {
+        return this.currentState;
+    }
+
+    @Override
     public void render(final ShapeRenderer renderer) {
         currentState.render(renderer);
         if (!new IsMovePossible(currentState).check()) {

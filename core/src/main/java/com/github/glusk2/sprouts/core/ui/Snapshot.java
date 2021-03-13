@@ -2,6 +2,7 @@ package com.github.glusk2.sprouts.core.ui;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.comb.Graph;
 
 /**
  * A Snapshot is a "picture" of the game board.
@@ -47,4 +48,11 @@ public interface Snapshot {
      * @param renderer the graphics primitives rendering object
      */
     void render(ShapeRenderer renderer);
+
+    /**
+     * Returns the current state of the game board as Graph.
+     *
+     * @return the Graph representing the current game board state
+     */
+    Graph currentState();
 }
