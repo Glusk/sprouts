@@ -22,15 +22,15 @@ import org.junit.Test;
 /** A test class for SproutAdd. */
 public class SproutAddTest {
     /**
-     * Checks if the middle sprout placed on the intersection between the new
-     * move and existing cobweb edge is added to the combinatorial
+     * Checks if the middle sprout, placed on the intersection between the new
+     * move and existing cobweb edge, is added to the combinatorial
      * representation correctly.
      */
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void correctlyPlacesNewSproutOnCobwebMoveIntersection() {
-        Vertex v1 = new PresetVertex(new Vector2(-4, 0));
-        Vertex v2 = new PresetVertex(new Vector2(4, 0));
+        Vertex v1 = new PresetVertex(new Vector2(-50, 0));
+        Vertex v2 = new PresetVertex(new Vector2(50, 0));
 
         Map<Vertex, LocalRotations> rotationsList =
             new HashMap<Vertex, LocalRotations>();
@@ -46,28 +46,32 @@ public class SproutAddTest {
                 new StraightLineEdge(v1)
             )
         );
-        Graph currentState = new PresetGraph(rotationsList, 1, 16);
+        Graph currentState = new PresetGraph(rotationsList);
 
         Graph nextState = new SproutAdd(
             currentState,
-            1,
+            10,
             16,
             v1,
             Arrays.asList(
-                new Vector2(-3, 2),
-                new Vector2(0, 2),
-                new Vector2(2, 0),
-                new Vector2(0, -2),
-                new Vector2(-3, -2),
+                new Vector2(-20, 20),
+                new Vector2(0, 40),
+                new Vector2(20, 1),
+                new Vector2(0, -40),
+                new Vector2(-20, -20),
                 v1.position()
             ),
-            new Rectangle(-20, -20, 200, 200)
-        ).touchUp(new Vector2(2, 0)).currentState();
+            new Rectangle(-100, -100, 1000, 1000)
+        ).touchUp(new Vector2(20, 0)).currentState();
 
         assertFalse(
             "Cobweb not torn!",
             nextState.edges().contains(
                 new CompoundEdge.Wrapped(v1, new StraightLineEdge(v2))
+            )
+            ||
+            nextState.edges().contains(
+                new CompoundEdge.Wrapped(v2, new StraightLineEdge(v1))
             )
         );
     }
