@@ -2,10 +2,10 @@
 
 ![logo](android/res/drawable-xxhdpi/ic_launcher.png)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/239591577a9a4a83ab80bbd2f6fcfdea)](https://app.codacy.com/app/Glusk2/sprouts?utm_source=github.com&utm_medium=referral&utm_content=Glusk2/sprouts&utm_campaign=Badge_Grade_Dashboard)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cd11be0d03e64e12995b773e0d555c04)](https://www.codacy.com/gh/Glusk/sprouts/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Glusk/sprouts&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.com/Glusk/sprouts.svg?branch=master)](https://travis-ci.com/Glusk/sprouts)
-[![Build status](https://ci.appveyor.com/api/projects/status/8p0xficdfjn90odb/branch/master?svg=true)](https://ci.appveyor.com/project/Glusk2/sprouts/branch/master)
-[![Coverage Status](https://coveralls.io/repos/github/Glusk2/sprouts/badge.svg?branch=master)](https://coveralls.io/github/Glusk2/sprouts?branch=master)
+[![Build status](https://ci.appveyor.com/api/projects/status/envq5g9ay0djc65f/branch/master?svg=true)](https://ci.appveyor.com/project/Glusk/sprouts/branch/master)
+[![Coverage Status](https://coveralls.io/repos/github/Glusk/sprouts/badge.svg?branch=master)](https://coveralls.io/github/Glusk/sprouts?branch=master)
 [![LoC](https://tokei.rs/b1/github/Glusk2/sprouts)](https://github.com/Glusk2/sprouts)
 
 A multi-platform implementation of
