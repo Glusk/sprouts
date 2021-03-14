@@ -32,3 +32,10 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: ./gradlew core:jacocoTestReport core:coveralls
+    - name: Generate Javadocs
+      run: ./gradlew aggregateJavadocs
+    - name: Publish Javadocs
+      uses: JamesIves/github-pages-deploy-action@4.1.0
+      with:
+        branch: gh-pages
+        folder: build/docs/javadoc
