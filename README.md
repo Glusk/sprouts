@@ -13,6 +13,10 @@ A multi-platform implementation of
 [Sprouts](https://en.wikipedia.org/wiki/Sprouts_(game)),
 built with [libGDX](https://github.com/libgdx/libgdx).
 
+<a href="https://glusk2.itch.io/sprouts?secret=BNrV8Imal5dSYR1o91YLZLzrJP8">
+  <img src="./itchio_logo.svg" height="80">
+</a>
+
 ## Getting started
 
 These instructions will get you a copy of the project up and running on your
