@@ -100,6 +100,14 @@ public final class TransformedGraph implements Graph {
     }
 
     @Override
+    public Graph splitEdge(final CompoundEdge edge, final Vertex vertex) {
+        if (cachedTransformation == null) {
+            cachedTransformation = transformation.transformed();
+        }
+        return cachedTransformation.splitEdge(edge, vertex);
+    }
+
+    @Override
     public boolean isAliveSprout(final Vertex vertex) {
         if (cachedTransformation == null) {
             cachedTransformation = transformation.transformed();

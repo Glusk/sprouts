@@ -10,6 +10,7 @@ import java.util.Set;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.geom.PolylineBatch;
 
 /** A reference Graph implementation. */
@@ -265,6 +266,65 @@ public final class PresetGraph implements Graph {
             }
         }
         return this;
+    }
+
+    @Override
+    public Graph splitEdge(final CompoundEdge edge, final Vertex vertex) {
+        // find the first point on the edge, closest to p
+        Vector2 closest = null;
+        int splitIndex = -1;
+        List<Vector2> points = edge.direction().polyline().points();
+        for (int i = 0; i < points.size(); i++) {
+            if (points.get(i).dst(vertex.position()) <= lineThickness) {
+                closest = points.get(i);
+                splitIndex = i;
+                break;
+            }
+        }
+        if (closest == null) {
+            return this;
+        }
+
+        Graph result = this;
+        // remove edge from the graph
+        result = result.without(edge.origin(), edge.direction());
+        // remove the opposite of edge from the graph
+        CompoundEdge opposite = new ReversedCompoundEdge(edge);
+        result = result.without(opposite.origin(), opposite.direction());
+
+        Color fromColor = Color.BLACK;
+        for (Vertex v : vertices()) {
+            if (v.position().equals(points.get(splitIndex + 1))) {
+                fromColor = v.color();
+            }
+        }
+
+        // split edge
+        CompoundEdge s1 = new CompoundEdge.Wrapped(
+            edge.origin(),
+            new PolylineEdge(
+                edge.direction().from().color(),
+                Color.BLACK,
+                points.subList(0, splitIndex + 1)
+            )
+        );
+        CompoundEdge s2 = new CompoundEdge.Wrapped(
+            new PresetVertex(Color.BLACK, points.get(splitIndex)),
+            new PolylineEdge(
+                fromColor,
+                edge.direction().to().color(),
+                points.subList(splitIndex + 1, points.size())
+            )
+        );
+        // add both ends to the graph
+        result = result.with(s1.origin(), s1.direction());
+        result = result.with(s2.origin(), s2.direction());
+        // add both opposites to the graph
+        opposite = new ReversedCompoundEdge(s1);
+        result = result.with(opposite.origin(), opposite.direction());
+        opposite = new ReversedCompoundEdge(s2);
+        result = result.with(opposite.origin(), opposite.direction());
+        return result;
     }
 
     @Override

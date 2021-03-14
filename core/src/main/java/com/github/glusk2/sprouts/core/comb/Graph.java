@@ -90,6 +90,16 @@ public interface Graph extends RenderBatch {
     Graph simplified();
 
     /**
+     * Creates and returns a new graph that splits {@code edge} in two at the
+     * {@code vertex}.
+     *
+     * @param edge the edge to split
+     * @param vertex the splitting point
+     * @return new graph without {@code edge}
+     */
+    Graph splitEdge(CompoundEdge edge, Vertex vertex);
+
+    /**
      * Checks whether {@code vertex} is a living sprout connected to
      * {@code this} Graph.
      * <p>
