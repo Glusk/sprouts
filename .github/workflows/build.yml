@@ -28,3 +28,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build connectedCheck
+    - name: Generate coverage
+      run: ./gradlew core:jacocoTestReport core:coveralls
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
