@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.core.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -9,9 +10,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.Move;
 import com.github.glusk2.sprouts.core.RenderedMove;
+import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
+import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.MoveTransformation;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
@@ -20,8 +23,6 @@ import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
 import com.github.glusk2.sprouts.core.geom.Polyline;
-import com.github.glusk2.sprouts.core.geom.PolylinePiece;
-import com.github.glusk2.sprouts.core.geom.TrimmedPolyline;
 
 /**
  * This Snapshot represents the game board <em>after</em> a Move is drawn,
@@ -152,67 +153,44 @@ public final class SproutAdd implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
-        Polyline firstHalf =
-            new PolylinePiece(
-                stroke(),
-                position,
-                true,
-                moveThickness
-            );
-        Polyline secondHalf =
-            new TrimmedPolyline(
-                new PolylinePiece(
-                    stroke(),
-                    position,
-                    false,
-                    moveThickness
-                ),
-                2 * moveThickness
-            );
-
-        if (!firstHalf.points().isEmpty() && !secondHalf.points().isEmpty()) {
-            Vertex sproutToAdd =
-                new PresetVertex(
-                    Color.BLACK,
-                    position
-                );
-            Graph stateWithSprout = currentState.with(sproutToAdd);
-
-            Move first =
+        Polyline stroke = stroke();
+        if (!stroke().points().isEmpty()) {
+            Move move =
                 moveFromOriginAndStroke(
-                    stateWithSprout,
+                    currentState,
                     moveOrigin,
-                    firstHalf
+                    stroke
                 );
-            Graph stateAfterFirstMove =
-               new TransformedGraph(
-                   new MoveTransformation(
-                       first,
-                       stateWithSprout
-                   )
-               );
-
-            Move second =
-                moveFromOriginAndStroke(
-                    stateAfterFirstMove,
-                    sproutToAdd,
-                    secondHalf
-                );
-            Graph stateAfterSecondMove =
-               new TransformedGraph(
-                   new MoveTransformation(
-                       second,
-                       stateAfterFirstMove
-                   )
-               );
-
-            return
-                new BeforeMove(
-                    stateAfterSecondMove,
-                    moveThickness,
-                    circleSegmentCount,
-                    gameBounds
-                );
+            CompoundEdge edgeToSplit = null;
+            Vertex sproutToAdd = null;
+            Iterator<Submove> it = move.iterator();
+            while (it.hasNext()) {
+                Submove next = it.next();
+                for (Vector2 p : next.direction().polyline().points()) {
+                    if (p.dst(position) <= moveThickness) {
+                        edgeToSplit = next;
+                        sproutToAdd = new PresetVertex(Color.BLACK, p);
+                    }
+                }
+                it = next;
+            }
+            if (edgeToSplit != null) {
+                return
+                    new BeforeMove(
+                        new TransformedGraph(
+                            new MoveTransformation(
+                                move,
+                                currentState
+                            )
+                        ).splitEdge(
+                            edgeToSplit,
+                            sproutToAdd
+                        ),
+                        moveThickness,
+                        circleSegmentCount,
+                        gameBounds
+                    );
+            }
         }
         return
             new BeforeMove(
@@ -226,6 +204,11 @@ public final class SproutAdd implements Snapshot {
     @Override
     public Snapshot touchDragged(final Vector2 position) {
         return this;
+    }
+
+    @Override
+    public Graph currentState() {
+        return this.currentState;
     }
 
     @Override
