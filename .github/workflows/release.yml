@@ -37,8 +37,8 @@ jobs:
       - name: Tag a new release
         run: |
           # Get the tag from ${{ github.event.comment.body }}
-          export tag=$(echo ${{ github.event.comment.body }} | grep -E "$MSG_REGEX" | grep -Eo "$TAG_REGEX")
-          echo "::set-env name=tag::$tag"
+          tag=$(echo ${{ github.event.comment.body }} | grep -E "$MSG_REGEX" | grep -Eo "$TAG_REGEX")
+          echo "tag=$tag" >> $GITHUB_ENV
           if [[ $tag == "" ]]; then return -1; fi
           # Strip the 'v' prefix from the tag for version
           version=${tag#"v"}
@@ -78,6 +78,7 @@ jobs:
       - name: Butler deploy
         run: bash ./deploy.sh
         env:
+          tag: ${{ env.tag }}
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
       - name: Error message
         if: failure()
