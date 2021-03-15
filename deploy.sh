@@ -16,7 +16,7 @@ prepare_butler() {
 
 prepare_and_push() {
     echo "Push $3 build to itch.io..."
-    ./butler push $2 $1:$3 --userversion "${TRAVIS_TAG}"
+    ./butler push $2 $1:$3 --userversion "${tag}"
 }
 
 download_if_not_exist() {
@@ -26,9 +26,9 @@ download_if_not_exist() {
 }
 
 project="glusk2/sprouts"
-desktop="desktop/build/libs/sprouts-$TAG.jar"
-android="android/build/outputs/apk/release/sprouts-$TAG.apk"
-html="sprouts-$TAG.zip"
+desktop="desktop/build/libs/sprouts-$tag.jar"
+android="android/build/outputs/apk/release/sprouts-$tag.apk"
+html="sprouts-$tag.zip"
 
 
 prepare_butler
