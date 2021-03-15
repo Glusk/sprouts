@@ -37,7 +37,8 @@ jobs:
       - name: Tag a new release
         run: |
           # Get the tag from ${{ github.event.comment.body }}
-          tag=$(echo ${{ github.event.comment.body }} | grep -E "$MSG_REGEX" | grep -Eo "$TAG_REGEX")
+          export tag=$(echo ${{ github.event.comment.body }} | grep -E "$MSG_REGEX" | grep -Eo "$TAG_REGEX")
+          echo "::set-env name=tag::$tag"
           if [[ $tag == "" ]]; then return -1; fi
           # Strip the 'v' prefix from the tag for version
           version=${tag#"v"}
