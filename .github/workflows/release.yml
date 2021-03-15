@@ -76,6 +76,8 @@ jobs:
           zip -r sprouts-$tag.zip ./html/build/dist/
       - name: Butler deploy
         run: bash ./deploy.sh
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
       - name: Error message
         if: failure()
         run: |-
