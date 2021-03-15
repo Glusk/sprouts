@@ -92,6 +92,7 @@ jobs:
               }'
       - name: Bump to snapshot
         run: |
+          version=${tag#"v"}
           ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version-SNAPSHOT
           git commit -am "Bumped project version to $tag-SNAPSHOT"
             # Notify
