@@ -75,7 +75,7 @@ jobs:
           ./gradlew html:dist
           zip -r sprouts-$tag.zip ./html/build/dist/
       - name: Butler deploy
-        run: ./deploy.sh
+        run: bash ./deploy.sh
       - name: Error message
         if: failure()
         run: |-
