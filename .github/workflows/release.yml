@@ -45,27 +45,38 @@ jobs:
           perl -i.orig -pe '/versionCode/ && s/([0-9]+)/$1+1 . $2/e' android/build.gradle
           chmod +x gradlew
           ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version
-          if [[ $? ]]
-          then
-            # Tag the new version
-            git commit -am "Bumped project version to $tag"
-            git tag -a $tag -m "Release $tag"
-            # Bump to snapshot
-            ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version-SNAPSHOT
-            git commit -am "Bumped project version to $tag-SNAPSHOT"
-            # Notify
-            curl --request POST \
-            --url --url ${{ github.event.comment.issue_url }}/comments \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'content-type: application/json' \
-            --data '{
-              "body": "> ${{ github.event.comment.body }} \n\nSuccessfully released a new version! See [tags](https://github.com/${{ github.repository }}/tags/)."
-              }'
-          else
-            return -1
-          fi
-      - 
-        name: Error message
+          # Tag the new version
+          git commit -am "Bumped project version to $tag"
+          git tag -a $tag -m "Release $tag"
+      - name: Generate Android release APK
+        run: ./gradlew android:assembleRelease
+      - name: Sign Android release APK
+        uses: r0adkll/sign-android-release@v1
+        # ID used to access action output
+        id: sign_app
+        with:
+          releaseDirectory: android/build/outputs/apk/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+        env:
+          # override default build-tools version (29.0.3) -- optional
+          BUILD_TOOLS_VERSION: "28.0.3"
+        # Example use of `signedReleaseFile` output -- not needed
+      - name: Tag Android release APK
+        run: mv ${{steps.sign_app.outputs.signedReleaseFile}} android/build/outputs/apk/release/sprouts-$tag.apk
+      - name: Generate desktop release
+        run: |
+          ./gradlew desktop:dist
+          mv desktop/build/libs/desktop-*.jar desktop/build/libs/sprouts-$tag.jar
+      - name: Generate HTML release
+        run: |
+          ./gradlew html:dist
+          zip -r sprouts-$tag.zip ./html/build/dist/
+      - name: Butler deploy
+        run: ./deploy.sh
+      - name: Error message
         if: failure()
         run: |-
             curl --request POST \
@@ -75,8 +86,19 @@ jobs:
             --data '{
               "body": "> ${{ github.event.comment.body }} \n\nRelease failed!"
               }'
+      - name: Bump to snapshot
+        run: |
+          ./gradlew updateVersion -Prelease.useAutomaticVersion=true -Prelease.newVersion=$version-SNAPSHOT
+          git commit -am "Bumped project version to $tag-SNAPSHOT"
+            # Notify
+            curl --request POST \
+            --url --url ${{ github.event.comment.issue_url }}/comments \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+            --header 'content-type: application/json' \
+            --data '{
+              "body": "> ${{ github.event.comment.body }} \n\nSuccessfully released a new version! See [tags](https://github.com/${{ github.repository }}/tags/)."
+              }'
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GH_ACTION }}
-          tags: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
