@@ -59,7 +59,7 @@ jobs:
             --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
-              "body": "> ${{ github.event.comment.body }} \n\nSuccessfully released a new version: [${{ $tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ $tag }})!"
+              "body": "> ${{ github.event.comment.body }} \n\nSuccessfully released a new version! See [tags](https://github.com/${{ github.repository }}/tags/)."
               }'
           else
             return -1
