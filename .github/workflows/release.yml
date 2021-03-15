@@ -15,7 +15,7 @@ jobs:
         run: |-
             curl --request POST \
             --url ${{ github.event.comment.issue_url }}/comments \
-            --header 'authorization: Bearer ${{ secrets.GH_ACTION }}' \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
               "body": "> ${{ github.event.comment.body }} \n\n A new automated release process has been started!"
@@ -56,7 +56,7 @@ jobs:
             # Notify
             curl --request POST \
             --url --url ${{ github.event.comment.issue_url }}/comments \
-            --header 'authorization: Bearer ${{ secrets.GH_ACTION }}' \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
               "body": "> ${{ github.event.comment.body }} \n\nSuccessfully released a new version! See [tags](https://github.com/${{ github.repository }}/tags/)."
@@ -70,7 +70,7 @@ jobs:
         run: |-
             curl --request POST \
             --url ${{ github.event.comment.issue_url }}/comments \
-            --header 'authorization: Bearer ${{ secrets.GH_ACTION }}' \
+            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
             --header 'content-type: application/json' \
             --data '{
               "body": "> ${{ github.event.comment.body }} \n\nRelease failed!"
