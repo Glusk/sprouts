@@ -26,9 +26,9 @@ download_if_not_exist() {
 }
 
 project="glusk2/sprouts"
-desktop="desktop/build/libs/sprouts-$TRAVIS_TAG.jar"
-android="android/build/outputs/apk/release/sprouts-$TRAVIS_TAG.apk"
-html="sprouts-$TRAVIS_TAG.zip"
+desktop="desktop/build/libs/sprouts-$TAG.jar"
+android="android/build/outputs/apk/release/sprouts-$TAG.apk"
+html="sprouts-$TAG.zip"
 
 
 prepare_butler
