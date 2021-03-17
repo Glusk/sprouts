@@ -60,14 +60,6 @@ public final class TransformedGraph implements Graph {
     }
 
     @Override
-    public Graph with(final Vertex additionalVertex) {
-        if (cachedTransformation == null) {
-            cachedTransformation = transformation.transformed();
-        }
-        return cachedTransformation.with(additionalVertex);
-    }
-
-    @Override
     public Graph with(final Vertex origin, final DirectedEdge direction) {
         if (cachedTransformation == null) {
             cachedTransformation = transformation.transformed();
