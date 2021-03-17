@@ -202,25 +202,6 @@ public final class PresetGraph implements Graph {
     }
 
     @Override
-    public Graph with(final Vertex additionalVertex) {
-        Map<Vertex, LocalRotations> newRotations =
-        new HashMap<Vertex, LocalRotations>(rotationsList);
-    if (rotationsList.containsKey(additionalVertex)) {
-        return this;
-    }
-    newRotations.put(
-        additionalVertex,
-        new PresetRotations(additionalVertex)
-    );
-    return
-        new PresetGraph(
-            newRotations,
-            lineThickness,
-            circleSegmentCount
-        );
-    }
-
-    @Override
     public Set<CompoundEdge> edgeFace(final CompoundEdge edge) {
         CompoundEdge next =
             new CachedCompoundEdge(
