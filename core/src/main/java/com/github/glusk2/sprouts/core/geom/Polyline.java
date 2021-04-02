@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.core.geom;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -29,6 +30,9 @@ public interface Polyline {
         /** The wrapped list of points on {@code this} polyline. */
         private final List<Vector2> wrappedPoints;
 
+        public WrappedList(final Vector2... pointsToWrap) {
+            this(Arrays.asList(pointsToWrap));
+        }
         /**
          * Creates a new polyline from a list of points.
          *
