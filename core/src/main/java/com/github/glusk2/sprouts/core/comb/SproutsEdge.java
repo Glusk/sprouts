@@ -174,4 +174,24 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
             "You can only compare edges with the same origin (from())."
         );
     }
+
+    @Override
+    public int hashCode() {
+        Vector2 v = from().position();
+        Vector2 a = secondPointInPositiveDirection();
+
+        Vector2 p1 = a.cpy().sub(v);
+
+        int h1 = from().hashCode();
+        int h2 = Float.floatToIntBits(new Vector2(1, 0).angle(p1));
+        return h1 ^ ((h2 >>> 16) | (h2 << 16));
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || ! (o instanceof SproutsEdge)) {
+            return false;
+        }
+        SproutsEdge that = (SproutsEdge) o;
+        return this.from().equals(that.from()) && this.compareTo(that) == 0;
+    }
 }
