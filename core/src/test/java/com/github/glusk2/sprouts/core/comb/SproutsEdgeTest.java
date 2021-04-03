@@ -14,7 +14,7 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
 
 import org.junit.Test;
 
-public final class DirectedEdgeTest {
+public final class SproutsEdgeTest {
     @Test
     public void oppositePointersAreNotNotEqual() {
         assertThat(
