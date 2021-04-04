@@ -1,14 +1,13 @@
 package com.github.glusk2.sprouts.core.comb;
 
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
  * Only edges with the same origin (from()) shall be valid as constructor
- * arguments.
+ * arguments. Otherwise, invocations of {@code next()} will error with
+ * {@code IllegalArgumentException}.
  */
 public final class SproutsRotations {
 
@@ -18,16 +17,6 @@ public final class SproutsRotations {
         this(new TreeSet<>(Arrays.asList(edges)));
     }
     public SproutsRotations(SortedSet<SproutsEdge> edges) {
-        Set<Vertex> origins = new HashSet<>();
-        for (SproutsEdge e : edges) {
-            origins.add(e.from());
-        }
-        if (origins.size() != 1) {
-            throw new IllegalArgumentException(
-                "The edge set is either empty or some of the edges "
-              + "differ by their origin (from())."
-            );
-        }
         this.edges = edges;
     }
 
