@@ -130,8 +130,6 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
     }
     */
 
-    /*
-    // YAGNI
     public SproutsEdge reversed() {
         return
             new SproutsEdge(
@@ -143,7 +141,6 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
                 hasHooks
             );
     }
-    */
 
     private Vector2 secondPointInPositiveDirection() {
         List<Vector2> points = polyline.points();
