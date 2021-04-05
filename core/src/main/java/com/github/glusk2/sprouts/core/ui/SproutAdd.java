@@ -18,6 +18,7 @@ import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.MoveTransformation;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
@@ -220,5 +221,11 @@ public final class SproutAdd implements Snapshot {
         ).render(renderer);
 
         currentState.render(renderer);
+    }
+
+    @Override
+    public SproutsGameState gameState() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
