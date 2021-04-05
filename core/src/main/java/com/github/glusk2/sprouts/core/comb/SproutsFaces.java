@@ -61,4 +61,37 @@ public final class SproutsFaces {
         }
         return faces;
     }
+
+    /**
+     * Returns the face in which the {@code submove} is drawn.
+     * <p>
+     * A submove is drawn into a face that <strong>contains</strong> the
+     * first directed edge <em>after</em> the {@code submove} - {@code next}.
+     * <p>
+     * {@code next} is defined as:
+     * <pre>
+     * // Map&lt;Vertex, SproutsRotations&gt; rotations = ...
+     * SproutsEdge next = rotations.get(submove.from()).next(submove);
+     * </pre>
+     *
+     * @param submove A submove in the game of sprouts. The submove need not be
+     *                completed.
+     * @throws IllegalArgumentException if {@code submove} is not connected to
+     * the graph whose faces are represented by {@code this} object
+     */
+    public Set<SproutsEdge> drawnIn(final SproutsEdge submove) {
+        Map<Vertex, SproutsRotations> rotations = this.makeRotations();
+        Set<Set<SproutsEdge>> faces = this.faces();
+
+        SproutsEdge next = rotations.get(submove.from()).next(submove);
+        for (Set<SproutsEdge> face : faces) {
+            if (face.contains(next)) {
+                return face;
+            }
+        }
+        throw new IllegalArgumentException(
+            "The submove is not connected to the graph whose faces are "
+          + "represented by \"this\" object."
+        );
+    }
 }
