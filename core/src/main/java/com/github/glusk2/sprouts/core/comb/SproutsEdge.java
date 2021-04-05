@@ -126,6 +126,10 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return edgeColor;
     }
 
+    public Polyline polyline() {
+        return this.polyline;
+    }
+
     /*
     // YAGNI
     public Polyline intersectionPolyline() {
