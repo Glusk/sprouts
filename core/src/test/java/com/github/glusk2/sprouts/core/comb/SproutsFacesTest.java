@@ -1,6 +1,8 @@
 package com.github.glusk2.sprouts.core.comb;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -89,7 +91,7 @@ public final class SproutsFacesTest {
             new SproutsFaces(
                 v1v2, v2v1, v1v2dot, v2v1dot
             ).findFirstCobwebEdgeInTwoFaces(Color.RED),
-            not(null)
+            is(not(nullValue()))
         );
     }
 }

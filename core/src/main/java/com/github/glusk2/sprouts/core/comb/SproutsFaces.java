@@ -107,7 +107,7 @@ public final class SproutsFaces {
      * @param cobwebColor the colour of the cobweb edges
      */
     public SproutsEdge findFirstCobwebEdgeInTwoFaces(Color cobwebColor) {
-        Set<Set<SproutsEdge>> faces =this.faces();
+        Set<Set<SproutsEdge>> faces = this.faces();
         Set<SproutsEdge> burntRed = new HashSet<>();
         for (SproutsEdge e : this.edges) {
             if (e.color().equals(cobwebColor) && !burntRed.contains(e)) {
