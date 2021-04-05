@@ -86,6 +86,18 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         final Color edgeColor,
         final boolean hasHooks
     ) {
+        /* // YAGNI
+        if (!hasHooks && polyline.points().size() < 2) {
+            throw new IllegalArgumentException(
+                "An edge without hooks must have at least 2 points"
+            );
+        }
+        if (hasHooks && polyline.points().size() < 4) {
+            throw new IllegalArgumentException(
+                "An edge with hooks must have at least 4 points"
+            );
+        }
+        */
         this.direction = direction;
         this.polyline = polyline;
         this.fromColor = fromColor;
