@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.GraphCreation;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
+import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 
@@ -127,8 +129,10 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public void render(final ShapeRenderer renderer) {
-        currentState.render(renderer);
-        if (!new IsMovePossible(currentState).check()) {
+        SproutsGameState gameState = this.gameState();
+        // currentState.render(renderer);
+        gameState.render(renderer, moveThickness, circleSegmentCount);
+        /*if (!new IsMovePossible(currentState).check()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -147,5 +151,11 @@ public final class BeforeMove implements Snapshot {
 
             Gdx.gl.glDisable(GL20.GL_BLEND);
         }
+        */
+    }
+
+    @Override
+    public SproutsGameState gameState() {
+        return new SproutsInitialState(4, gameBounds);
     }
 }
