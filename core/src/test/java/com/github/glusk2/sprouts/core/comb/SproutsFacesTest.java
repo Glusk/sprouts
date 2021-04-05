@@ -1,6 +1,8 @@
 package com.github.glusk2.sprouts.core.comb;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,5 +73,23 @@ public final class SproutsFacesTest {
         expected.add(f1);
         expected.add(f2);
         assertEquals(expected, faces.faces());
+    }
+    @Test
+    public void detectsACobwebEdgeThatIsInTwoFaces() {
+        SproutsEdge v1v2 = new SproutsEdge(
+            new Polyline.WrappedList(Vector2.Zero, new Vector2(1, 1), new Vector2(3, 0)),
+            Color.BLACK, Color.BLACK);
+        SproutsEdge v2v1 = v1v2.reversed();
+        SproutsEdge v1v2dot = new SproutsEdge(
+            new Polyline.WrappedList(Vector2.Zero, new Vector2(1, -1), new Vector2(3, 0)),
+            Color.BLACK, Color.BLACK);
+        SproutsEdge v2v1dot = v1v2dot.reversed();
+
+        assertThat(
+            new SproutsFaces(
+                v1v2, v2v1, v1v2dot, v2v1dot
+            ).findFirstCobwebEdgeInTwoFaces(Color.RED),
+            not(null)
+        );
     }
 }

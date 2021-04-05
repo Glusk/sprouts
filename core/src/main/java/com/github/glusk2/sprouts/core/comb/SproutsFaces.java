@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.badlogic.gdx.graphics.Color;
 
 public final class SproutsFaces {
     private Set<SproutsEdge> edges;
@@ -93,5 +94,33 @@ public final class SproutsFaces {
             "The submove is not connected to the graph whose faces are "
           + "represented by \"this\" object."
         );
+    }
+    /**
+     * Finds a pair of cobweb edges that reside in two separate
+     * faces and returns either one of the edges in a pair as a result.
+     * <p>
+     * If there are multiple such pairs, only one is detected. Which one
+     * exactly is undefined.
+     * <p>
+     * If such a pair does not exist, this method returns {@code null}
+     *
+     * @param cobwebColor the colour of the cobweb edges
+     */
+    public SproutsEdge findFirstCobwebEdgeInTwoFaces(Color cobwebColor) {
+        Set<Set<SproutsEdge>> faces =this.faces();
+        Set<SproutsEdge> burntRed = new HashSet<>();
+        for (SproutsEdge e : this.edges) {
+            if (e.color().equals(cobwebColor) && !burntRed.contains(e)) {
+                burntRed.add(e);
+                burntRed.add(e.reversed());
+                for (Set<SproutsEdge> face : faces) {
+                    if (face.contains(e) && !face.contains(e.reversed())) {
+                        // e and e.reversed() are in different faces!
+                        return e;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

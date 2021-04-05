@@ -122,11 +122,9 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return new PresetVertex(toColor, points.get(0));
     }
 
-    /* // YAGNI
     public Color color() {
         return edgeColor;
     }
-    */
 
     /*
     // YAGNI
