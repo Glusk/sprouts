@@ -195,7 +195,6 @@ public final class SubmoveElement implements Submove {
                 }
             }
 
-            /* todo: additional checks:)
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
                 // Check if crosses itself
@@ -211,12 +210,16 @@ public final class SubmoveElement implements Submove {
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
                     returnPoints.add(crossPoint.position());
                     return
-                        new PolylineEdge(
-                            origin().color(),
+                        new SproutsEdge(
+                            true,
+                            new Polyline.WrappedList(returnPoints),
+                            origin.color(),
                             Color.GRAY,
-                            returnPoints
+                            Color.GRAY,
+                            true
                         );
                 }
+                /*
                 // Check if crosses the face
                 crossPoint =
                     new FaceIntersectionSearch(moveFace, p0, p1).result();
@@ -234,8 +237,8 @@ public final class SubmoveElement implements Submove {
                             toColor,
                             returnPoints
                         );
-                }
-            }*/
+                }*/
+            }
         }
         return
             new SproutsEdge(true, new Polyline.WrappedList(strokePoints), origin.color(), Color.CLEAR);
