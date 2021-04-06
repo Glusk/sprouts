@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 public interface SproutsGameState {
     Set<SproutsEdge> edges();
     // TODO: make this method default
+    Set<Vertex> vertices();
+    // TODO: make this method default
     void render(
         ShapeRenderer renderer,
         float lineThickness,

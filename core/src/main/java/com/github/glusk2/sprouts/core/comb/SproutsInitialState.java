@@ -98,7 +98,6 @@ public final class SproutsInitialState implements SproutsGameState {
         */
         
         Set<SproutsEdge> drawnEdges = new HashSet<>();
-        Set<Vertex> vertices = new HashSet<>();
         renderer.begin(ShapeType.Filled);
         for (SproutsEdge edge : edges()) {
             if (!drawnEdges.contains(edge)) {
@@ -111,11 +110,9 @@ public final class SproutsInitialState implements SproutsGameState {
                 ).render(renderer);
                 drawnEdges.add(edge);
                 drawnEdges.add(edge.reversed());
-                vertices.add(edge.from());
-                vertices.add(edge.to());
             }
         }
-        for (Vertex v : vertices) {
+        for (Vertex v : vertices()) {
             renderer.setColor(v.color());
             renderer.circle(
                 v.position().x,
@@ -141,5 +138,15 @@ public final class SproutsInitialState implements SproutsGameState {
 
         }
         renderer.end();
+    }
+
+    @Override
+    public Set<Vertex> vertices() {
+        Set<Vertex> vertices = new HashSet<>();
+        for (SproutsEdge edge : edges()) {
+            vertices.add(edge.from());
+            vertices.add(edge.to());
+        }
+        return vertices;
     }
 }
