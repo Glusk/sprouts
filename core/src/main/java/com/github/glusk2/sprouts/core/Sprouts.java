@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -34,6 +35,7 @@ public final class Sprouts extends Game {
     @Override
     public void create() {
         renderer = new ShapeRenderer();
+        Gdx.graphics.setContinuousRendering(false);
         this.setScreen(
             new MainScreen(
                 this,
