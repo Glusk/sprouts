@@ -130,8 +130,6 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return this.polyline;
     }
 
-    /*
-    // YAGNI
     public Polyline intersectionPolyline() {
         if (hasHooks) {
             List<Vector2> points = polyline.points();
@@ -142,7 +140,6 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         }
         return polyline;
     }
-    */
 
     public SproutsEdge reversed() {
         return

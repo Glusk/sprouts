@@ -172,9 +172,7 @@ public final class SubmoveElement implements Submove {
                             new ArrayList<Vector2>(strokePoints.subList(0, i))
                         ),
                         origin.color(),
-                        Color.GRAY,
-                        Color.GRAY,
-                        true
+                        Color.GRAY
                     );
             }
 
@@ -214,12 +212,9 @@ public final class SubmoveElement implements Submove {
                             true,
                             new Polyline.WrappedList(returnPoints),
                             origin.color(),
-                            Color.GRAY,
-                            Color.GRAY,
-                            true
+                            Color.GRAY
                         );
                 }
-                /*
                 // Check if crosses the face
                 crossPoint =
                     new FaceIntersectionSearch(moveFace, p0, p1).result();
@@ -232,12 +227,13 @@ public final class SubmoveElement implements Submove {
                         toColor = Color.GRAY;
                     }
                     return
-                        new PolylineEdge(
-                            origin().color(),
-                            toColor,
-                            returnPoints
+                        new SproutsEdge(
+                            true,
+                            new Polyline.WrappedList(returnPoints),
+                            origin.color(),
+                            toColor
                         );
-                }*/
+                }
             }
         }
         return
