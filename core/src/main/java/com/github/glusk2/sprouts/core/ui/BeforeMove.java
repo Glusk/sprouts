@@ -85,10 +85,9 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public Snapshot touchDown(final Vector2 position) {
-        /*
-        if (!new IsMovePossible(currentState).check()) {
+        if (!new IsMovePossible(gameState).check()) {
             return this;
-        }*/
+        }
 
         for (Vertex v : gameState.vertices()) {
             if (
@@ -127,10 +126,8 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public void render(final ShapeRenderer renderer) {
-        SproutsGameState gameState = this.gameState();
-        // currentState.render(renderer);
         gameState.render(renderer, moveThickness, circleSegmentCount);
-        /*if (!new IsMovePossible(currentState).check()) {
+        if (!new IsMovePossible(gameState).check()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -149,7 +146,6 @@ public final class BeforeMove implements Snapshot {
 
             Gdx.gl.glDisable(GL20.GL_BLEND);
         }
-        */
     }
 
     @Override

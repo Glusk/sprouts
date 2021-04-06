@@ -142,23 +142,24 @@ public final class SubmoveElement implements Submove {
                 )
             );
         for (int i = 0; i < strokePoints.size(); i++) {
-            /* ToDO: check #1
             if (
                 i >= INVALID_WINDOW
              && !new IsSubmovePossibleInFace(
-                    origin().color().equals(Color.BLACK),
+                    origin.color().equals(Color.BLACK),
                     currentState,
                     moveFace
                 ).check()
             ) {
                 return
-                    new PolylineEdge(
-                        origin().color(),
-                        Color.GRAY,
-                        new ArrayList<Vector2>(strokePoints.subList(0, i))
+                    new SproutsEdge(
+                        true,
+                        new Polyline.WrappedList(
+                            new ArrayList<Vector2>(strokePoints.subList(0, i))
+                        ),
+                        origin.color(),
+                        Color.GRAY
                     );
             }
-            */
 
             /* Todo: check #2
             Vector2 p1 = strokePoints.get(i);
