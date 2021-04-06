@@ -16,6 +16,7 @@ import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
+import com.github.glusk2.sprouts.core.comb.VertexDegree;
 
 /**
  * This Snapshot represents the game board <em>before</em> a Move is being
@@ -85,12 +86,15 @@ public final class BeforeMove implements Snapshot {
         /*
         if (!new IsMovePossible(currentState).check()) {
             return this;
-        }
-        for (Vertex v : currentState.vertices()) {
+        }*/
+
+        for (Vertex v : gameState.vertices()) {
             if (
                 v.position().dst(position) < 2 * moveThickness
-             && currentState.isAliveSprout(v)
+             && new VertexDegree(v, gameState, Color.RED).intValue() < 3
             ) {
+                System.out.println("can draw!");
+                /*
                 return
                     new MoveDrawing(
                         currentState,
@@ -99,9 +103,9 @@ public final class BeforeMove implements Snapshot {
                         v,
                         new LinkedList<Vector2>(),
                         gameBounds
-                    );
+                    );*/
             }
-        }*/
+        }
         return this;
     }
 
