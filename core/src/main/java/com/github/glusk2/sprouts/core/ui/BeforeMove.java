@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.GraphCreation;
+import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
@@ -91,7 +92,7 @@ public final class BeforeMove implements Snapshot {
         for (Vertex v : gameState.vertices()) {
             if (
                 v.position().dst(position) < 2 * moveThickness
-             && new VertexDegree(v, gameState, Color.RED).intValue() < 3
+             && new IsAliveSprout(v, gameState).check()
             ) {
                 System.out.println("can draw!");
                 /*
