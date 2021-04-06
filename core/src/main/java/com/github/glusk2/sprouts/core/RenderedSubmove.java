@@ -3,7 +3,6 @@ package com.github.glusk2.sprouts.core;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.github.glusk2.sprouts.core.comb.CompoundPolyline;
 import com.github.glusk2.sprouts.core.geom.PolylineBatch;
 import com.github.glusk2.sprouts.core.util.RenderBatch;
 
@@ -66,7 +65,7 @@ public final class RenderedSubmove implements RenderBatch {
             polylineColor = Color.GREEN;
         }
         new PolylineBatch(
-            new CompoundPolyline(submove),
+            submove.asEdge().polyline(),
             polylineColor,
             lineThickness,
             circleSegmentCount,

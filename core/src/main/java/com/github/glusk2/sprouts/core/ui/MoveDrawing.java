@@ -51,8 +51,8 @@ public final class MoveDrawing implements Snapshot {
     private static final float PERP_DISTANCE_MODIFIER = 3f;
 
 
-    /** The Graph that a Move is being drawn to. */
-    private final Graph currentState;
+    /** The graph that a Move is being drawn to. */
+    private final SproutsGameState gameState;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
@@ -74,7 +74,7 @@ public final class MoveDrawing implements Snapshot {
      * Creates a new MoveDrawing Snapshot from the {@code currentState},
      * {@code moveOrigin} and {@code moveSample}.
      *
-     * @param currentState the Graph that a Move is being drawn to
+     * @param gameState the Graph that a Move is being drawn to
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -86,14 +86,14 @@ public final class MoveDrawing implements Snapshot {
      *                   {@code gameBounds} is invalid
      */
     public MoveDrawing(
-        final Graph currentState,
+        final SproutsGameState gameState,
         final float moveThickness,
         final int circleSegmentCount,
         final Vertex moveOrigin,
         final List<Vector2> moveSample,
         final Rectangle gameBounds
     ) {
-        this.currentState = currentState;
+        this.gameState = gameState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.moveOrigin = moveOrigin;
@@ -120,7 +120,7 @@ public final class MoveDrawing implements Snapshot {
                             ),
                             SPLINE_SEGMENT_COUNT
                         ),
-                        currentState,
+                        gameState,
                         moveThickness * 2,
                         gameBounds
                     )
@@ -135,11 +135,14 @@ public final class MoveDrawing implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
+        // ToDO: insert new API
+        return this;
+        /*
         Move nextMove = moveFromSampleAndOrigin();
         if (nextMove.isValid() && nextMove.isCompleted()) {
             return
                 new SproutAdd(
-                    currentState,
+                    gameState,
                     moveThickness,
                     circleSegmentCount,
                     moveOrigin,
@@ -147,9 +150,7 @@ public final class MoveDrawing implements Snapshot {
                     gameBounds
                 );
         }
-        // ToDO: insert new API
-        return null;
-        /*
+
         return
             new BeforeMove(
                 currentState,
@@ -173,7 +174,7 @@ public final class MoveDrawing implements Snapshot {
             newSample.add(position);
             return
                 new MoveDrawing(
-                    currentState,
+                    gameState,
                     moveThickness,
                     circleSegmentCount,
                     moveOrigin,
@@ -186,7 +187,9 @@ public final class MoveDrawing implements Snapshot {
 
     @Override
     public Graph currentState() {
-        return this.currentState;
+        // Todo; remove old api
+        //return this.gameState;
+        throw new IllegalArgumentException("Old API!");
     }
 
     @Override
@@ -196,13 +199,11 @@ public final class MoveDrawing implements Snapshot {
             moveThickness,
             circleSegmentCount
         ).render(renderer);
-
-        currentState.render(renderer);
+        gameState.render(renderer, moveThickness, circleSegmentCount);
     }
 
     @Override
     public SproutsGameState gameState() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.gameState;
     }
 }

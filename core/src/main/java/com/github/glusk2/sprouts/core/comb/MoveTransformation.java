@@ -30,6 +30,8 @@ public final class MoveTransformation implements GraphTransformation {
 
     @Override
     public Graph transformed() {
+        throw new UnsupportedOperationException("todo");
+        /*
         Graph transformed = currentState;
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
@@ -41,6 +43,6 @@ public final class MoveTransformation implements GraphTransformation {
                 ).transformed();
             it = submove;
         }
-        return transformed;
+        return transformed;*/
     }
 }

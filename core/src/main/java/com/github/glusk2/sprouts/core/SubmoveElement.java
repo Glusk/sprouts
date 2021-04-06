@@ -17,6 +17,10 @@ import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.PolylineEdge;
 import com.github.glusk2.sprouts.core.comb.PolylineIntersectionSearch;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
+import com.github.glusk2.sprouts.core.comb.SproutsEdge;
+import com.github.glusk2.sprouts.core.comb.SproutsFaces;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
+import com.github.glusk2.sprouts.core.comb.SproutsRotations;
 import com.github.glusk2.sprouts.core.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.core.comb.SubmoveTransformation;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
@@ -42,7 +46,7 @@ public final class SubmoveElement implements Submove {
     /** The polyline approximation of the move stroke. */
     private final Polyline stroke;
     /** The game state before {@code this} Submove. */
-    private final Graph currentState;
+    private final SproutsGameState currentState;
     /**
      * The Vertex glue radius, used to auto-complete {@code this} Submove
      * when near a sprout.
@@ -74,7 +78,7 @@ public final class SubmoveElement implements Submove {
     public SubmoveElement(
         final Vertex origin,
         final Polyline stroke,
-        final Graph currentState,
+        final SproutsGameState currentState,
         final float vertexGlueRadius
     ) {
         this(
@@ -105,7 +109,7 @@ public final class SubmoveElement implements Submove {
     public SubmoveElement(
         final Vertex origin,
         final Polyline stroke,
-        final Graph currentState,
+        final SproutsGameState currentState,
         final float vertexGlueRadius,
         final Rectangle gameBounds
     ) {
@@ -117,12 +121,7 @@ public final class SubmoveElement implements Submove {
     }
 
     @Override
-    public Vertex origin() {
-        return origin;
-    }
-
-    @Override
-    public DirectedEdge direction() {
+    public SproutsEdge asEdge() {
         List<Vector2> strokePoints = stroke.points();
         if (strokePoints.isEmpty()) {
             throw
@@ -131,18 +130,19 @@ public final class SubmoveElement implements Submove {
                      + "direction!"
                 );
         }
-        Set<CompoundEdge> moveFace =
-            currentState.edgeFace(
-                new CachedCompoundEdge(
-                    origin,
-                    new StraightLineEdge(
-                        new PresetVertex(
-                            strokePoints.get(0)
-                        )
-                    )
+        Set<SproutsEdge> moveFace =
+            new SproutsFaces(
+                currentState.edges()
+            ).drawnIn(
+                new SproutsEdge(
+                    true,
+                    new Polyline.WrappedList(strokePoints),
+                    Color.BLACK, // from  
+                    Color.BLACK  // to
                 )
             );
         for (int i = 0; i < strokePoints.size(); i++) {
+            /* ToDO: check #1
             if (
                 i >= INVALID_WINDOW
              && !new IsSubmovePossibleInFace(
@@ -158,6 +158,9 @@ public final class SubmoveElement implements Submove {
                         new ArrayList<Vector2>(strokePoints.subList(0, i))
                     );
             }
+            */
+
+            /* Todo: check #2
             Vector2 p1 = strokePoints.get(i);
             if (!gameBounds.contains(p1)) {
                 return
@@ -167,6 +170,9 @@ public final class SubmoveElement implements Submove {
                         new ArrayList<Vector2>(strokePoints.subList(0, i))
                     );
             }
+            */
+
+            /* todo: check #3
             // Check if close to a sprout and finnish
             Vertex v = new NearestSproutSearch(currentState, p1).result();
             if (v.position().dst(p1) < vertexGlueRadius) {
@@ -180,6 +186,9 @@ public final class SubmoveElement implements Submove {
                         returnPoints
                     );
             }
+            */
+
+            /* todo: additional checks:)
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
                 // Check if crosses itself
@@ -219,21 +228,17 @@ public final class SubmoveElement implements Submove {
                             returnPoints
                         );
                 }
-            }
+            }*/
         }
         return
-            new PolylineEdge(
-                origin().color(),
-                Color.CLEAR,
-                strokePoints
-            );
+            new SproutsEdge(true, new Polyline.WrappedList(strokePoints), origin.color(), Color.CLEAR);
     }
 
     @Override
     public boolean isCompleted() {
         Color tipColor = Color.CLEAR;
         if (isReadyToRender()) {
-            tipColor = direction().to().color();
+            tipColor = asEdge().to().color();
         }
         return tipColor.equals(Color.BLACK) || tipColor.equals(Color.RED);
     }
@@ -249,6 +254,8 @@ public final class SubmoveElement implements Submove {
             return false;
         }
 
+        return true;
+        /* todo
         Vertex from = origin();
         Vertex to = direction().to();
 
@@ -262,16 +269,19 @@ public final class SubmoveElement implements Submove {
         if (from.equals(to)) {
             intermediate &= currentState.vertexDegree(from, Color.BLACK) < 2;
         }
-        return intermediate && !to.color().equals(Color.GRAY);
+        return intermediate && !to.color().equals(Color.GRAY);*/
     }
 
     @Override
     public boolean hasNext() {
-        return isCompleted() && !direction().to().color().equals(Color.BLACK);
+        return false;
+        //return isCompleted() && !direction().to().color().equals(Color.BLACK);
     }
 
     @Override
     public Submove next() {
+        throw new UnsupportedOperationException("TODO");
+        /*
         if (!hasNext()) {
             throw new IllegalStateException("This is the tail Submove.");
         }
@@ -299,5 +309,6 @@ public final class SubmoveElement implements Submove {
                 vertexGlueRadius,
                 gameBounds
             );
+            */
     }
 }

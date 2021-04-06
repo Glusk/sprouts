@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.core.ui;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
@@ -94,17 +95,15 @@ public final class BeforeMove implements Snapshot {
                 v.position().dst(position) < 2 * moveThickness
              && new IsAliveSprout(v, gameState).check()
             ) {
-                System.out.println("can draw!");
-                /*
                 return
                     new MoveDrawing(
-                        currentState,
+                        gameState,
                         moveThickness,
                         circleSegmentCount,
                         v,
-                        new LinkedList<Vector2>(),
+                        new LinkedList<Vector2>(Arrays.asList(v.position())),
                         gameBounds
-                    );*/
+                    );
             }
         }
         return this;
@@ -123,7 +122,7 @@ public final class BeforeMove implements Snapshot {
     // Todo: delete old API
     @Override
     public Graph currentState() {
-        return null;
+        throw new IllegalArgumentException("Old API!");
     }
 
     @Override
