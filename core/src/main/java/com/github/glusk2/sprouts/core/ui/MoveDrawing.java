@@ -136,7 +136,6 @@ public final class MoveDrawing implements Snapshot {
     @Override
     public Snapshot touchUp(final Vector2 position) {
         // ToDO: insert new API
-        return this;
         /*
         Move nextMove = moveFromSampleAndOrigin();
         if (nextMove.isValid() && nextMove.isCompleted()) {
@@ -149,26 +148,20 @@ public final class MoveDrawing implements Snapshot {
                     moveSample,
                     gameBounds
                 );
-        }
+        }*/
 
         return
             new BeforeMove(
-                currentState,
+                gameState,
                 moveThickness,
                 circleSegmentCount,
                 gameBounds
-            ); */
+            );
     }
 
     @Override
     public Snapshot touchDragged(final Vector2 position) {
-        Vector2 lastElement = null;
-        if (moveSample.isEmpty()) {
-            lastElement = moveOrigin.position();
-        } else {
-            lastElement = moveSample.get(moveSample.size() - 1);
-        }
-
+        Vector2 lastElement = moveSample.get(moveSample.size() - 1);
         if (position.dst(lastElement) > 2 * moveThickness) {
             List<Vector2> newSample = new LinkedList<Vector2>(moveSample);
             newSample.add(position);
