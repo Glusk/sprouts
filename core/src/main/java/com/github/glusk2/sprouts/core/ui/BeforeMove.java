@@ -29,8 +29,7 @@ public final class BeforeMove implements Snapshot {
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
     private final int circleSegmentCount;
-    /** The Graph that a Move will be drawn to. */
-    private final Graph currentState;
+    private final SproutsGameState gameState;
      /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
 
@@ -51,13 +50,9 @@ public final class BeforeMove implements Snapshot {
         final Rectangle gameBounds
     ) {
         this(
-            new TransformedGraph(
-                new GraphCreation(
-                    numOfSprouts,
-                    moveThickness,
-                    circleSegmentCount,
-                    gameBounds
-                )
+            new SproutsInitialState(
+                numOfSprouts,
+                gameBounds
             ),
             moveThickness,
             circleSegmentCount,
@@ -66,10 +61,7 @@ public final class BeforeMove implements Snapshot {
     }
 
     /**
-     * Creates a new Snapshot, using the specified Graph -
-     * {@code currentState}.
      *
-     * @param currentState the Graph that a Move will be drawn to
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -77,12 +69,12 @@ public final class BeforeMove implements Snapshot {
      *                   {@code gameBounds} is invalid
      */
     public BeforeMove(
-        final Graph currentState,
+        final SproutsGameState gameState,
         final float moveThickness,
         final int circleSegmentCount,
         final Rectangle gameBounds
     ) {
-        this.currentState = currentState;
+        this.gameState = gameState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.gameBounds = gameBounds;
@@ -90,6 +82,7 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public Snapshot touchDown(final Vector2 position) {
+        /*
         if (!new IsMovePossible(currentState).check()) {
             return this;
         }
@@ -108,7 +101,7 @@ public final class BeforeMove implements Snapshot {
                         gameBounds
                     );
             }
-        }
+        }*/
         return this;
     }
 
@@ -122,9 +115,10 @@ public final class BeforeMove implements Snapshot {
         return this;
     }
 
+    // Todo: delete old API
     @Override
     public Graph currentState() {
-        return this.currentState;
+        return null;
     }
 
     @Override
@@ -156,6 +150,6 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public SproutsGameState gameState() {
-        return new SproutsInitialState(4, gameBounds);
+        return this.gameState;
     }
 }

@@ -154,6 +154,9 @@ public final class SproutAdd implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
+        // todo: use new API
+        return null;
+        /*
         Polyline stroke = stroke();
         if (!stroke().points().isEmpty()) {
             Move move =
@@ -200,6 +203,7 @@ public final class SproutAdd implements Snapshot {
                 circleSegmentCount,
                 gameBounds
             );
+            */
     }
 
     @Override

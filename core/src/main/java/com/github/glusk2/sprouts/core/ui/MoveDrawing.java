@@ -147,13 +147,16 @@ public final class MoveDrawing implements Snapshot {
                     gameBounds
                 );
         }
+        // ToDO: insert new API
+        return null;
+        /*
         return
             new BeforeMove(
                 currentState,
                 moveThickness,
                 circleSegmentCount,
                 gameBounds
-            );
+            ); */
     }
 
     @Override
