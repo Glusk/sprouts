@@ -12,6 +12,7 @@ import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.DirectedEdge;
 import com.github.glusk2.sprouts.core.comb.FaceIntersectionSearch;
 import com.github.glusk2.sprouts.core.comb.Graph;
+import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsSubmovePossibleInFace;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.PolylineEdge;
@@ -25,6 +26,7 @@ import com.github.glusk2.sprouts.core.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.core.comb.SubmoveTransformation;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
+import com.github.glusk2.sprouts.core.comb.VertexDegree;
 import com.github.glusk2.sprouts.core.comb.VoidVertex;
 import com.github.glusk2.sprouts.core.geom.Polyline;
 import com.github.glusk2.sprouts.core.geom.PolylinePiece;
@@ -161,17 +163,20 @@ public final class SubmoveElement implements Submove {
                     );
             }
 
-            /* Todo: check #2
             Vector2 p1 = strokePoints.get(i);
             if (!gameBounds.contains(p1)) {
                 return
-                    new PolylineEdge(
-                        origin().color(),
+                    new SproutsEdge(
+                        true,
+                        new Polyline.WrappedList(
+                            new ArrayList<Vector2>(strokePoints.subList(0, i))
+                        ),
+                        origin.color(),
                         Color.GRAY,
-                        new ArrayList<Vector2>(strokePoints.subList(0, i))
+                        Color.GRAY,
+                        true
                     );
             }
-            */
 
             /* todo: check #3
             // Check if close to a sprout and finnish
@@ -255,22 +260,25 @@ public final class SubmoveElement implements Submove {
             return false;
         }
 
-        return true;
-        /* todo
-        Vertex from = origin();
-        Vertex to = direction().to();
+        Vertex from = origin;
+        Vertex to = asEdge().to();
 
         boolean intermediate = true;
         if (from.color().equals(Color.BLACK)) {
-            intermediate &= currentState.isAliveSprout(from);
+            intermediate &= new IsAliveSprout(from, currentState).check();
         }
         if (to.color().equals(Color.BLACK)) {
-            intermediate &= currentState.isAliveSprout(to);
+            intermediate &= new IsAliveSprout(to, currentState).check();
         }
         if (from.equals(to)) {
-            intermediate &= currentState.vertexDegree(from, Color.BLACK) < 2;
+            intermediate &=
+                new VertexDegree(
+                    from,
+                    currentState,
+                    Color.BLACK
+                ).intValue() < 2;
         }
-        return intermediate && !to.color().equals(Color.GRAY);*/
+        return intermediate && !to.color().equals(Color.GRAY);
     }
 
     @Override
