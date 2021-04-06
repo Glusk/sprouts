@@ -14,6 +14,7 @@ import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.GraphCreation;
 import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
+import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
@@ -89,21 +90,29 @@ public final class BeforeMove implements Snapshot {
             return this;
         }
 
-        for (Vertex v : gameState.vertices()) {
-            if (
-                v.position().dst(position) < 2 * moveThickness
-             && new IsAliveSprout(v, gameState).check()
-            ) {
-                return
-                    new MoveDrawing(
-                        gameState,
-                        moveThickness,
-                        circleSegmentCount,
-                        v,
-                        new LinkedList<Vector2>(Arrays.asList(v.position())),
-                        gameBounds
-                    );
-            }
+        Vertex nearest = 
+            new NearestSproutSearch(
+                gameState,
+                position,
+                2 * moveThickness,
+                Color.BLACK
+            ).result();
+        
+        if (
+            new IsAliveSprout(
+                nearest,
+                gameState
+            ).check()
+        ) {
+            return
+                new MoveDrawing(
+                    gameState,
+                    moveThickness,
+                    circleSegmentCount,
+                    nearest,
+                    new LinkedList<Vector2>(Arrays.asList(nearest.position())),
+                    gameBounds
+                );
         }
         return this;
     }

@@ -178,21 +178,22 @@ public final class SubmoveElement implements Submove {
                     );
             }
 
-            /* todo: check #3
             // Check if close to a sprout and finnish
-            Vertex v = new NearestSproutSearch(currentState, p1).result();
-            if (v.position().dst(p1) < vertexGlueRadius) {
-                List<Vector2> returnPoints =
-                    new ArrayList<Vector2>(strokePoints.subList(0, i));
-                returnPoints.add(v.position());
-                return
-                    new PolylineEdge(
-                        origin().color(),
-                        v.color(),
-                        returnPoints
-                    );
+            if (i >= 4) { // left + right hooks, so require 4 stroke points at a minimum
+                Vertex v = new NearestSproutSearch(currentState, p1).result();
+                if (v.position().dst(p1) < vertexGlueRadius) {
+                    List<Vector2> returnPoints =
+                        new ArrayList<Vector2>(strokePoints.subList(0, i));
+                    returnPoints.add(v.position());
+                    return
+                        new SproutsEdge(
+                            true,
+                            new Polyline.WrappedList(returnPoints),
+                            origin.color(),
+                            v.color()
+                        );
+                }
             }
-            */
 
             /* todo: additional checks:)
             if (i > 0) {
