@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -80,20 +81,24 @@ public final class SproutsEdgeTest {
             is(1799)
         );
     }
-    /* // YAGNI
     @Test
-    public void createSimpleEdge() {
-        new SproutsEdge(
-            true,
-            new Polyline.WrappedList(
-                Vector2.Zero,
-                new Vector2(1, 1),
-                new Vector2(2, 2),
-                new Vector2(3, 0),
-                new Vector2(4, 0)
-            ),
-            Color.BLACK,
-            Color.BLACK
+    public void properlyReversesEdgesWithDifferentColoredEndpoints() {
+        SproutsEdge original =
+            new SproutsEdge(
+                new Polyline.WrappedList(
+                    Vector2.Zero, new Vector2(1, 0)
+                ),
+                Color.RED,
+                Color.BLACK
+            );
+        SproutsEdge reversed = original.reversed();
+        assertTrue(
+            original.from().color().equals(
+                reversed.to().color()
+            )
+         && original.to().color().equals(
+             reversed.from().color()
+         )
         );
-    }*/
+    }
 }

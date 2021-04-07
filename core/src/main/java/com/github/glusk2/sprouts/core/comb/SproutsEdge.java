@@ -146,8 +146,8 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
             new SproutsEdge(
                 !direction,
                 polyline,
-                fromColor,
                 toColor,
+                fromColor,
                 edgeColor,
                 hasHooks
             );
