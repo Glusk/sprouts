@@ -189,9 +189,11 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         Vector2 a = secondPointInPositiveDirection();
 
         Vector2 p1 = a.cpy().sub(v);
+        // normalize the vector; use squared length for performance
+        p1.scl(1f / p1.len2());
 
         int h1 = from().hashCode();
-        int h2 = Float.floatToIntBits(new Vector2(1, 0).angle(p1));
+        int h2 = PresetVertex.vector2HashCode(p1);
         return h1 ^ ((h2 >>> 16) | (h2 << 16));
     }
     @Override

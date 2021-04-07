@@ -93,11 +93,20 @@ public final class PresetVertex implements Vertex {
         return label;
     }
 
+    public static int vector2HashCode(final Vector2 v) {
+        final int prime = 31;
+        long result = 1;
+        result = prime * result + Float.floatToIntBits(v.x);
+        result = prime * result + Float.floatToIntBits(v.y);
+
+        return (int) (result % Integer.MAX_VALUE);
+    }
+
     @Override
     public int hashCode() {
-        return (
-            color().hashCode() + "-" + position().hashCode()
-        ).hashCode();
+        int h1 = PresetVertex.vector2HashCode(position());
+        int h2 = color.hashCode();
+        return h1 ^ ((h2 >>> 16) | (h2 << 16));
     }
 
     @Override
