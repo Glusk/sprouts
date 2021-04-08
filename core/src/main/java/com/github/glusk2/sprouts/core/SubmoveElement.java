@@ -22,6 +22,7 @@ import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 import com.github.glusk2.sprouts.core.comb.SproutsFaces;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsRotations;
+import com.github.glusk2.sprouts.core.comb.SproutsStateAfterSubmove;
 import com.github.glusk2.sprouts.core.comb.StraightLineEdge;
 import com.github.glusk2.sprouts.core.comb.SubmoveTransformation;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
@@ -122,8 +123,10 @@ public final class SubmoveElement implements Submove {
         this.gameBounds = gameBounds;
     }
 
+    SproutsEdge cache = null;
     @Override
     public SproutsEdge asEdge() {
+        if (cache != null) return cache;
         List<Vector2> strokePoints = stroke.points();
         if (strokePoints.isEmpty()) {
             throw
@@ -139,7 +142,7 @@ public final class SubmoveElement implements Submove {
                 new SproutsEdge(
                     true,
                     new Polyline.WrappedList(strokePoints),
-                    Color.BLACK, // from  
+                    origin.color(), // from  
                     Color.BLACK  // to
                 )
             );
@@ -152,7 +155,7 @@ public final class SubmoveElement implements Submove {
                     moveFace
                 ).check()
             ) {
-                return
+                cache =
                     new SproutsEdge(
                         true,
                         new Polyline.WrappedList(
@@ -161,11 +164,12 @@ public final class SubmoveElement implements Submove {
                         origin.color(),
                         Color.GRAY
                     );
+                return cache;
             }
 
             Vector2 p1 = strokePoints.get(i);
             if (!gameBounds.contains(p1)) {
-                return
+                cache =
                     new SproutsEdge(
                         true,
                         new Polyline.WrappedList(
@@ -174,8 +178,11 @@ public final class SubmoveElement implements Submove {
                         origin.color(),
                         Color.GRAY
                     );
+                return cache;
             }
 
+            //Todo: extract this outside
+            //-------------------------------------------------------------------------
             // Check if close to a sprout and finnish
             if (i >= 4) { // left + right hooks, so require 4 stroke points at a minimum
                 Vertex v = new NearestSproutSearch(currentState, p1).result();
@@ -183,15 +190,17 @@ public final class SubmoveElement implements Submove {
                     List<Vector2> returnPoints =
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
                     returnPoints.add(v.position());
-                    return
+                    cache =
                         new SproutsEdge(
                             true,
                             new Polyline.WrappedList(returnPoints),
                             origin.color(),
                             v.color()
                         );
+                    return cache;
                 }
             }
+            //----------------------------------------------------------------
 
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
@@ -207,13 +216,14 @@ public final class SubmoveElement implements Submove {
                     List<Vector2> returnPoints =
                         new ArrayList<Vector2>(strokePoints.subList(0, i));
                     returnPoints.add(crossPoint.position());
-                    return
+                    cache =
                         new SproutsEdge(
                             true,
                             new Polyline.WrappedList(returnPoints),
                             origin.color(),
                             Color.GRAY
                         );
+                    return cache;
                 }
                 // Check if crosses the face
                 crossPoint =
@@ -226,18 +236,25 @@ public final class SubmoveElement implements Submove {
                     if (toColor.equals(Color.BLACK)) {
                         toColor = Color.GRAY;
                     }
-                    return
+                    cache =
                         new SproutsEdge(
                             true,
                             new Polyline.WrappedList(returnPoints),
                             origin.color(),
                             toColor
                         );
+                    return cache;
                 }
             }
         }
-        return
-            new SproutsEdge(true, new Polyline.WrappedList(strokePoints), origin.color(), Color.CLEAR);
+        cache =
+            new SproutsEdge(
+                true,
+                new Polyline.WrappedList(strokePoints),
+                origin.color(),
+                Color.CLEAR
+            );
+        return cache;
     }
 
     @Override
@@ -283,41 +300,25 @@ public final class SubmoveElement implements Submove {
 
     @Override
     public boolean hasNext() {
-        return false;
-        //return isCompleted() && !direction().to().color().equals(Color.BLACK);
+        return isCompleted() && !asEdge().to().color().equals(Color.BLACK);
     }
 
     @Override
     public Submove next() {
-        throw new UnsupportedOperationException("TODO");
-        /*
         if (!hasNext()) {
             throw new IllegalStateException("This is the tail Submove.");
         }
-        float minDistance = 0;
-        Vertex tip = direction().to();
-        if (!tip.color().equals(Color.RED)) {
-            minDistance = vertexGlueRadius;
-        }
+        Vertex tip = asEdge().to();
         return
             new SubmoveElement(
                 tip,
-                new TrimmedPolyline(
-                    new PolylinePiece(
-                        stroke,
-                        tip.position()
-                    ),
-                    minDistance
+                new PolylinePiece(
+                    stroke,
+                    tip.position()
                 ),
-                new TransformedGraph(
-                    new SubmoveTransformation(
-                        new CachedCompoundEdge(this),
-                        currentState
-                    )
-                ),
+                new SproutsStateAfterSubmove(currentState, this),
                 vertexGlueRadius,
                 gameBounds
             );
-            */
     }
 }
