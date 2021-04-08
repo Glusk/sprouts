@@ -181,8 +181,6 @@ public final class SubmoveElement implements Submove {
                 return cache;
             }
 
-            //Todo: extract this outside
-            //-------------------------------------------------------------------------
             // Check if close to a sprout and finnish
             if (i >= 4) { // left + right hooks, so require 4 stroke points at a minimum
                 Vertex v = new NearestSproutSearch(currentState, p1).result();
@@ -200,7 +198,6 @@ public final class SubmoveElement implements Submove {
                     return cache;
                 }
             }
-            //----------------------------------------------------------------
 
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
