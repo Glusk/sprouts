@@ -11,7 +11,11 @@ import java.util.TreeSet;
 import com.badlogic.gdx.graphics.Color;
 
 public final class SproutsFaces {
-    private Set<SproutsEdge> edges;
+    private final Set<SproutsEdge> edges;
+
+    private Map<Vertex, SproutsRotations> rotationsCache;
+    private Set<Set<SproutsEdge>> faceCache;
+
     public SproutsFaces(SproutsEdge... edges) {
         this(new HashSet<>(Arrays.asList(edges)));
     }
@@ -39,7 +43,13 @@ public final class SproutsFaces {
         return result;
     }
     public Set<Set<SproutsEdge>> faces() {
-        Map<Vertex, SproutsRotations> rotations = this.makeRotations();
+        if (faceCache != null) {
+            return faceCache;
+        }
+        if (rotationsCache == null) {
+            rotationsCache = this.makeRotations();
+        }
+        Map<Vertex, SproutsRotations> rotations = rotationsCache;
         Set<Set<SproutsEdge>> faces = new HashSet<Set<SproutsEdge>>();
         
         Set<SproutsEdge> nextFace = new HashSet<SproutsEdge>();
@@ -60,6 +70,7 @@ public final class SproutsFaces {
                 nextFace = new HashSet<SproutsEdge>();
             }
         }
+        faceCache = faces;
         return faces;
     }
 
@@ -81,7 +92,10 @@ public final class SproutsFaces {
      * the graph whose faces are represented by {@code this} object
      */
     public Set<SproutsEdge> drawnIn(final SproutsEdge submove) {
-        Map<Vertex, SproutsRotations> rotations = this.makeRotations();
+        if (rotationsCache == null) {
+            rotationsCache = this.makeRotations();
+        }
+        Map<Vertex, SproutsRotations> rotations = rotationsCache;
         Set<Set<SproutsEdge>> faces = this.faces();
 
         SproutsEdge next = rotations.get(submove.from()).next(submove);
