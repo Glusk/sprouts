@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.core.comb;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +38,8 @@ public final class SproutsStateAfterSubmove implements SproutsGameState {
             return edgeCache;
         }
         SproutsEdge submoveEdge = submove.asEdge();
-        Set<SproutsEdge> updatedEdgeSet = previousState.edges();
+        Set<SproutsEdge> updatedEdgeSet =
+            new HashSet<SproutsEdge>(previousState.edges());
 
         Vertex tip = submoveEdge.to();
         if (tip.color().equals(Color.RED)) {
@@ -96,8 +98,8 @@ public final class SproutsStateAfterSubmove implements SproutsGameState {
             updatedEdgeSet.remove(redEdgeInTwoFaces);
             updatedEdgeSet.remove(redEdgeInTwoFaces.reversed());
         }
-        edgeCache = updatedEdgeSet;
-        return updatedEdgeSet;
+        edgeCache = Collections.unmodifiableSet(updatedEdgeSet);
+        return edgeCache;
     }
 
     @Override
