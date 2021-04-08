@@ -19,6 +19,7 @@ import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.MoveTransformation;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
+import com.github.glusk2.sprouts.core.comb.SproutsStateAfterSubmove;
 import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
@@ -52,8 +53,8 @@ public final class SproutAdd implements Snapshot {
      */
     private static final float PERP_DISTANCE_MODIFIER = 3f;
 
-    /** The Graph that a Move is being drawn to. */
-    private final Graph currentState;
+    /** The graph that a Move is being drawn to. */
+    private final SproutsGameState currentState;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
@@ -75,7 +76,7 @@ public final class SproutAdd implements Snapshot {
      * Creates a new SproutAdd Snapshot from the {@code currentState},
      * {@code moveOrigin} and {@code moveSample}.
      *
-     * @param currentState the Graph that a Move is being drawn to
+     * @param currentState the graph that a Move is being drawn to
      * @param moveThickness  the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -87,7 +88,7 @@ public final class SproutAdd implements Snapshot {
      *                   {@code gameBounds} is invalid
      */
     public SproutAdd(
-        final Graph currentState,
+        final SproutsGameState currentState,
         final float moveThickness,
         final int circleSegmentCount,
         final Vertex moveOrigin,
@@ -112,12 +113,10 @@ public final class SproutAdd implements Snapshot {
      * @return a new Move
      */
     private Move moveFromOriginAndStroke(
-        final Graph state,
+        final SproutsGameState state,
         final Vertex origin,
         final Polyline stroke
     ) {
-        throw new UnsupportedOperationException("todo");
-        /*
         return
             new SubmoveSequence(
                 new SubmoveHead(
@@ -129,7 +128,7 @@ public final class SproutAdd implements Snapshot {
                         gameBounds
                     )
                 )
-            );*/
+            );
     }
 
     /**
@@ -149,6 +148,33 @@ public final class SproutAdd implements Snapshot {
             );
     }
 
+    /**
+     * Builds and returns a new Move from {@code moveOrigin} and
+     * {@code moveSample}.
+     *
+     * @return a new Move
+     */
+    private Move moveFromSampleAndOrigin() {
+        return
+            new SubmoveSequence(
+                new SubmoveHead(
+                    new SubmoveElement(
+                        moveOrigin,
+                        new CurveApproximation(
+                            new BezierCurve(
+                                new ArrayList<Vector2>(moveSample),
+                                PERP_DISTANCE_MODIFIER * moveThickness
+                            ),
+                            SPLINE_SEGMENT_COUNT
+                        ),
+                        currentState,
+                        moveThickness * 2,
+                        gameBounds
+                    )
+                )
+            );
+    }
+
     @Override
     public Snapshot touchDown(final Vector2 position) {
         return this;
@@ -156,8 +182,25 @@ public final class SproutAdd implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
-        // todo: use new API
-        return null;
+        SproutsGameState transformed = currentState;
+
+        Move nextMove = moveFromSampleAndOrigin();
+        if (nextMove.isValid() && nextMove.isCompleted()) {
+            Iterator<Submove> it = nextMove.iterator();
+            while (it.hasNext()) {
+                Submove submove = it.next();
+                transformed =
+                    new SproutsStateAfterSubmove(transformed, submove);
+                it = submove;
+            }
+            return
+                new BeforeMove(
+                    transformed,
+                    moveThickness,
+                    circleSegmentCount,
+                    gameBounds
+                );
+        }
         /*
         Polyline stroke = stroke();
         if (!stroke().points().isEmpty()) {
@@ -197,7 +240,7 @@ public final class SproutAdd implements Snapshot {
                         gameBounds
                     );
             }
-        }
+        }*/
         return
             new BeforeMove(
                 currentState,
@@ -205,7 +248,6 @@ public final class SproutAdd implements Snapshot {
                 circleSegmentCount,
                 gameBounds
             );
-            */
     }
 
     @Override
@@ -215,7 +257,7 @@ public final class SproutAdd implements Snapshot {
 
     @Override
     public Graph currentState() {
-        return this.currentState;
+        return null;
     }
 
     @Override
@@ -225,13 +267,11 @@ public final class SproutAdd implements Snapshot {
             moveThickness,
             circleSegmentCount
         ).render(renderer);
-
-        currentState.render(renderer);
+        currentState.render(renderer, moveThickness, circleSegmentCount);
     }
 
     @Override
     public SproutsGameState gameState() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.currentState;
     }
 }

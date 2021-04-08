@@ -135,8 +135,6 @@ public final class MoveDrawing implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
-        // ToDO: insert new API
-        /*
         Move nextMove = moveFromSampleAndOrigin();
         if (nextMove.isValid() && nextMove.isCompleted()) {
             return
@@ -148,7 +146,7 @@ public final class MoveDrawing implements Snapshot {
                     moveSample,
                     gameBounds
                 );
-        }*/
+        }
 
         return
             new BeforeMove(
