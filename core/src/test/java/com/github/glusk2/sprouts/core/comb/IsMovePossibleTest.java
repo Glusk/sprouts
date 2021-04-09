@@ -43,7 +43,7 @@ public final class IsMovePossibleTest {
             Color.BLACK, Color.BLACK);
         assertFalse(
             new IsMovePossible(
-                new SproutsGameState.Wrapped(
+                () ->
                     new HashSet<>(
                         Arrays.asList(
                             e1,
@@ -54,7 +54,6 @@ public final class IsMovePossibleTest {
                             e3.reversed()
                         )
                     )
-                )
             ).check()
         );
     }
