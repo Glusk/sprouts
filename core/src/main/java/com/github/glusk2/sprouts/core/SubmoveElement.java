@@ -29,6 +29,7 @@ import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.comb.VertexDegree;
 import com.github.glusk2.sprouts.core.comb.VoidVertex;
+import com.github.glusk2.sprouts.core.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.core.geom.Polyline;
 import com.github.glusk2.sprouts.core.geom.PolylinePiece;
 import com.github.glusk2.sprouts.core.geom.TrimmedPolyline;
@@ -181,7 +182,6 @@ public final class SubmoveElement implements Submove {
                 return cache;
             }
 
-            // Check if close to a sprout and finnish
             if (i >= 4) { // left + right hooks, so require 4 stroke points at a minimum
                 Vertex v = new NearestSproutSearch(currentState, p1).result();
                 if (v.position().dst(p1) < vertexGlueRadius) {
@@ -201,6 +201,27 @@ public final class SubmoveElement implements Submove {
 
             if (i > 0) {
                 Vector2 p0 = strokePoints.get(i - 1);
+
+                // Check if too close to a red vertex and abort
+                boolean intesectsCobwebVertex = currentState.vertices()
+                    .stream()
+                    .anyMatch(v->
+                        v.color().equals(Color.RED)
+                     && new IsPointOnLineSegment(
+                            p0, p1, v.position(), vertexGlueRadius
+                        ).check()
+                    );
+                if (intesectsCobwebVertex) {
+                    cache =
+                        new SproutsEdge(
+                            true,
+                            new Polyline.WrappedList(strokePoints.subList(0, i)),
+                            origin.color(),
+                            Color.GRAY
+                        );
+                    return cache;
+                }
+
                 // Check if crosses itself
                 Vertex crossPoint =
                     new PolylineIntersectionSearch(
