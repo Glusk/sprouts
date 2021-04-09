@@ -153,6 +153,27 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
             );
     }
 
+    /**
+     * Return the direction of this polyline.
+     * <p>
+     * A <strong>positive</strong> direction means that {@code this} is a
+     * directed edge of the form:
+     * <pre>
+     * p[0], p[1], ..., p[polylineSize-1]
+     * </pre>
+     * and a <strong>negative</strong> direction means that {@code this} is a
+     * directed edge of the form:
+     * <pre>
+     * p[polylineSize-1], p[polylineSize-2], ..., p[0]
+     * </pre>
+     * where {@code p[i]} are the points in {@code this.polyline().points()}.
+     * 
+     * @return {@code true} - positive, {@code false} - negative
+     */
+    public boolean isPositive() {
+        return this.direction;
+    }
+
     private Vector2 secondPointInPositiveDirection() {
         List<Vector2> points = polyline.points();
         if (direction) {

@@ -1,26 +1,19 @@
 package com.github.glusk2.sprouts.core.ui;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.Move;
 import com.github.glusk2.sprouts.core.RenderedMove;
-import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
-import com.github.glusk2.sprouts.core.comb.CompoundEdge;
 import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.MoveTransformation;
-import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
-import com.github.glusk2.sprouts.core.comb.SproutsStateAfterSubmove;
-import com.github.glusk2.sprouts.core.comb.TransformedGraph;
+import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
@@ -182,20 +175,11 @@ public final class SproutAdd implements Snapshot {
 
     @Override
     public Snapshot touchUp(final Vector2 position) {
-        SproutsGameState transformed = currentState;
-
         Move nextMove = moveFromSampleAndOrigin();
         if (nextMove.isValid() && nextMove.isCompleted()) {
-            Iterator<Submove> it = nextMove.iterator();
-            while (it.hasNext()) {
-                Submove submove = it.next();
-                transformed =
-                    new SproutsStateAfterSubmove(transformed, submove);
-                it = submove;
-            }
             return
                 new BeforeMove(
-                    transformed,
+                    new SproutsStateAfterMove(currentState, nextMove),
                     moveThickness,
                     circleSegmentCount,
                     gameBounds
