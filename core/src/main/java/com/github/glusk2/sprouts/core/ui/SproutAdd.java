@@ -17,7 +17,6 @@ import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
-import com.github.glusk2.sprouts.core.geom.Polyline;
 
 /**
  * This Snapshot represents the game board <em>after</em> a Move is drawn,
@@ -97,51 +96,6 @@ public final class SproutAdd implements Snapshot {
     }
 
     /**
-     * Builds and returns a new Move from {@code moveOrigin} and {@code stroke}
-     * im a given {@code state}.
-     *
-     * @param state the state to which the returned Move is to be added
-     * @param origin the origin of the returned Move
-     * @param stroke the polyline approximation of the Move curve
-     * @return a new Move
-     */
-    private Move moveFromOriginAndStroke(
-        final SproutsGameState state,
-        final Vertex origin,
-        final Polyline stroke
-    ) {
-        return
-            new SubmoveSequence(
-                new SubmoveHead(
-                    new SubmoveElement(
-                        origin,
-                        stroke,
-                        state,
-                        moveThickness * 2,
-                        gameBounds
-                    )
-                )
-            );
-    }
-
-    /**
-     * Creates and return a Bezier interpolated and approximated curve from
-     * {@code moveSample} points.
-     *
-     * @return a Bezier interpolated and approximated curve
-     */
-    private Polyline stroke() {
-        return
-            new CurveApproximation(
-                new BezierCurve(
-                    new ArrayList<Vector2>(moveSample),
-                    PERP_DISTANCE_MODIFIER * moveThickness
-                ),
-                SPLINE_SEGMENT_COUNT
-            );
-    }
-
-    /**
      * Builds and returns a new Move from {@code moveOrigin} and
      * {@code moveSample}.
      *
@@ -179,52 +133,17 @@ public final class SproutAdd implements Snapshot {
         if (nextMove.isValid() && nextMove.isCompleted()) {
             return
                 new BeforeMove(
-                    new SproutsStateAfterMove(currentState, nextMove),
+                    new SproutsStateAfterMove(
+                        currentState,
+                        nextMove,
+                        position,
+                        moveThickness
+                    ),
                     moveThickness,
                     circleSegmentCount,
                     gameBounds
                 );
         }
-        /*
-        Polyline stroke = stroke();
-        if (!stroke().points().isEmpty()) {
-            Move move =
-                moveFromOriginAndStroke(
-                    currentState,
-                    moveOrigin,
-                    stroke
-                );
-            CompoundEdge edgeToSplit = null;
-            Vertex sproutToAdd = null;
-            Iterator<Submove> it = move.iterator();
-            while (it.hasNext()) {
-                Submove next = it.next();
-                for (Vector2 p : next.direction().polyline().points()) {
-                    if (p.dst(position) <= moveThickness) {
-                        edgeToSplit = next;
-                        sproutToAdd = new PresetVertex(Color.BLACK, p);
-                    }
-                }
-                it = next;
-            }
-            if (edgeToSplit != null) {
-                return
-                    new BeforeMove(
-                        new TransformedGraph(
-                            new MoveTransformation(
-                                move,
-                                currentState
-                            )
-                        ).splitEdge(
-                            edgeToSplit,
-                            sproutToAdd
-                        ),
-                        moveThickness,
-                        circleSegmentCount,
-                        gameBounds
-                    );
-            }
-        }*/
         return
             new BeforeMove(
                 currentState,
@@ -247,7 +166,7 @@ public final class SproutAdd implements Snapshot {
     @Override
     public void render(final ShapeRenderer renderer) {
         new RenderedMove(
-            moveFromOriginAndStroke(currentState, moveOrigin, stroke()),
+            moveFromSampleAndOrigin(),
             moveThickness,
             circleSegmentCount
         ).render(renderer);
