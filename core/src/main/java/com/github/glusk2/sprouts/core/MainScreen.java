@@ -164,7 +164,10 @@ public final class MainScreen extends ScreenAdapter {
         TouchEventSnapshooter gameBoardListener =
             new TouchEventSnapshooter(
                 new BeforeMove(
-                    MOVE_THICKNESS,
+                    Math.min(
+                        gameBounds.getWidth(),
+                        gameBounds.getHeight()
+                    ) / 60f,
                     CIRCLE_SEGMENT_COUNT,
                     (int) slider.getValue(),
                     gameBounds
