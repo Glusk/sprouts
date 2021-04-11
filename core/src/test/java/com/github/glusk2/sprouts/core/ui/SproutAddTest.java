@@ -1,21 +1,20 @@
 package com.github.glusk2.sprouts.core.ui;
 
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.comb.CompoundEdge;
-import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.LocalRotations;
-import com.github.glusk2.sprouts.core.comb.PresetGraph;
-import com.github.glusk2.sprouts.core.comb.PresetRotations;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
-import com.github.glusk2.sprouts.core.comb.StraightLineEdge;
+import com.github.glusk2.sprouts.core.comb.SproutsEdge;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.Vertex;
+import com.github.glusk2.sprouts.core.geom.Polyline;
 
 import org.junit.Test;
 
@@ -25,36 +24,34 @@ public class SproutAddTest {
      * Checks if the middle sprout, placed on the intersection between the new
      * move and existing cobweb edge, is added to the combinatorial
      * representation correctly.
+     * <p>
+     * This is just a simple, provisionary test. There are 2 sprouts,
+     * connected by a straight line cobweb segment. A move that crosses the
+     * cobweb edge must split it (in other words, remove the original
+     * cobweb edge).
+     * <p>
+     * Middle sprout must not be added too close to the cobweb intersection
+     * point. Because of that, the updated state will have an additional pair
+     * of directed edges.
      */
     @Test
     @SuppressWarnings("checkstyle:magicnumber")
     public void correctlyPlacesNewSproutOnCobwebMoveIntersection() {
-        /* //TODO: edit the class/check with new api
         Vertex v1 = new PresetVertex(new Vector2(-50, 0));
         Vertex v2 = new PresetVertex(new Vector2(50, 0));
 
-        Map<Vertex, LocalRotations> rotationsList =
-            new HashMap<Vertex, LocalRotations>();
-        rotationsList.put(
-            v1,
-            new PresetRotations(v1).with(
-                new StraightLineEdge(v2)
-            )
+        SproutsEdge e1 = new SproutsEdge(
+            new Polyline.WrappedList(v1.position(), v2.position()),
+            v1.color(), v2.color()
         );
-        rotationsList.put(
-            v2,
-            new PresetRotations(v2).with(
-                new StraightLineEdge(v1)
-            )
-        );
-        Graph currentState = new PresetGraph(rotationsList);
 
-        Graph nextState = new SproutAdd(
-            currentState,
+        SproutsGameState nextState = new SproutAdd(
+            () -> new HashSet<>(Arrays.asList(e1, e1.reversed())),
             10,
             16,
             v1,
             Arrays.asList(
+                v1.position(),
                 new Vector2(-20, 20),
                 new Vector2(0, 40),
                 new Vector2(20, 1),
@@ -63,18 +60,15 @@ public class SproutAddTest {
                 v1.position()
             ),
             new Rectangle(-100, -100, 1000, 1000)
-        ).touchUp(new Vector2(20, 0)).currentState();
+        ).touchUp(new Vector2(10, 0)).gameState();
 
-        assertFalse(
-            "Cobweb not torn!",
-            nextState.edges().contains(
-                new CompoundEdge.Wrapped(v1, new StraightLineEdge(v2))
-            )
-            ||
-            nextState.edges().contains(
-                new CompoundEdge.Wrapped(v2, new StraightLineEdge(v1))
-            )
+        assertThat(
+            nextState.edges().size(),
+            is(8)
         );
-        */
+        assertThat(
+            nextState.edges(),
+            not(hasItems(e1, e1.reversed()))
+        );
     }
 }
