@@ -13,26 +13,6 @@ import com.badlogic.gdx.math.Vector2;
  * <em>flow-control</em> is a known anti-pattern!
  */
 public final class VoidVertex implements Vertex {
-    /** The default Vertex label. */
-    private static final String DEFAULT_LABEL = "<unlabeled>";
-
-    /** String label of {@code this} vertex. */
-    private final String label;
-
-    /** Constructs a new VoidVertex with the default label. */
-    public VoidVertex() {
-        this(DEFAULT_LABEL);
-    }
-
-    /**
-     * Constructs a new VoidVertex with the specified {@code label}.
-     *
-     * @param label string label of the vertex.
-     */
-    public VoidVertex(final String label) {
-        this.label = label;
-    }
-
     /**
      * Returns {@code Color.CLEAR} as VoidVertex objects have no color.
      *
@@ -52,11 +32,6 @@ public final class VoidVertex implements Vertex {
     @Override
     public Vector2 position() {
         throw new IllegalStateException("A VoidVertex has no position");
-    }
-
-    @Override
-    public String label() {
-        return label;
     }
 
     @Override
