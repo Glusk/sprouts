@@ -11,7 +11,6 @@ import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
-import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
 import com.github.glusk2.sprouts.core.comb.Vertex;
@@ -156,11 +155,6 @@ public final class SproutAdd implements Snapshot {
     @Override
     public Snapshot touchDragged(final Vector2 position) {
         return this;
-    }
-
-    @Override
-    public Graph currentState() {
-        return null;
     }
 
     @Override

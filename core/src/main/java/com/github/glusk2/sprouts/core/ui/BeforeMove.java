@@ -10,16 +10,12 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.GraphCreation;
 import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
-import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
-import com.github.glusk2.sprouts.core.comb.VertexDegree;
 
 /**
  * This Snapshot represents the game board <em>before</em> a Move is being
@@ -125,12 +121,6 @@ public final class BeforeMove implements Snapshot {
     @Override
     public Snapshot touchDragged(final Vector2 position) {
         return this;
-    }
-
-    // Todo: delete old API
-    @Override
-    public Graph currentState() {
-        throw new IllegalArgumentException("Old API!");
     }
 
     @Override

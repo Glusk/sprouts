@@ -12,7 +12,6 @@ import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
-import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
@@ -174,13 +173,6 @@ public final class MoveDrawing implements Snapshot {
                 );
         }
         return this;
-    }
-
-    @Override
-    public Graph currentState() {
-        // Todo; remove old api
-        //return this.gameState;
-        throw new IllegalArgumentException("Old API!");
     }
 
     @Override

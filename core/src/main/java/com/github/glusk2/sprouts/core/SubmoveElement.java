@@ -7,32 +7,21 @@ import java.util.Set;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.comb.CachedCompoundEdge;
-import com.github.glusk2.sprouts.core.comb.CompoundEdge;
-import com.github.glusk2.sprouts.core.comb.DirectedEdge;
 import com.github.glusk2.sprouts.core.comb.FaceIntersectionSearch;
-import com.github.glusk2.sprouts.core.comb.Graph;
 import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsSubmovePossibleInFace;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
-import com.github.glusk2.sprouts.core.comb.PolylineEdge;
 import com.github.glusk2.sprouts.core.comb.PolylineIntersectionSearch;
-import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 import com.github.glusk2.sprouts.core.comb.SproutsFaces;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
-import com.github.glusk2.sprouts.core.comb.SproutsRotations;
 import com.github.glusk2.sprouts.core.comb.SproutsStateAfterSubmove;
-import com.github.glusk2.sprouts.core.comb.StraightLineEdge;
-import com.github.glusk2.sprouts.core.comb.SubmoveTransformation;
-import com.github.glusk2.sprouts.core.comb.TransformedGraph;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.comb.VertexDegree;
 import com.github.glusk2.sprouts.core.comb.VoidVertex;
 import com.github.glusk2.sprouts.core.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.core.geom.Polyline;
 import com.github.glusk2.sprouts.core.geom.PolylinePiece;
-import com.github.glusk2.sprouts.core.geom.TrimmedPolyline;
 
 /**
  * A SubmoveElement is a Submove in a sequence of Submoves that comprise a Move.
