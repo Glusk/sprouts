@@ -27,6 +27,13 @@ import com.github.glusk2.sprouts.core.ui.TouchEventSnapshooter;
  * The main screen of the application with the toolbar and the game board.
  */
 public final class MainScreen extends ScreenAdapter {
+    /**
+     * Minimum dimension ratio.
+     * <p>
+     * This is used to compute the move thickness. The minimum game board
+     * dimension is divided by this constant to produce the move thickness.
+     */
+    private static final float MIN_DIMENSION_RATIO = 60f;
     /** Starting sprouts slider minimum value. */
     private static final int SLIDER_MIN = 2;
     /** Starting sprouts slider maximum value. */
@@ -43,9 +50,6 @@ public final class MainScreen extends ScreenAdapter {
     /** The padding of the root layout. */
     private static final float ROOT_PADDING = 10;
 
-
-    /** The thickness of the Moves drawn. */
-    private static final float MOVE_THICKNESS = 10;
     /**
      * Circle segment count.
      * <p>
@@ -167,7 +171,7 @@ public final class MainScreen extends ScreenAdapter {
                     Math.min(
                         gameBounds.getWidth(),
                         gameBounds.getHeight()
-                    ) / 60f,
+                    ) / MIN_DIMENSION_RATIO,
                     CIRCLE_SEGMENT_COUNT,
                     (int) slider.getValue(),
                     gameBounds
