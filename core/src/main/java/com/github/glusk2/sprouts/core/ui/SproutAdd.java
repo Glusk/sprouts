@@ -18,6 +18,7 @@ import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
 public final class SproutAdd implements Snapshot {
     /** The graph that a Move is being drawn to. */
     private final SproutsGameState currentState;
+    /** The move to place the middle sprout on. */
     private final Move move;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
@@ -31,7 +32,7 @@ public final class SproutAdd implements Snapshot {
      * {@code move}.
      *
      * @param currentState the graph that a Move is being drawn to
-     * @param move
+     * @param move the move to place the middle sprout on
      * @param moveThickness  the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
