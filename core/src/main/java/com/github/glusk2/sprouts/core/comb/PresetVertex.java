@@ -46,6 +46,17 @@ public final class PresetVertex implements Vertex {
         return position.cpy();
     }
 
+    /**
+     * Hashes {@code v} without integer overflow and returns result modulo
+     * {@link Integer.MAX_VALUE}.
+     * <p>
+     * The default {@link Vector2#hashCode()} method overflows and can return
+     * the same hash for different vectors. This method tries to alleviate
+     * that.
+     *
+     * @param v a {@code Vector2} object to hash
+     * @return the hash code of {@code v}
+     */
     public static int vector2HashCode(final Vector2 v) {
         final int prime = 31;
         long result = 1;
@@ -59,7 +70,7 @@ public final class PresetVertex implements Vertex {
     public int hashCode() {
         int h1 = PresetVertex.vector2HashCode(position());
         int h2 = color.hashCode();
-        return h1 ^ ((h2 >>> 16) | (h2 << 16));
+        return h1 ^ ((h2 >>> Short.SIZE) | (h2 << Short.SIZE));
     }
 
     @Override
