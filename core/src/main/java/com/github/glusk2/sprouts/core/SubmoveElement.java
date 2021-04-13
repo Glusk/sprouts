@@ -30,6 +30,12 @@ import com.github.glusk2.sprouts.core.geom.PolylinePiece;
  */
 public final class SubmoveElement implements Submove {
     /**
+     * The minimum Submove length (as the number of polyline points).
+     * <p>
+     * Left + right hook - the minimum of 4 stroke points is required.
+     */
+    private static final int MIN_LENGTH = 4;
+    /**
      * The maximum Submove length (in line segments) allowed to draw when
      * drawing in a face that has a less than 2 sprout lives.
      */
@@ -49,20 +55,31 @@ public final class SubmoveElement implements Submove {
     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
 
+
+    /** A cached value of {@link #asEdge()}. */
+    private SproutsEdge cache = null;
+
     /**
      * Creates a new Submove.
      * <p>
-     * This constructor uses the default bounding box rectangle:
+     * This constructor uses the default bounding box rectangle and is
+     * equivalent to:
      * <pre>
-     * new Rectangle(
-     *     0,
-     *     0,
-     *     Float.POSITIVE_INFINITY,
-     *     Float.POSITIVE_INFINITY
-     * )
+     * new SubmoveElement(
+     *     origin
+     *     stroke,
+     *     currentState,
+     *     vertexGlueRadius,
+     *     new Rectangle(
+     *         0,
+     *         0,
+     *         Float.POSITIVE_INFINITY,
+     *         Float.POSITIVE_INFINITY
+     *     )
+     * );
      * </pre>
      *
-     * @param origin the Graph Vertex in which {@code this} Submove begins
+     * @param origin the graph Vertex in which {@code this} Submove begins
      * @param stroke the polyline approximation of the move stroke
      * @param currentState the game state before {@code this} Submove
      * @param vertexGlueRadius the Vertex glue radius, used to auto-complete
@@ -113,10 +130,12 @@ public final class SubmoveElement implements Submove {
         this.gameBounds = gameBounds;
     }
 
-    SproutsEdge cache = null;
     @Override
+    @SuppressWarnings("checkstyle:methodlength")
     public SproutsEdge asEdge() {
-        if (cache != null) return cache;
+        if (cache != null) {
+            return cache;
+        }
         List<Vector2> strokePoints = stroke.points();
         if (strokePoints.isEmpty()) {
             throw
@@ -132,13 +151,15 @@ public final class SubmoveElement implements Submove {
                 new SproutsEdge(
                     true,
                     new Polyline.WrappedList(strokePoints),
-                    origin.color(), // from  
-                    Color.BLACK  // to
+                    origin.color(), // from
+                    Color.BLACK     // to
                 )
             );
         for (int i = 0; i < strokePoints.size(); i++) {
+            // If move not possible in face, let the user draw a couple of
+            // line segments before aborting
             if (
-                i >= INVALID_WINDOW
+                i > INVALID_WINDOW
              && !new IsSubmovePossibleInFace(
                     origin.color().equals(Color.BLACK),
                     currentState,
@@ -157,6 +178,7 @@ public final class SubmoveElement implements Submove {
                 return cache;
             }
 
+            // If outside of game bounds, finnish
             Vector2 p1 = strokePoints.get(i);
             if (!gameBounds.contains(p1)) {
                 cache =
@@ -171,7 +193,8 @@ public final class SubmoveElement implements Submove {
                 return cache;
             }
 
-            if (i >= 4) { // left + right hooks, so require 4 stroke points at a minimum
+            // If close to a sprout, finnish
+            if (i >= MIN_LENGTH) {
                 Vertex v = new NearestSproutSearch(currentState, p1).result();
                 if (v.position().dst(p1) < vertexGlueRadius) {
                     List<Vector2> returnPoints =
@@ -194,7 +217,7 @@ public final class SubmoveElement implements Submove {
                 // Check if too close to a red vertex and abort
                 boolean intesectsCobwebVertex = currentState.vertices()
                     .stream()
-                    .anyMatch(v->
+                    .anyMatch(v ->
                         v.color().equals(Color.RED)
                      && new IsPointOnLineSegment(
                             p0, p1, v.position(), vertexGlueRadius
@@ -204,7 +227,9 @@ public final class SubmoveElement implements Submove {
                     cache =
                         new SproutsEdge(
                             true,
-                            new Polyline.WrappedList(strokePoints.subList(0, i)),
+                            new Polyline.WrappedList(
+                                strokePoints.subList(0, i)
+                            ),
                             origin.color(),
                             Color.GRAY
                         );
