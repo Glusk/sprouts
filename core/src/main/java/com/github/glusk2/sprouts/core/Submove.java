@@ -17,6 +17,8 @@ public interface Submove extends Iterator<Submove> {
     /**
      * Represents {@code this} Submove as a directed edge in a graph and
      * returns it.
+     *
+     * @return {@code this} Submove as a directed edge
      */
     SproutsEdge asEdge();
 
@@ -24,7 +26,7 @@ public interface Submove extends Iterator<Submove> {
      * Checks if {@code this} Submove is completed.
      * <p>
      * A Submove is completed if it intersects a cobweb or
-     * {@code direction().to()} connects to a sprout.
+     * {@code asEdge().to()} connects to a sprout.
      *
      * @return {@code true} if {@code this} Submove is completed
      */
