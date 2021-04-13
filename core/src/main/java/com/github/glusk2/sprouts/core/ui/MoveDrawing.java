@@ -139,10 +139,9 @@ public final class MoveDrawing implements Snapshot {
             return
                 new SproutAdd(
                     gameState,
+                    nextMove,
                     moveThickness,
                     circleSegmentCount,
-                    moveOrigin,
-                    moveSample,
                     gameBounds
                 );
         }

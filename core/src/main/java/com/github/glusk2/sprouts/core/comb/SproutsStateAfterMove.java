@@ -112,7 +112,8 @@ public final class SproutsStateAfterMove implements SproutsGameState {
 
             stateAfterSubmoves = () -> edges;
         } else {
-            return previousState.edges();
+            cachedEdges = Collections.unmodifiableSet(previousState.edges());
+            return cachedEdges;
         }
         SproutsGameState stateAfterMove = stateAfterSubmoves;
 
