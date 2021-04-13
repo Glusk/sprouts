@@ -1,8 +1,8 @@
 package com.github.glusk2.sprouts.core.ui;
 
 import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
@@ -10,10 +10,15 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.SubmoveElement;
+import com.github.glusk2.sprouts.core.SubmoveHead;
+import com.github.glusk2.sprouts.core.SubmoveSequence;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.Vertex;
+import com.github.glusk2.sprouts.core.geom.BezierCurve;
+import com.github.glusk2.sprouts.core.geom.CurveApproximation;
 import com.github.glusk2.sprouts.core.geom.Polyline;
 
 import org.junit.Test;
@@ -45,22 +50,42 @@ public class SproutAddTest {
             v1.color(), v2.color()
         );
 
+        float moveThickness = 10;
+        SproutsGameState stateBeforeMove =
+            () -> new HashSet<>(Arrays.asList(e1, e1.reversed()));
+        Rectangle gameBounds = new Rectangle(-100, -100, 1000, 1000);
+
         SproutsGameState nextState = new SproutAdd(
-            () -> new HashSet<>(Arrays.asList(e1, e1.reversed())),
-            10,
-            16,
-            v1,
-            Arrays.asList(
-                v1.position(),
-                new Vector2(-20, 20),
-                new Vector2(0, 40),
-                new Vector2(20, 1),
-                new Vector2(0, -40),
-                new Vector2(-20, -20),
-                v1.position()
+            stateBeforeMove,
+            new SubmoveSequence(
+                new SubmoveHead(
+                    new SubmoveElement(
+                        v1,
+                        new CurveApproximation(
+                            new BezierCurve(
+                                Arrays.asList(
+                                    v1.position(),
+                                    new Vector2(-20, 20),
+                                    new Vector2(0, 40),
+                                    new Vector2(20, 1),
+                                    new Vector2(0, -40),
+                                    new Vector2(-20, -20),
+                                    v1.position()
+                                ),
+                                3f * moveThickness
+                            ),
+                            5
+                        ),
+                        stateBeforeMove,
+                        moveThickness * 2f,
+                        gameBounds
+                    )
+                )
             ),
-            new Rectangle(-100, -100, 1000, 1000)
-        ).touchUp(new Vector2(10, 0)).gameState();
+            moveThickness,
+            16,
+            gameBounds
+        ).touchUp(new Vector2(7, 0)).gameState();
 
         assertThat(
             nextState.edges().size(),
