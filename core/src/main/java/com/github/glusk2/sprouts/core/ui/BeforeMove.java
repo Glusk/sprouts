@@ -93,13 +93,8 @@ public final class BeforeMove implements Snapshot {
                 2 * moveThickness,
                 Color.BLACK
             ).result();
-        
-        if (
-            new IsAliveSprout(
-                nearest,
-                gameState
-            ).check()
-        ) {
+
+        if (new IsAliveSprout(gameState).test(nearest)) {
             return
                 new MoveDrawing(
                     gameState,

@@ -61,7 +61,7 @@ public interface SproutsGameState {
                 circleSegmentCount
             );
 
-            if (new IsAliveSprout(v, this).check()) {
+            if (new IsAliveSprout(this).test(v)) {
                 renderer.setColor(Color.WHITE);
             } else {
                 renderer.setColor(Color.GRAY);

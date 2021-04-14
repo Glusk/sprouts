@@ -314,10 +314,10 @@ public final class SubmoveElement implements Submove {
 
         boolean intermediate = true;
         if (from.color().equals(Color.BLACK)) {
-            intermediate &= new IsAliveSprout(from, currentState).check();
+            intermediate &= new IsAliveSprout(currentState).test(from);
         }
         if (to.color().equals(Color.BLACK)) {
-            intermediate &= new IsAliveSprout(to, currentState).check();
+            intermediate &= new IsAliveSprout(currentState).test(to);
         }
         if (from.equals(to)) {
             intermediate &=
