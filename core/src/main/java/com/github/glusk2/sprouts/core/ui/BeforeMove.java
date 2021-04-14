@@ -25,11 +25,12 @@ import com.github.glusk2.sprouts.core.comb.Vertex;
  * {@code this}.
  */
 public final class BeforeMove implements Snapshot {
+    /** The graph representing the current game board state. */
+    private final SproutsGameState gameState;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
     private final int circleSegmentCount;
-    private final SproutsGameState gameState;
      /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
 
@@ -61,7 +62,9 @@ public final class BeforeMove implements Snapshot {
     }
 
     /**
+     * Creates a new Snapshot, using the set game state.
      *
+     * @param gameState the graph representing the current game board state
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -86,7 +89,7 @@ public final class BeforeMove implements Snapshot {
             return this;
         }
 
-        Vertex nearest = 
+        Vertex nearest =
             new NearestSproutSearch(
                 gameState,
                 position,
