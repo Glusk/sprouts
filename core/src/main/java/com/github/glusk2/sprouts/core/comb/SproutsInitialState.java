@@ -12,7 +12,7 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
  * Sprouts Initial Game State.
  * <p>
  * An initial state contains {@code sproutsCount} sprouts equally spread
- * apart on the edge of a circle that's in the center of the
+ * apart on the edge of a circle that is in the center of the
  * {@code gameBounds} rectangle.
  * <p>
  * The graph is connected; all edges are cobweb edges; the graph has a single
@@ -30,14 +30,23 @@ public final class SproutsInitialState implements SproutsGameState {
     /** Full circle, in degrees. */
     private static final int FULL_CIRCLE = 360;
 
-    private int sproutsCount;
-    private Rectangle gameBounds;
+    /** The number of sprouts to generate. */
+    private final int numOfSprouts;
+    /** The game bounds rectangle. */
+    private final Rectangle gameBounds;
 
+    /**
+     * Create a new Sprouts Initial Game State from the specified
+     * {@code numOfSprouts} that's within {@code gameBounds}.
+     *
+     * @param numOfSprouts the number of sprouts to generate
+     * @param gameBounds the game bounds rectangle
+     */
     public SproutsInitialState(
-        final int sproutsCount,
+        final int numOfSprouts,
         final Rectangle gameBounds
     ) {
-        this.sproutsCount = sproutsCount;
+        this.numOfSprouts = numOfSprouts;
         this.gameBounds = gameBounds;
     }
 
@@ -55,18 +64,18 @@ public final class SproutsInitialState implements SproutsGameState {
 
         Set<SproutsEdge> result = new HashSet<>();
 
-        Vector2[] vertices = new Vector2[sproutsCount];
-        for (int i = 0; i < sproutsCount; i++) {
+        Vector2[] vertices = new Vector2[numOfSprouts];
+        for (int i = 0; i < numOfSprouts; i++) {
             vertices[i] =
                 center.cpy().add(
                     clockPointer.cpy().rotate(
-                        1f * i / sproutsCount * FULL_CIRCLE
+                        1f * i / numOfSprouts * FULL_CIRCLE
                     )
                 );
         }
 
-        for (int i = 0; i < sproutsCount - 1; i++) {
-            SproutsEdge nextEdge = 
+        for (int i = 0; i < numOfSprouts - 1; i++) {
+            SproutsEdge nextEdge =
                 new SproutsEdge(
                     new Polyline.WrappedList(vertices[i], vertices[i + 1]),
                     Color.BLACK, Color.BLACK
