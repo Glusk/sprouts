@@ -8,10 +8,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.github.glusk2.sprouts.core.geom.PolylineBatch;
 
+/** The graph representation of a sprouts game position. */
 @FunctionalInterface
 public interface SproutsGameState {
+    /**
+     * Returns the cobweb and submove edges of {@code this} game state.
+     *
+     * @return cobweb and submove edges of {@code this} game state as a set
+     */
     Set<SproutsEdge> edges();
 
+    /**
+     * Returns the cobweb vertices and sprouts for {@code this}
+     * game state.
+     *
+     * @return cobweb vertices and sprouts of {@code this} game state as a set
+     */
     default Set<Vertex> vertices() {
         Set<Vertex> vertices = new HashSet<>();
         for (SproutsEdge edge : edges()) {
@@ -21,22 +33,21 @@ public interface SproutsGameState {
         return vertices;
     }
 
+    /**
+     * Renders {@code this} game state.
+     * <p>
+     * Edges are rendered as polyline points (circles) with straight line
+     * segments connecting them.
+     *
+     * @param renderer the renderer to render with
+     * @param thickness the thickness of edges and the radius of vertices
+     * @param circleSegmentCount the number of segments for the circles drawn
+     */
     default void render(
         ShapeRenderer renderer,
-        float lineThickness,
+        float thickness,
         int circleSegmentCount
     ) {
-        /*
-        // YAGNI
-        // looks smooth and resizes properly;
-        // should probably be calculated at a higher level in the call stack
-        lineThickness =  Math.min(
-            gameBounds.getWidth(),
-            gameBounds.getHeight()
-        ) / 60f;
-        circleSegmentCount = 20;
-        */
-        
         Set<SproutsEdge> drawnEdges = new HashSet<>();
         renderer.begin(ShapeType.Filled);
         for (SproutsEdge edge : edges()) {
@@ -44,7 +55,7 @@ public interface SproutsGameState {
                 new PolylineBatch(
                     edge.polyline(),
                     edge.color(),
-                    lineThickness,
+                    thickness,
                     circleSegmentCount,
                     true
                 ).render(renderer);
@@ -57,7 +68,7 @@ public interface SproutsGameState {
             renderer.circle(
                 v.position().x,
                 v.position().y,
-                lineThickness,
+                thickness,
                 circleSegmentCount
             );
 
@@ -70,7 +81,7 @@ public interface SproutsGameState {
             renderer.circle(
                 v.position().x,
                 v.position().y,
-                lineThickness / 2,
+                thickness / 2,
                 circleSegmentCount
             );
 
