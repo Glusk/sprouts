@@ -130,17 +130,6 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return this.polyline;
     }
 
-    public Polyline intersectionPolyline() {
-        if (hasHooks) {
-            List<Vector2> points = polyline.points();
-            return
-                new Polyline.WrappedList(
-                    points.subList(1, points.size() - 1)
-                );
-        }
-        return polyline;
-    }
-
     public SproutsEdge reversed() {
         return
             new SproutsEdge(
