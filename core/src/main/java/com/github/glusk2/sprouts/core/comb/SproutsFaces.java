@@ -10,18 +10,44 @@ import java.util.TreeSet;
 
 import com.badlogic.gdx.graphics.Color;
 
+/** Faces of a graph. */
 public final class SproutsFaces {
+    /** Edges of a graph. */
     private final Set<SproutsEdge> edges;
 
+    /** A cached value of {@link #makeRotations()}. */
     private Map<Vertex, SproutsRotations> rotationsCache;
+    /** A cached value of {@link #faces()}. */
     private Set<Set<SproutsEdge>> faceCache;
 
-    public SproutsFaces(SproutsEdge... edges) {
+    /**
+     * Creates new faces from an array of graph edges.
+     * <p>
+     * Equivalent to:
+     * <pre>
+     * new SproutsFaces(new HashSet&lt;&gt;(Arrays.asList(edges)));
+     * </pre>
+     *
+     * @param edges edges of a graph
+     */
+    public SproutsFaces(final SproutsEdge... edges) {
         this(new HashSet<>(Arrays.asList(edges)));
     }
-    public SproutsFaces(Set<SproutsEdge> edges) {
+    /**
+     * Creates new faces from an set of graph edges.
+     *
+     * @param edges edges of a graph
+     */
+    public SproutsFaces(final Set<SproutsEdge> edges) {
         this.edges = edges;
     }
+    /**
+     * Groups edges passed through the constructor by origin
+     * ({@link SproutsEdge#from()}) and returns the result as a rotations map.
+     *
+     * @return A map of rotations. Edges with the same origin
+     *         ({@link SproutsEdge#from()}) are stored under the same key.
+     */
     private Map<Vertex, SproutsRotations> makeRotations() {
         Map<Vertex, SortedSet<SproutsEdge>> rotations = new HashMap<>();
         for (SproutsEdge edge : edges) {
@@ -42,6 +68,12 @@ public final class SproutsFaces {
         }
         return result;
     }
+    /**
+     * Builds and returns graph faces from the edges passed through the
+     * constructor.
+     *
+     * @return the faces of a graph
+     */
     public Set<Set<SproutsEdge>> faces() {
         if (faceCache != null) {
             return faceCache;
@@ -51,7 +83,7 @@ public final class SproutsFaces {
         }
         Map<Vertex, SproutsRotations> rotations = rotationsCache;
         Set<Set<SproutsEdge>> faces = new HashSet<Set<SproutsEdge>>();
-        
+
         Set<SproutsEdge> nextFace = new HashSet<SproutsEdge>();
         Set<SproutsEdge> burntEdges = new HashSet<SproutsEdge>();
         for (SproutsEdge edge : edges) {
@@ -86,9 +118,11 @@ public final class SproutsFaces {
      * SproutsEdge next = rotations.get(submove.from()).next(submove);
      * </pre>
      *
-     * @param submove A submove in the game of sprouts. The submove need not be
-     *                completed.
-     * @return the face in whish this {@code submove} is drawn as a set of
+     * @param submove A submove in the game of sprouts (see
+     *                {@link com.github.glusk2.sprouts.core.Submove#asEdge()
+     *                Submove.asEdge()}).
+     *                The submove need not be completed.
+     * @return the face in which this {@code submove} is drawn as a set of
      *         directed edges
      * @throws IllegalArgumentException if {@code submove} is not connected to
      * the graph whose faces are represented by {@code this} object
@@ -124,7 +158,7 @@ public final class SproutsFaces {
      * @return returns one edge from a pair of opposite cobweb edges that
      *         reside in two separate faces
      */
-    public SproutsEdge findFirstCobwebEdgeInTwoFaces(Color cobwebColor) {
+    public SproutsEdge findFirstCobwebEdgeInTwoFaces(final Color cobwebColor) {
         Set<Set<SproutsEdge>> faces = this.faces();
         Set<SproutsEdge> burntRed = new HashSet<>();
         for (SproutsEdge e : this.edges) {
