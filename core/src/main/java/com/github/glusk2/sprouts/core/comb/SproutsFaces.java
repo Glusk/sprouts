@@ -88,6 +88,8 @@ public final class SproutsFaces {
      *
      * @param submove A submove in the game of sprouts. The submove need not be
      *                completed.
+     * @return the face in whish this {@code submove} is drawn as a set of
+     *         directed edges
      * @throws IllegalArgumentException if {@code submove} is not connected to
      * the graph whose faces are represented by {@code this} object
      */
@@ -119,6 +121,8 @@ public final class SproutsFaces {
      * If such a pair does not exist, this method returns {@code null}
      *
      * @param cobwebColor the colour of the cobweb edges
+     * @return returns one edge from a pair of opposite cobweb edges that
+     *         reside in two separate faces
      */
     public SproutsEdge findFirstCobwebEdgeInTwoFaces(Color cobwebColor) {
         Set<Set<SproutsEdge>> faces = this.faces();

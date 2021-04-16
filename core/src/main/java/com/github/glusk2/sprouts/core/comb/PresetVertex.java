@@ -48,7 +48,7 @@ public final class PresetVertex implements Vertex {
 
     /**
      * Hashes {@code v} without integer overflow and returns result modulo
-     * {@link Integer.MAX_VALUE}.
+     * {@link Integer#MAX_VALUE}.
      * <p>
      * The default {@link Vector2#hashCode()} method overflows and can return
      * the same hash for different vectors. This method tries to alleviate

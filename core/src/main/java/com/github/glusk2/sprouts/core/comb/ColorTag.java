@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 /**
  * A tag for objects that have a color.
  * <p>
- * There are two colors that have a special meaning in a {@link Graph}:
+ * There are two colors that have a special meaning in a sprouts game state
+ * graph:
  * <ul>
  *  <li><em>Red</em> objects are associated with the cobweb</li>
  *  <li><em>Black</em> objects are associated with sprouts and game Moves</li>
