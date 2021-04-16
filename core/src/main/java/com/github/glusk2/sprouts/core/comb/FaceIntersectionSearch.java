@@ -60,7 +60,7 @@ public final class FaceIntersectionSearch implements VertexSearch {
                 new PolylineIntersectionSearch(
                     p0,
                     p1,
-                    edge.intersectionPolyline(),
+                    edge.polyline(),
                     color
                 ).result();
             if (result.color().equals(color)) {

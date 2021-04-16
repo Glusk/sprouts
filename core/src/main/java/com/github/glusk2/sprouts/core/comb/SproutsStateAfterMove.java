@@ -139,13 +139,11 @@ public final class SproutsStateAfterMove implements SproutsGameState {
                 new HashSet<>(stateAfterMove.edges());
 
             List<Vector2> p1 = firstHalf.polyline().points();
-            List<Vector2> p2 = secondHalf.intersectionPolyline().points();
-            Vector2 p3 = secondHalf.to().position();
+            List<Vector2> p2 = secondHalf.polyline().points();
 
             List<Vector2> mergedPolyline = new ArrayList<>();
             mergedPolyline.addAll(p1);
-            mergedPolyline.addAll(p2);
-            mergedPolyline.add(p3);
+            mergedPolyline.addAll(p2.subList(1, p2.size()));
 
             SproutsEdge merged =
                 new SproutsEdge(
