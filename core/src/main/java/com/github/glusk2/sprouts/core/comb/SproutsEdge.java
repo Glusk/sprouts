@@ -9,17 +9,7 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
 /**
  * A directed edge from vertex {@code from()} to {@code to()}.
  * <p>
- * Every directed edge must have at least:
- * <ul>
- *   <li> 2 points, if {@code hasHooks} is set to {@code false},</li>
- *   <li> 4 points, if {@code hasHooks} is set to {@code true}</li>
- * </ul>
- * Furthermore, if {@code hasHooks} is set to true,
- * {@code intersectionPolyline()} returns a sub-list of the polyline passed
- * through the constructor without the endpoints (
- * {@code polyline.subList(1, polyline.size() - 1)}). This allows for a
- * slight margin of error when checking for intersections around the
- * vertices.
+ * Every directed edge must have at least 2 points.
  * <p>
  * Edge direction is said to be positive if {@code from().position()} is the
  * first, and {@code to().position()} the last point in polyline.
@@ -34,10 +24,9 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
     private final Color fromColor;
     private final Color toColor;
     private final Color edgeColor;
-    private final boolean hasHooks;
 
     /**
-     * Creates a red edge without hooks that has a positive direction.
+     * Creates a red edge has a positive direction.
      * <p>
      * This constructor is useful for creating cobweb edges.
      */
@@ -46,11 +35,11 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         final Color fromColor,
         final Color toColor
     ) {
-        this(true, polyline, fromColor, toColor, Color.RED, false);
+        this(true, polyline, fromColor, toColor, Color.RED);
     }
 
     /**
-     * Creates a black edge with hooks.
+     * Creates a black edge.
      * <p>
      * This constructor is useful for creating player sub-move edges.
      */
@@ -60,7 +49,7 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         final Color fromColor,
         final Color toColor
     ) {
-        this(direction, polyline, fromColor, toColor, Color.BLACK, true);
+        this(direction, polyline, fromColor, toColor, Color.BLACK);
     }
     /**
      *
@@ -76,34 +65,24 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
      * @param fromColor
      * @param toColor
      * @param edgeColor
-     * @param hasHooks
      */
     public SproutsEdge(
         final boolean direction,
         final Polyline polyline,
         final Color fromColor,
         final Color toColor,
-        final Color edgeColor,
-        final boolean hasHooks
+        final Color edgeColor
     ) {
-        /* // YAGNI
-        if (!hasHooks && polyline.points().size() < 2) {
+        if (polyline.points().size() < 2) {
             throw new IllegalArgumentException(
-                "An edge without hooks must have at least 2 points"
+                "An edge have at least 2 points"
             );
         }
-        if (hasHooks && polyline.points().size() < 4) {
-            throw new IllegalArgumentException(
-                "An edge with hooks must have at least 4 points"
-            );
-        }
-        */
         this.direction = direction;
         this.polyline = polyline;
         this.fromColor = fromColor;
         this.toColor = toColor;
         this.edgeColor = edgeColor;
-        this.hasHooks = hasHooks;
     }
 
     public Vertex from() {
@@ -137,8 +116,7 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
                 polyline,
                 toColor,
                 fromColor,
-                edgeColor,
-                hasHooks
+                edgeColor
             );
     }
 
