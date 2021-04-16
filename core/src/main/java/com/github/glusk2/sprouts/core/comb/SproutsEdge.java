@@ -11,24 +11,34 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
  * <p>
  * Every directed edge must have at least 2 points.
  * <p>
- * Edge direction is said to be positive if {@code from().position()} is the
- * first, and {@code to().position()} the last point in polyline.
+ * Edge direction can be either positive or negative. Refer to
+ * {@link #isPositive()} for more info.
  * <p>
- * Directed edges with the same origin ({@code from()}) can be compared. The
- * comparison is described in detail in {@link LocalRotations}.
+ * Directed edges with the same origin ({@code from()}) can be compared.
  */
 public final class SproutsEdge implements Comparable<SproutsEdge> {
-
+    /**
+     * The direction of this edge ({@code true} - positive, {@code false} -
+     * negative).
+     */
     private final boolean direction;
+    /** The polyline that represents this edge. */
     private final Polyline polyline;
+    /** The color of the origin vertex ({@code this.from()}). */
     private final Color fromColor;
+    /** The color of the destination vertex ({@code this.to()}). */
     private final Color toColor;
+    /** The color of this edge. */
     private final Color edgeColor;
 
     /**
      * Creates a red edge has a positive direction.
      * <p>
      * This constructor is useful for creating cobweb edges.
+     *
+     * @param polyline the polyline that represents this edge
+     * @param fromColor the color of the origin vertex ({@code this.from()})
+     * @param toColor the color of the destination vertex ({@code this.to()})
      */
     public SproutsEdge(
         final Polyline polyline,
@@ -42,6 +52,12 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
      * Creates a black edge.
      * <p>
      * This constructor is useful for creating player sub-move edges.
+     *
+     * @param direction the direction of this edge ({@code true} - positive,
+     *                  {@code false} - negative)
+     * @param polyline the polyline that represents this edge
+     * @param fromColor the color of the origin vertex ({@code this.from()})
+     * @param toColor the color of the destination vertex ({@code this.to()})
      */
     public SproutsEdge(
         final boolean direction,
@@ -52,19 +68,17 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         this(direction, polyline, fromColor, toColor, Color.BLACK);
     }
     /**
-     *
+     * Creates a new edge from a full list of attributes.
      * <p>
      * This is the generic primary constructor that's not meant to be used
      * directly.
      *
-     * @param direction if {@code true} than this is an edge from
-     *                    {@code polyline.get(0)} to
-     *                    {@code polyline.get(polyline.size() - 1)}
-     * @param polyline an unmodifiable list of points; can be passed as
-     *                 {@code Collections.unmodifiableList(pointsList)}
-     * @param fromColor
-     * @param toColor
-     * @param edgeColor
+     * @param direction the direction of this edge ({@code true} - positive,
+     *                  {@code false} - negative)
+     * @param polyline the polyline that represents this edge
+     * @param fromColor the color of the origin vertex ({@code this.from()})
+     * @param toColor the color of the destination vertex ({@code this.to()})
+     * @param edgeColor the color of this edge
      */
     public SproutsEdge(
         final boolean direction,
@@ -85,6 +99,11 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         this.edgeColor = edgeColor;
     }
 
+    /**
+     * Returns the <em>origin</em> of this edge.
+     *
+     * @return a new vertex that represents the origin of this directed edge
+     */
     public Vertex from() {
         List<Vector2> points = polyline.points();
         if (direction) {
@@ -93,6 +112,12 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return new PresetVertex(fromColor, points.get(points.size() - 1));
     }
 
+    /**
+     * Returns the <em>destination</em> of this edge.
+     *
+     * @return a new vertex that represents the destination of this directed
+     *         edge
+     */
     public Vertex to() {
         List<Vector2> points = polyline.points();
         if (direction) {
@@ -101,14 +126,29 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
         return new PresetVertex(toColor, points.get(0));
     }
 
+    /**
+     * Returns the color of this edge.
+     *
+     * @return the color of this edge
+     */
     public Color color() {
         return edgeColor;
     }
 
+    /**
+     * Returns the polyline that represents this edge.
+     *
+     * @return the polyline that represents this edge
+     */
     public Polyline polyline() {
         return this.polyline;
     }
 
+    /**
+     * Reverses this edge and returns the result as a new edge.
+     *
+     * @return a new edge that is the reverse of {@code this}
+     */
     public SproutsEdge reversed() {
         return
             new SproutsEdge(
@@ -134,13 +174,28 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
      * p[polylineSize-1], p[polylineSize-2], ..., p[0]
      * </pre>
      * where {@code p[i]} are the points in {@code this.polyline().points()}.
-     * 
+     *
      * @return {@code true} - positive, {@code false} - negative
      */
     public boolean isPositive() {
         return this.direction;
     }
 
+    /**
+     * Returns the second point of the polyline (that represents this edge)
+     * in the positive direction.
+     * <p>
+     * This method is useful for creating "hooks" of the form:
+     * <pre>
+     * [this.from().position(), p2]
+     * </pre>
+     * where {@code p2} is the result of this method.
+     * <p>
+     * Such "hooks" can be used to establish the order of edges around a
+     * common origin ({@link SproutsEdge#from()}).
+     *
+     * @return the position of the second point in the positive direction
+     */
     private Vector2 secondPointInPositiveDirection() {
         List<Vector2> points = polyline.points();
         if (direction) {
@@ -182,11 +237,11 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
 
         int h1 = from().hashCode();
         int h2 = PresetVertex.vector2HashCode(p1);
-        return h1 ^ ((h2 >>> 16) | (h2 << 16));
+        return h1 ^ ((h2 >>> Short.SIZE) | (h2 << Short.SIZE));
     }
     @Override
-    public boolean equals(Object o) {
-        if (o == null || ! (o instanceof SproutsEdge)) {
+    public boolean equals(final Object o) {
+        if (o == null || !(o instanceof SproutsEdge)) {
             return false;
         }
         SproutsEdge that = (SproutsEdge) o;
