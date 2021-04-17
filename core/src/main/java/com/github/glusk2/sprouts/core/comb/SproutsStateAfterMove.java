@@ -17,16 +17,42 @@ import com.github.glusk2.sprouts.core.geom.Polyline;
 /**
  * Sprouts state after a Move.
  * <p>
- * After a Move has been completed, one has to check whether there
+ * Once a move is completed, it has to be added to the game state along with
+ * the middle sprout.
+ * <p>
+ * Afterwards, one has to check whether there
  * are any red (cobweb) points with no red (cobweb) edges. If so,
  * remove them.
  */
 public final class SproutsStateAfterMove implements SproutsGameState {
+    /** The state before {@code this} one. */
     private final SproutsGameState previousState;
+    /** The move to draw in {@code previousState}. */
     private final Move move;
+    /**
+     * The position of the sprout that should be placed on the new
+     * {@code move}.
+     */
     private final Vector2 middleSproutPosition;
+    /**
+     * The acceptable margin of error by which {@code middleSproutPosition}
+     * can be placed off the {@code move}.
+     */
     private final float vertexGlueRadius;
 
+    /** A cached value of {@link #edges()}. */
+    private Set<SproutsEdge> cachedEdges = null;
+
+    /**
+     * Creates a new Sprouts state after a Move.
+     *
+     * @param previousState the state before {@code this} one
+     * @param move the move to draw in {@code previousState}
+     * @param middleSproutPosition the position of the sprout that should be
+     * placed on the new {@code move}
+     * @param vertexGlueRadius the acceptable margin of error by which
+     * {@code middleSproutPosition} can be placed off the {@code move}
+     */
     public SproutsStateAfterMove(
         final SproutsGameState previousState,
         final Move move,
@@ -39,7 +65,6 @@ public final class SproutsStateAfterMove implements SproutsGameState {
         this.vertexGlueRadius = vertexGlueRadius;
     }
 
-    private Set<SproutsEdge> cachedEdges = null;
     @Override
     public Set<SproutsEdge> edges() {
         if (cachedEdges != null) {
@@ -55,7 +80,10 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             Submove submove = it.next();
             List<Vector2> points = submove.asEdge().polyline().points();
             for (int i = 0; i < points.size(); i++) {
-                if (splitIndex < 0 && points.get(i).dst(middleSproutPosition) <= vertexGlueRadius) {
+                if (
+                    splitIndex < 0
+                 && points.get(i).dst(middleSproutPosition) <= vertexGlueRadius
+                ) {
                     // Try to place the sprout on the submove edge, such that
                     // it isn't too close to the endpoint vertices.
                     // It would be nice to have some tests written for this
@@ -63,10 +91,14 @@ public final class SproutsStateAfterMove implements SproutsGameState {
                     //---------------------------------------------------------
                     while (
                         i < points.size()
-                    && (
-                        submove.asEdge().from().position().dst(points.get(i)) <= 2 * vertexGlueRadius
-                    ||  submove.asEdge().to().position().dst(points.get(i)) <= 2 * vertexGlueRadius
-                    )
+                     && (
+                            submove.asEdge().from().position().dst(
+                                points.get(i)
+                            ) <= 2 * vertexGlueRadius
+                         || submove.asEdge().to().position().dst(
+                                points.get(i)
+                            ) <= 2 * vertexGlueRadius
+                        )
                     ) {
                         i++;
                     }
@@ -92,13 +124,17 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             // split edge
             SproutsEdge s1 = new SproutsEdge(
                 true,
-                new Polyline.WrappedList(points.subList(0, splitIndex + 1)),
+                new Polyline.WrappedList(
+                    points.subList(0, splitIndex + 1)
+                ),
                 edgeToSplit.from().color(),
                 Color.BLACK
             );
             SproutsEdge s2 = new SproutsEdge(
                 true,
-                new Polyline.WrappedList(points.subList(splitIndex, points.size())),
+                new Polyline.WrappedList(
+                    points.subList(splitIndex, points.size())
+                ),
                 Color.BLACK,
                 edgeToSplit.to().color()
             );
@@ -134,7 +170,7 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             SproutsEdge secondHalf = stateAfterMove.edges().stream().filter(
                 e -> e.isPositive() && vertexToRemove.equals(e.from())
             ).findFirst().get();
-    
+
             Set<SproutsEdge> simplifiedEdges =
                 new HashSet<>(stateAfterMove.edges());
 
