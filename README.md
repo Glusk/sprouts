@@ -3,9 +3,8 @@
 ![logo](android/res/drawable-xxhdpi/ic_launcher.png)
 
 [![GitHub Build](https://github.com/Glusk/sprouts/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Glusk/sprouts/actions/workflows/build.yml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cd11be0d03e64e12995b773e0d555c04)](https://www.codacy.com/gh/Glusk/sprouts/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Glusk/sprouts&amp;utm_campaign=Badge_Grade)
-[![Build Status](https://travis-ci.com/Glusk/sprouts.svg?branch=master)](https://travis-ci.com/Glusk/sprouts)
 [![Build status](https://ci.appveyor.com/api/projects/status/envq5g9ay0djc65f/branch/master?svg=true)](https://ci.appveyor.com/project/Glusk/sprouts/branch/master)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/cd11be0d03e64e12995b773e0d555c04)](https://www.codacy.com/gh/Glusk/sprouts/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Glusk/sprouts&amp;utm_campaign=Badge_Grade)
 [![Coverage Status](https://coveralls.io/repos/github/Glusk/sprouts/badge.svg?branch=master)](https://coveralls.io/github/Glusk/sprouts?branch=master)
 [![LoC](https://tokei.rs/b1/github/Glusk2/sprouts)](https://github.com/Glusk2/sprouts)
 
