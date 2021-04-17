@@ -8,11 +8,24 @@ import com.badlogic.gdx.graphics.Color;
  * Only the edges of the specified {@code color} are counted.
  */
 public final class VertexDegree extends Number {
-
+    /** The vertex whose degree we are interested in. */
     private Vertex vertex;
+    /** The graph in which there is the {@code vertex}. */
     private SproutsGameState graph;
+    /**
+     * Only look for edges of this color when calculating the degree of
+     * {@code vertex}.
+      */
     private Color edgeColor;
 
+    /**
+     * Creates a new Vertex degree number.
+     *
+     * @param vertex the vertex whose degree we are interested in
+     * @param graph the graph in which there is the {@code vertex}
+     * @param edgeColor only look for edges of this color when
+     * calculating the degree of {@code vertex}
+     */
     public VertexDegree(
         final Vertex vertex,
         final SproutsGameState graph,
@@ -36,7 +49,7 @@ public final class VertexDegree extends Number {
         int degree = 0;
         for (SproutsEdge edge : graph.edges()) {
             if (
-                edge.from().equals(vertex) 
+                edge.from().equals(vertex)
              && edge.color().equals(edgeColor)
             ) {
                 degree++;
