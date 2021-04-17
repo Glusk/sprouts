@@ -56,7 +56,7 @@ public final class SproutsFacesTest {
         SproutsEdge v6v5 = v5v6.reversed();
 
         SproutsFaces faces = new SproutsFaces(
-            v1v4, v1v9, 
+            v1v4, v1v9,
             v2v4, v2v6, v2v7,
             v4v1, v4v2, v4v5,
             v5v4, v5v6,
@@ -79,11 +79,19 @@ public final class SproutsFacesTest {
     @Test
     public void detectsACobwebEdgeThatIsInTwoFaces() {
         SproutsEdge v1v2 = new SproutsEdge(
-            new Polyline.WrappedList(Vector2.Zero, new Vector2(1, 1), new Vector2(3, 0)),
+            new Polyline.WrappedList(
+                Vector2.Zero,
+                new Vector2(1, 1),
+                new Vector2(3, 0)
+            ),
             Color.BLACK, Color.BLACK);
         SproutsEdge v2v1 = v1v2.reversed();
         SproutsEdge v1v2dot = new SproutsEdge(
-            new Polyline.WrappedList(Vector2.Zero, new Vector2(1, -1), new Vector2(3, 0)),
+            new Polyline.WrappedList(
+                Vector2.Zero,
+                new Vector2(1, -1),
+                new Vector2(3, 0)
+            ),
             Color.BLACK, Color.BLACK);
         SproutsEdge v2v1dot = v1v2dot.reversed();
 
