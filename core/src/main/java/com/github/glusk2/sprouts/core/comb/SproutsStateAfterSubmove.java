@@ -9,6 +9,15 @@ import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.core.geom.Polyline;
 
+/**
+ * Sprouts state after a Submove.
+ * <p>
+ * A submove may tear the cobweb. When that happens, the cobweb edge has to be
+ * split at the intersection and a cobweb vertex added to the game state.
+ * <p>
+ * If afterwards there's a cobweb edge that resides in two faces,
+ * remove it.
+ */
 public final class SproutsStateAfterSubmove implements SproutsGameState {
     /**
      * Maximum error margin for detection of intersection between a line
@@ -16,11 +25,20 @@ public final class SproutsStateAfterSubmove implements SproutsGameState {
      */
     private static final float LINE_INTERSECT_ERROR = .5f;
 
+    /** The state before {@code this} one. */
     private final SproutsGameState previousState;
+    /** The submove to draw in {@code previousState}. */
     private final Submove submove;
 
+    /** A cached value of {@link #edges()}. */
     private Set<SproutsEdge> edgeCache;
 
+    /**
+     * Creates a new Sprouts state after a Submove.
+     *
+     * @param previousState the state before {@code this} one
+     * @param submove the submove to draw in {@code previousState}
+     */
     public SproutsStateAfterSubmove(
         final SproutsGameState previousState,
         final Submove submove
