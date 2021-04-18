@@ -89,7 +89,7 @@ public final class SproutsEdge implements Comparable<SproutsEdge> {
     ) {
         if (polyline.points().size() < 2) {
             throw new IllegalArgumentException(
-                "An edge have at least 2 points"
+                "An edge must have at least 2 points"
             );
         }
         this.direction = direction;

@@ -300,7 +300,7 @@ public final class SubmoveElement implements Submove {
 
     @Override
     public boolean isReadyToRender() {
-        return !stroke.points().isEmpty();
+        return stroke.points().size() > 1;
     }
 
     @Override
