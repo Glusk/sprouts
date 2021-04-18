@@ -106,4 +106,4 @@ where `<tag>` matches the following regular expression: `^v[0-9]+.[0-9]+.[0-9]+`
 ## IDE integration
 
 You can find help on how to setup various IDEs for `libGDX` on their official
-[page](https://libgdx.badlogicgames.com/documentation/gettingstarted/Setting%20Up.html).
+[page](https://libgdx.com/dev/setup/).
