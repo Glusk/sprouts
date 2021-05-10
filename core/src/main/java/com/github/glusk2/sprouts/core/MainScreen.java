@@ -27,13 +27,6 @@ import com.github.glusk2.sprouts.core.ui.TouchEventSnapshooter;
  * The main screen of the application with the toolbar and the game board.
  */
 public final class MainScreen extends ScreenAdapter {
-    /**
-     * Minimum dimension ratio.
-     * <p>
-     * This is used to compute the move thickness. The minimum game board
-     * dimension is divided by this constant to produce the move thickness.
-     */
-    private static final float MIN_DIMENSION_RATIO = 60f;
     /** Starting sprouts slider minimum value. */
     private static final int SLIDER_MIN = 2;
     /** Starting sprouts slider maximum value. */
@@ -65,6 +58,13 @@ public final class MainScreen extends ScreenAdapter {
     /** The viewport of {@code this} screen. */
     private final Viewport viewport;
     /**
+     * Minimum dimension ratio.
+     * <p>
+     * This is used to compute the move thickness. The minimum game board
+     * dimension is divided by this value to produce the move thickness.
+     */
+    private final float minDimensionRatio;
+    /**
      * The {@code ShapeRenderer} object used to draw the game board.
      * <p>
      * The {@code renderer} object is not disposed of in
@@ -88,6 +88,9 @@ public final class MainScreen extends ScreenAdapter {
      *
      * @param game the Game instance that {@code this} Screen belongs to
      * @param viewport the viewport of {@code this} screen
+     * @param minDimensionRatio Minimum dimension ratio. This is used to
+     *        compute the move thickness. The minimum game board dimension
+     *        is divided by this value to produce the move thickness.
      * @param renderer the {@code ShapeRenderer} object used to draw the game
      *                 board
      * @param numOfSprouts the number of starting sprouts to generate
@@ -95,11 +98,13 @@ public final class MainScreen extends ScreenAdapter {
     public MainScreen(
         final Game game,
         final Viewport viewport,
+        final float minDimensionRatio,
         final ShapeRenderer renderer,
         final int numOfSprouts
     ) {
         this.game = game;
         this.viewport = viewport;
+        this.minDimensionRatio = minDimensionRatio;
         this.renderer = renderer;
         this.numOfSprouts = numOfSprouts;
     }
@@ -145,7 +150,7 @@ public final class MainScreen extends ScreenAdapter {
                 skin
             );
         resetButton.addListener(
-            new ResetDialog(game, renderer, stage, slider)
+            new ResetDialog(game, renderer, minDimensionRatio, stage, slider)
         );
 
         Table toolbar = new Table().pad(TOOLBAR_PADDING);
@@ -171,7 +176,7 @@ public final class MainScreen extends ScreenAdapter {
                     Math.min(
                         gameBounds.getWidth(),
                         gameBounds.getHeight()
-                    ) / MIN_DIMENSION_RATIO,
+                    ) / minDimensionRatio,
                     CIRCLE_SEGMENT_COUNT,
                     (int) slider.getValue(),
                     gameBounds
