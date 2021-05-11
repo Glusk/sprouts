@@ -11,8 +11,8 @@ import java.util.TreeSet;
  * ({@link SproutsEdge#from()}).
  * <p>
  * Only edges with the same origin shall be valid as constructor
- * arguments. Otherwise, invocations of {@link #next()} will error with
- * {@code IllegalArgumentException}.
+ * arguments. Otherwise, invocations of {@link #next(SproutsEdge)} will error
+ * with {@code IllegalArgumentException}.
  */
 public final class SproutsRotations {
     /** Common origin edges. */
