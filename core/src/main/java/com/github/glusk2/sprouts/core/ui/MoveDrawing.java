@@ -12,7 +12,7 @@ import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
-import com.github.glusk2.sprouts.core.comb.Graph;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
@@ -50,8 +50,8 @@ public final class MoveDrawing implements Snapshot {
     private static final float PERP_DISTANCE_MODIFIER = 3f;
 
 
-    /** The Graph that a Move is being drawn to. */
-    private final Graph currentState;
+    /** The graph that a Move is being drawn to. */
+    private final SproutsGameState gameState;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
@@ -73,7 +73,7 @@ public final class MoveDrawing implements Snapshot {
      * Creates a new MoveDrawing Snapshot from the {@code currentState},
      * {@code moveOrigin} and {@code moveSample}.
      *
-     * @param currentState the Graph that a Move is being drawn to
+     * @param gameState the Graph that a Move is being drawn to
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -85,14 +85,14 @@ public final class MoveDrawing implements Snapshot {
      *                   {@code gameBounds} is invalid
      */
     public MoveDrawing(
-        final Graph currentState,
+        final SproutsGameState gameState,
         final float moveThickness,
         final int circleSegmentCount,
         final Vertex moveOrigin,
         final List<Vector2> moveSample,
         final Rectangle gameBounds
     ) {
-        this.currentState = currentState;
+        this.gameState = gameState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.moveOrigin = moveOrigin;
@@ -119,7 +119,7 @@ public final class MoveDrawing implements Snapshot {
                             ),
                             SPLINE_SEGMENT_COUNT
                         ),
-                        currentState,
+                        gameState,
                         moveThickness * 2,
                         gameBounds
                     )
@@ -138,17 +138,17 @@ public final class MoveDrawing implements Snapshot {
         if (nextMove.isValid() && nextMove.isCompleted()) {
             return
                 new SproutAdd(
-                    currentState,
+                    gameState,
+                    nextMove,
                     moveThickness,
                     circleSegmentCount,
-                    moveOrigin,
-                    moveSample,
                     gameBounds
                 );
         }
+
         return
             new BeforeMove(
-                currentState,
+                gameState,
                 moveThickness,
                 circleSegmentCount,
                 gameBounds
@@ -157,19 +157,13 @@ public final class MoveDrawing implements Snapshot {
 
     @Override
     public Snapshot touchDragged(final Vector2 position) {
-        Vector2 lastElement = null;
-        if (moveSample.isEmpty()) {
-            lastElement = moveOrigin.position();
-        } else {
-            lastElement = moveSample.get(moveSample.size() - 1);
-        }
-
+        Vector2 lastElement = moveSample.get(moveSample.size() - 1);
         if (position.dst(lastElement) > 2 * moveThickness) {
             List<Vector2> newSample = new LinkedList<Vector2>(moveSample);
             newSample.add(position);
             return
                 new MoveDrawing(
-                    currentState,
+                    gameState,
                     moveThickness,
                     circleSegmentCount,
                     moveOrigin,
@@ -181,18 +175,17 @@ public final class MoveDrawing implements Snapshot {
     }
 
     @Override
-    public Graph currentState() {
-        return this.currentState;
-    }
-
-    @Override
     public void render(final ShapeRenderer renderer) {
         new RenderedMove(
             moveFromSampleAndOrigin(),
             moveThickness,
             circleSegmentCount
         ).render(renderer);
+        gameState.render(renderer, moveThickness, circleSegmentCount);
+    }
 
-        currentState.render(renderer);
+    @Override
+    public SproutsGameState gameState() {
+        return this.gameState;
     }
 }

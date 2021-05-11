@@ -21,6 +21,13 @@ public final class ResetDialog extends InputListener {
     private final Game game;
     /** The ShapeRenderer to use in the new Screen after the reset. */
     private final ShapeRenderer renderer;
+    /**
+     * Minimum dimension ratio.
+     * <p>
+     * This is used to compute the move thickness. The minimum game board
+     * dimension is divided by this value to produce the move thickness.
+     */
+    private final float minDimensionRatio;
     /** The stage to "pin" the "reset game" Dialog to. */
     private final Stage stage;
     /** The slider to pick the number of sprouts for the new game with. */
@@ -33,6 +40,9 @@ public final class ResetDialog extends InputListener {
      *             confirmed
      * @param renderer the ShapeRenderer to use in the new Screen after the
      *                 reset
+     * @param minDimensionRatio Minimum dimension ratio. This is used to
+     *        compute the move thickness. The minimum game board dimension
+     *        is divided by this value to produce the move thickness.
      * @param stage the stage to "pin" the "reset game" Dialog to
      * @param slider the slider to pick the number of sprouts for the new game
      *               with
@@ -40,11 +50,13 @@ public final class ResetDialog extends InputListener {
     public ResetDialog(
         final Game game,
         final ShapeRenderer renderer,
+        final float minDimensionRatio,
         final Stage stage,
         final Slider slider
     ) {
         this.game = game;
         this.renderer = renderer;
+        this.minDimensionRatio = minDimensionRatio;
         this.stage = stage;
         this.slider = slider;
     }
@@ -74,6 +86,7 @@ public final class ResetDialog extends InputListener {
                             new MainScreen(
                                 game,
                                 stage.getViewport(),
+                                minDimensionRatio,
                                 renderer,
                                 (int) slider.getValue()
                             )

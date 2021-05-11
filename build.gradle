@@ -161,7 +161,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         
-        testCompile "org.assertj:assertj-core:3.12.2"
         testCompile "junit:junit:4.11"
     }
 

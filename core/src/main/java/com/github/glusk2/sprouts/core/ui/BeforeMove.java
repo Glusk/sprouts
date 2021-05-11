@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.core.ui;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.Gdx;
@@ -9,10 +10,11 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.comb.Graph;
-import com.github.glusk2.sprouts.core.comb.GraphCreation;
+import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
-import com.github.glusk2.sprouts.core.comb.TransformedGraph;
+import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
+import com.github.glusk2.sprouts.core.comb.SproutsGameState;
+import com.github.glusk2.sprouts.core.comb.SproutsInitialState;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 
 /**
@@ -23,12 +25,12 @@ import com.github.glusk2.sprouts.core.comb.Vertex;
  * {@code this}.
  */
 public final class BeforeMove implements Snapshot {
+    /** The graph representing the current game board state. */
+    private final SproutsGameState gameState;
     /** The thickness of the Moves drawn. */
     private final float moveThickness;
     /** The number of segments used to draw circular Vertices. */
     private final int circleSegmentCount;
-    /** The Graph that a Move will be drawn to. */
-    private final Graph currentState;
      /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
 
@@ -49,13 +51,9 @@ public final class BeforeMove implements Snapshot {
         final Rectangle gameBounds
     ) {
         this(
-            new TransformedGraph(
-                new GraphCreation(
-                    numOfSprouts,
-                    moveThickness,
-                    circleSegmentCount,
-                    gameBounds
-                )
+            new SproutsInitialState(
+                numOfSprouts,
+                gameBounds
             ),
             moveThickness,
             circleSegmentCount,
@@ -64,10 +62,9 @@ public final class BeforeMove implements Snapshot {
     }
 
     /**
-     * Creates a new Snapshot, using the specified Graph -
-     * {@code currentState}.
+     * Creates a new Snapshot, using the set game state.
      *
-     * @param currentState the Graph that a Move will be drawn to
+     * @param gameState the graph representing the current game board state
      * @param moveThickness the thickness of the Moves drawn
      * @param circleSegmentCount the number of segments used to draw circular
      *                           Vertices
@@ -75,12 +72,12 @@ public final class BeforeMove implements Snapshot {
      *                   {@code gameBounds} is invalid
      */
     public BeforeMove(
-        final Graph currentState,
+        final SproutsGameState gameState,
         final float moveThickness,
         final int circleSegmentCount,
         final Rectangle gameBounds
     ) {
-        this.currentState = currentState;
+        this.gameState = gameState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.gameBounds = gameBounds;
@@ -88,24 +85,28 @@ public final class BeforeMove implements Snapshot {
 
     @Override
     public Snapshot touchDown(final Vector2 position) {
-        if (!new IsMovePossible(currentState).check()) {
+        if (!new IsMovePossible(gameState).check()) {
             return this;
         }
-        for (Vertex v : currentState.vertices()) {
-            if (
-                v.position().dst(position) < 2 * moveThickness
-             && currentState.isAliveSprout(v)
-            ) {
-                return
-                    new MoveDrawing(
-                        currentState,
-                        moveThickness,
-                        circleSegmentCount,
-                        v,
-                        new LinkedList<Vector2>(),
-                        gameBounds
-                    );
-            }
+
+        Vertex nearest =
+            new NearestSproutSearch(
+                gameState,
+                position,
+                2 * moveThickness,
+                Color.BLACK
+            ).result();
+
+        if (new IsAliveSprout(gameState).test(nearest)) {
+            return
+                new MoveDrawing(
+                    gameState,
+                    moveThickness,
+                    circleSegmentCount,
+                    nearest,
+                    new LinkedList<Vector2>(Arrays.asList(nearest.position())),
+                    gameBounds
+                );
         }
         return this;
     }
@@ -121,14 +122,9 @@ public final class BeforeMove implements Snapshot {
     }
 
     @Override
-    public Graph currentState() {
-        return this.currentState;
-    }
-
-    @Override
     public void render(final ShapeRenderer renderer) {
-        currentState.render(renderer);
-        if (!new IsMovePossible(currentState).check()) {
+        gameState.render(renderer, moveThickness, circleSegmentCount);
+        if (!new IsMovePossible(gameState).check()) {
             Gdx.gl.glEnable(GL20.GL_BLEND);
             Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -147,5 +143,10 @@ public final class BeforeMove implements Snapshot {
 
             Gdx.gl.glDisable(GL20.GL_BLEND);
         }
+    }
+
+    @Override
+    public SproutsGameState gameState() {
+        return this.gameState;
     }
 }

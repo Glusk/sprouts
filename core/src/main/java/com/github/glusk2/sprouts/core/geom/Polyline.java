@@ -1,5 +1,6 @@
 package com.github.glusk2.sprouts.core.geom;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector2;
@@ -21,18 +22,28 @@ public interface Polyline {
 
 
     /**
-     * A wrapper class for a list of points. It is convenient to have a single
-     * type for all objects that represent a polyline.
+     * A wrapper class for a list of points.
+     * <p>
+     * Changes made to the array or a list passed through the constructor
+     * reflect in {@link #points()}.
      */
     final class WrappedList implements Polyline {
 
-        /** The wrapped list of points on {@code this} polyline. */
+        /** The points on this polyline. */
         private final List<Vector2> wrappedPoints;
 
         /**
+         * Creates a new polyline from an array of points.
+         *
+         * @param pointsToWrap the points on this polyline
+         */
+        public WrappedList(final Vector2... pointsToWrap) {
+            this(Arrays.asList(pointsToWrap));
+        }
+        /**
          * Creates a new polyline from a list of points.
          *
-         * @param pointsToWrap the list of points on {@code this} polyline
+         * @param pointsToWrap the points on this polyline
          */
         public WrappedList(final List<Vector2> pointsToWrap) {
             this.wrappedPoints = pointsToWrap;

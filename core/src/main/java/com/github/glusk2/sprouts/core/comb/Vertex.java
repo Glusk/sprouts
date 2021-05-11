@@ -19,14 +19,4 @@ public interface Vertex extends ColorTag {
      * @return a copy of {@code this} vertex position vector
      */
     Vector2 position();
-
-    /**
-     * Returns a string label of {@code this} vertex for human-readable
-     * comparisons.
-     * <p>
-     * Vertices can be labeled with numeric values or with its position.
-     *
-     * @return a string label of {@code this} vertex
-     */
-    String label();
 }

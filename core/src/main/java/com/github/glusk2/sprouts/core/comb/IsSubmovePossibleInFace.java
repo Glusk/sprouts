@@ -16,10 +16,10 @@ public final class IsSubmovePossibleInFace implements Check {
 
     /** Specifies whether the {@code origin()} of the Submove is a sprout. */
     private final boolean isOriginSprout;
-    /** The Graph that the {@code face} belongs to. */
-    private final Graph gameState;
-    /** A Set of CompoundEdges that comprise a face of the {@code gameState}. */
-    private final Set<CompoundEdge> face;
+    /** The graph that the {@code face} belongs to. */
+    private final SproutsGameState gameState;
+    /** A Set of edges that comprise a face of the {@code gameState}. */
+    private final Set<SproutsEdge> face;
 
     /**
      * Creates a new Check by specifying the {@code gameState} and the
@@ -28,13 +28,13 @@ public final class IsSubmovePossibleInFace implements Check {
      * This constructor assumes that the origin of the Submove <em>is</em> a
      * sprout.
      *
-     * @param gameState the Graph that the {@code face} belongs to
-     * @param face a Set of CompoundEdges that comprise a face of the
+     * @param gameState the graph that the {@code face} belongs to
+     * @param face a Set of edges that comprise a face of the
      *             {@code gameState}
      */
     public IsSubmovePossibleInFace(
-        final Graph gameState,
-        final Set<CompoundEdge> face
+        final SproutsGameState gameState,
+        final Set<SproutsEdge> face
     ) {
         this(
             true,
@@ -49,16 +49,16 @@ public final class IsSubmovePossibleInFace implements Check {
      * This constructor does not assume whether the Submove origin is a
      * sprout or not - {@code isOriginSprout} specifies that.
      *
-     * @param isOriginSprout specifies whether the {@code origin()} of the
+     * @param isOriginSprout specifies whether the of the
      *                       Submove is a sprout
-     * @param gameState the Graph that the {@code face} belongs to
-     * @param face a Set of CompoundEdges that comprise a face of the
+     * @param gameState the graph that the {@code face} belongs to
+     * @param face a Set of edges that comprise a face of the
      *             {@code gameState}
      */
     public IsSubmovePossibleInFace(
         final boolean isOriginSprout,
-        final Graph gameState,
-        final Set<CompoundEdge> face
+        final SproutsGameState gameState,
+        final Set<SproutsEdge> face
     ) {
         this.isOriginSprout = isOriginSprout;
         this.gameState = gameState;
@@ -73,15 +73,15 @@ public final class IsSubmovePossibleInFace implements Check {
      */
     @Override
     public boolean check() {
-        if (!gameState.faces().contains(face)) {
+        if (!new SproutsFaces(gameState.edges()).faces().contains(face)) {
             throw new IllegalArgumentException(
                 "\"face\" is not part of the \"gameState\"!"
             );
         }
         Set<Vertex> faceVertices = new HashSet<Vertex>();
-        for (CompoundEdge edge : face) {
-            faceVertices.add(edge.origin());
-            faceVertices.add(edge.direction().to());
+        for (SproutsEdge edge : face) {
+            faceVertices.add(edge.from());
+            faceVertices.add(edge.to());
         }
 
         int faceLives = 0;
@@ -89,7 +89,7 @@ public final class IsSubmovePossibleInFace implements Check {
             if (v.color().equals(Color.BLACK)) {
                 faceLives +=
                     MAXIMUM_SPROUT_LIVES
-                  - gameState.vertexDegree(v, Color.BLACK);
+                  - new VertexDegree(v, gameState, Color.BLACK).intValue();
             }
         }
         if (isOriginSprout) {

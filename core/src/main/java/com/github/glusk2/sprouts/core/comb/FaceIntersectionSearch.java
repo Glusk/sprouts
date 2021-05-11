@@ -1,21 +1,18 @@
 package com.github.glusk2.sprouts.core.comb;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.geom.Polyline;
 
 /**
  * Objects of this class can find the intersection between a line segment and
- * a Graph face.
+ * a graph face.
  */
 public final class FaceIntersectionSearch implements VertexSearch {
 
-    /** A set of CompoundEdges that represent a Graph face. */
-    private final Set<CompoundEdge> face;
+    /** A set of directed edges that represent a graph face. */
+    private final Set<SproutsEdge> face;
     /** The first line segment boundary. */
     private final Vector2 p0;
     /** The second line segment boundary. */
@@ -25,12 +22,12 @@ public final class FaceIntersectionSearch implements VertexSearch {
      * Constructs a new VertexSearch object that can find the intersection
      * between the line segment {@code p0-p1} and {@code face}.
      *
-     * @param face a set of CompoundEdges that represent a Graph face
+     * @param face a set of directed edges that represent a graph face
      * @param p0 the first line segment boundary
      * @param p1 the second line segment boundary
      */
     public FaceIntersectionSearch(
-        final Set<CompoundEdge> face,
+        final Set<SproutsEdge> face,
         final Vector2 p0,
         final Vector2 p1
     ) {
@@ -46,7 +43,7 @@ public final class FaceIntersectionSearch implements VertexSearch {
      * and {@code face}.
      * <p>
      * The {@code color()} of the Vertex returned is the same as that of the
-     * Graph {@code face} edge that the line segment {@code p0-p1} crosses.
+     * graph {@code face} edge that the line segment {@code p0-p1} crosses.
      * <p>
      * It is not enough for the segment to touch the face - it has to cross it
      * or no intersection will be detected.
@@ -57,16 +54,13 @@ public final class FaceIntersectionSearch implements VertexSearch {
      */
     @Override
     public Vertex result() {
-        for (CompoundEdge edge : face) {
-            List<Vector2> edgePoints = new ArrayList<Vector2>();
-            edgePoints.add(edge.origin().position());
-            edgePoints.addAll(edge.direction().polyline().points());
-            Color color = edge.direction().color();
+        for (SproutsEdge edge : face) {
+            Color color = edge.color();
             Vertex result =
                 new PolylineIntersectionSearch(
                     p0,
                     p1,
-                    new Polyline.WrappedList(edgePoints),
+                    edge.polyline(),
                     color
                 ).result();
             if (result.color().equals(color)) {
