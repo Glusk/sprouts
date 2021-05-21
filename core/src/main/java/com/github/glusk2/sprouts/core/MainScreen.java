@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.glusk2.sprouts.core.ui.BeforeMove;
 import com.github.glusk2.sprouts.core.ui.GameBoard;
@@ -153,7 +156,63 @@ public final class MainScreen extends ScreenAdapter {
             new ResetDialog(game, renderer, minDimensionRatio, stage, slider)
         );
 
+        TextButton helpButton =
+            new TextButton(
+                "How to play?",
+                skin
+            );
+        helpButton.addListener(
+            new InputListener() {
+                @Override
+                public boolean touchDown(
+                    final InputEvent event,
+                    final float x,
+                    final float y,
+                    final int pointer,
+                    final int button
+                ) {
+                    Window instrWindow = new Window("Instructions", skin);
+
+                    Label instructions = new Label(
+                        "Connect two living sprouts with a curve that\r\n"
+                      + "doesn't cross itself or the existing moves.\r\n"
+                      + "\r\n"
+                      + "A move can intersect red lines.\r\n"
+                      + "\r\n"
+                      + "Once a move is complete, add a new sprout anywhere\r\n"
+                      + "along the curve.",
+                        skin
+                    );
+                    instructions.setWrap(false);
+
+                    TextButton okButton = new TextButton("Okay!", skin);
+                    okButton.addListener(new InputListener() {
+                        @Override
+                        public boolean touchDown(
+                            final InputEvent event,
+                            final float x,
+                            final float y,
+                            final int pointer,
+                            final int button
+                        ) {
+                            instrWindow.setVisible(false);
+                            return true;
+                        }
+                    });
+
+                    instrWindow.add(instructions);
+                    instrWindow.row();
+                    instrWindow.add(okButton);
+                    instrWindow.pack();
+
+                    stage.addActor(instrWindow);
+                    return true;
+                }
+            }
+        );
+
         Table toolbar = new Table().pad(TOOLBAR_PADDING);
+        toolbar.add(helpButton);
         toolbar.left().add(resetButton).space(TOOLBAR_CELL_SPACING);
         toolbar.add(sliderLabel).space(TOOLBAR_CELL_SPACING);
         toolbar.add(slider);
