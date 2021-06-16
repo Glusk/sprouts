@@ -47,7 +47,7 @@ public final class SproutsTooltip implements SproutsGameState {
 
     /**
      * Returns all living sprouts (with respect to {@code stateBeforeMove})
-     * that are on the {@code face} and paints them green.
+     * that are on the {@code face}.
      *
      * @return a set of tooltip sprouts in which a move can finnish
      */
@@ -64,7 +64,6 @@ public final class SproutsTooltip implements SproutsGameState {
                  || v.equals(moveOrigin) && blackDegree.intValue()
                         < DEAD_SPROUT_DEGREE - 1;
             })
-            .map(v -> new PresetVertex(Color.GREEN, v.position()))
             .collect(Collectors.toSet());
     }
 
@@ -94,8 +93,8 @@ public final class SproutsTooltip implements SproutsGameState {
         final int circleSegmentCount
     ) {
         renderer.begin(ShapeType.Filled);
+        renderer.setColor(Color.GREEN);
         for (Vertex v : vertices()) {
-            renderer.setColor(v.color());
             renderer.circle(
                 v.position().x,
                 v.position().y,
