@@ -42,15 +42,20 @@ public interface SproutsGameState {
      * @param renderer the renderer to render with
      * @param thickness the thickness of edges and the radius of vertices
      * @param circleSegmentCount the number of segments for the circles drawn
+     * @param displayCobweb if {@code true}, display cobweb vertices and edges
      */
     default void render(
         ShapeRenderer renderer,
         float thickness,
-        int circleSegmentCount
+        int circleSegmentCount,
+        boolean displayCobweb
     ) {
         Set<SproutsEdge> drawnEdges = new HashSet<>();
         renderer.begin(ShapeType.Filled);
         for (SproutsEdge edge : edges()) {
+            if (!displayCobweb && edge.color().equals(Color.RED)) {
+                continue;
+            }
             if (!drawnEdges.contains(edge)) {
                 new PolylineBatch(
                     edge.polyline(),
@@ -64,6 +69,9 @@ public interface SproutsGameState {
             }
         }
         for (Vertex v : vertices()) {
+            if (!displayCobweb && v.color().equals(Color.RED)) {
+                continue;
+            }
             renderer.setColor(v.color());
             renderer.circle(
                 v.position().x,
