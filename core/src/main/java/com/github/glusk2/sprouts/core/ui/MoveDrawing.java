@@ -1,6 +1,7 @@
 package com.github.glusk2.sprouts.core.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,10 +10,13 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.Move;
 import com.github.glusk2.sprouts.core.RenderedMove;
+import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.SubmoveElement;
 import com.github.glusk2.sprouts.core.SubmoveHead;
 import com.github.glusk2.sprouts.core.SubmoveSequence;
+import com.github.glusk2.sprouts.core.comb.SproutsFaces;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
+import com.github.glusk2.sprouts.core.comb.SproutsTooltip;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
@@ -176,12 +180,28 @@ public final class MoveDrawing implements Snapshot {
 
     @Override
     public void render(final ShapeRenderer renderer) {
+        Move move = moveFromSampleAndOrigin();
+
         new RenderedMove(
-            moveFromSampleAndOrigin(),
+            move,
             moveThickness,
             circleSegmentCount
         ).render(renderer);
+
         gameState.render(renderer, moveThickness, circleSegmentCount);
+
+        Iterator<Submove> submoves = move.iterator();
+        if (submoves.hasNext()) {
+            Submove s = submoves.next();
+            if (!s.isReadyToRender()) {
+                return;
+            }
+            new SproutsTooltip(
+                gameState,
+                () -> new SproutsFaces(gameState.edges()).drawnIn(s.asEdge()),
+                moveOrigin
+            ).render(renderer, moveThickness, circleSegmentCount);
+        }
     }
 
     @Override
