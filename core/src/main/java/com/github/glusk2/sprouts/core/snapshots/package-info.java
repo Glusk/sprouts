@@ -1,5 +1,5 @@
 /**
- * Contains classes and interfaces that are used to create and display the
- * user interface for a game of Sprouts.
+ * This package contains classes and interfaces that help model the different
+ * game states or <em>snapshots</em>.
  */
 package com.github.glusk2.sprouts.core.snapshots;
