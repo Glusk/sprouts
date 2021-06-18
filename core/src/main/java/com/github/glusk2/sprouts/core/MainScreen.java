@@ -21,10 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.github.glusk2.sprouts.core.ui.BeforeMove;
-import com.github.glusk2.sprouts.core.ui.GameBoard;
-import com.github.glusk2.sprouts.core.ui.ResetDialog;
-import com.github.glusk2.sprouts.core.ui.TouchEventSnapshooter;
+import com.github.glusk2.sprouts.core.snapshots.BeforeMove;
+import com.github.glusk2.sprouts.core.snapshots.GameBoard;
+import com.github.glusk2.sprouts.core.snapshots.ResetDialog;
+import com.github.glusk2.sprouts.core.snapshots.TouchEventSnapshooter;
 
 /**
  * The main screen of the application with the toolbar and the game board.

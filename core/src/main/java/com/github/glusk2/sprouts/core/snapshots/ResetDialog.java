@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core.snapshots;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
