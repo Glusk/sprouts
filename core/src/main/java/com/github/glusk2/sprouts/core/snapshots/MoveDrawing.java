@@ -9,18 +9,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.CobwebSwitch;
-import com.github.glusk2.sprouts.core.Move;
-import com.github.glusk2.sprouts.core.RenderedMove;
-import com.github.glusk2.sprouts.core.Submove;
-import com.github.glusk2.sprouts.core.SubmoveElement;
-import com.github.glusk2.sprouts.core.SubmoveHead;
-import com.github.glusk2.sprouts.core.SubmoveSequence;
 import com.github.glusk2.sprouts.core.comb.SproutsFaces;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsTooltip;
 import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
+import com.github.glusk2.sprouts.core.moves.Move;
+import com.github.glusk2.sprouts.core.moves.RenderedMove;
+import com.github.glusk2.sprouts.core.moves.Submove;
+import com.github.glusk2.sprouts.core.moves.SubmoveElement;
+import com.github.glusk2.sprouts.core.moves.SubmoveHead;
+import com.github.glusk2.sprouts.core.moves.SubmoveSequence;
 
 /**
  * This Snapshot represents the game board <em>while</em> a Move is being drawn.

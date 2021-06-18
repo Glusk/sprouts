@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core;
+package com.github.glusk2.sprouts.core.moves;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
