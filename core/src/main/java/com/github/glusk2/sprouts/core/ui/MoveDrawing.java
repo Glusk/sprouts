@@ -8,6 +8,7 @@ import java.util.List;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.CobwebSwitch;
 import com.github.glusk2.sprouts.core.Move;
 import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.Submove;
@@ -72,6 +73,8 @@ public final class MoveDrawing implements Snapshot {
     private final List<Vector2> moveSample;
     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
+    /** A switch that tracks whether the player wishes to display cobweb. */
+    private final CobwebSwitch displayCobweb;
 
     /**
      * Creates a new MoveDrawing Snapshot from the {@code currentState},
@@ -87,6 +90,8 @@ public final class MoveDrawing implements Snapshot {
      *                   in {@code this} Snapshot
      * @param gameBounds any Submove that is drawn outside of
      *                   {@code gameBounds} is invalid
+     * @param displayCobweb a switch that tracks whether the player wishes to
+     *                      display cobweb
      */
     public MoveDrawing(
         final SproutsGameState gameState,
@@ -94,7 +99,8 @@ public final class MoveDrawing implements Snapshot {
         final int circleSegmentCount,
         final Vertex moveOrigin,
         final List<Vector2> moveSample,
-        final Rectangle gameBounds
+        final Rectangle gameBounds,
+        final CobwebSwitch displayCobweb
     ) {
         this.gameState = gameState;
         this.moveThickness = moveThickness;
@@ -102,6 +108,7 @@ public final class MoveDrawing implements Snapshot {
         this.moveOrigin = moveOrigin;
         this.moveSample = moveSample;
         this.gameBounds = gameBounds;
+        this.displayCobweb = displayCobweb;
     }
 
     /**
@@ -146,7 +153,8 @@ public final class MoveDrawing implements Snapshot {
                     nextMove,
                     moveThickness,
                     circleSegmentCount,
-                    gameBounds
+                    gameBounds,
+                    displayCobweb
                 );
         }
 
@@ -155,7 +163,8 @@ public final class MoveDrawing implements Snapshot {
                 gameState,
                 moveThickness,
                 circleSegmentCount,
-                gameBounds
+                gameBounds,
+                displayCobweb
             );
     }
 
@@ -172,7 +181,8 @@ public final class MoveDrawing implements Snapshot {
                     circleSegmentCount,
                     moveOrigin,
                     newSample,
-                    gameBounds
+                    gameBounds,
+                    displayCobweb
                 );
         }
         return this;
@@ -188,19 +198,25 @@ public final class MoveDrawing implements Snapshot {
             circleSegmentCount
         ).render(renderer);
 
-        gameState.render(renderer, moveThickness, circleSegmentCount);
+        gameState.render(
+            renderer,
+            moveThickness,
+            circleSegmentCount,
+            displayCobweb.state()
+        );
 
         Iterator<Submove> submoves = move.iterator();
         if (submoves.hasNext()) {
             Submove s = submoves.next();
-            if (!s.isReadyToRender()) {
-                return;
+            if (s.isReadyToRender()) {
+                new SproutsTooltip(
+                    gameState,
+                    () -> new SproutsFaces(
+                        gameState.edges()
+                    ).drawnIn(s.asEdge()),
+                    moveOrigin
+                ).render(renderer, moveThickness, circleSegmentCount, false);
             }
-            new SproutsTooltip(
-                gameState,
-                () -> new SproutsFaces(gameState.edges()).drawnIn(s.asEdge()),
-                moveOrigin
-            ).render(renderer, moveThickness, circleSegmentCount);
         }
     }
 
