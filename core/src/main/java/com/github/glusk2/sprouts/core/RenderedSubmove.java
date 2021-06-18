@@ -22,6 +22,8 @@ public final class RenderedSubmove implements RenderBatch {
      * parent batch as part of a Move.
      */
     private final boolean isNestedBatch;
+    /** The color to paint this submove with. */
+    private final Color submovePaint;
 
     /**
      * Constructs a new RenderedSubmove from the Submove and the rendering
@@ -33,17 +35,20 @@ public final class RenderedSubmove implements RenderBatch {
      *                           adjacent line segments
      * @param isNestedBatch a flag that specifies whether this Submove is being
      *                      rendered in parent batch as part of a Move
+     * @param submovePaint the color to paint this submove with
      */
     public RenderedSubmove(
         final Submove submove,
         final float lineThickness,
         final int circleSegmentCount,
-        final boolean isNestedBatch
+        final boolean isNestedBatch,
+        final Color submovePaint
     ) {
         this.submove = submove;
         this.lineThickness = lineThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.isNestedBatch = isNestedBatch;
+        this.submovePaint = submovePaint;
     }
 
     @Override
@@ -56,14 +61,7 @@ public final class RenderedSubmove implements RenderBatch {
             renderer.begin(ShapeType.Filled);
         }
 
-        Color polylineColor = null;
-        if (!submove.isValid()) {
-            polylineColor = Color.GRAY;
-        } else if (submove.isCompleted()) {
-            polylineColor = Color.BLUE;
-        } else {
-            polylineColor = Color.GREEN;
-        }
+        Color polylineColor = submovePaint;
         new PolylineBatch(
             submove.asEdge().polyline(),
             polylineColor,
