@@ -2,7 +2,8 @@ com.github.glusk2.sprouts.android
 com.github.glusk2.sprouts.core
 com.github.glusk2.sprouts.core.comb
 com.github.glusk2.sprouts.core.geom
-com.github.glusk2.sprouts.core.ui
+com.github.glusk2.sprouts.core.moves
+com.github.glusk2.sprouts.core.snapshots
 com.github.glusk2.sprouts.core.util
 com.github.glusk2.sprouts.desktop
 com.github.glusk2.sprouts.html
