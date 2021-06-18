@@ -22,8 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.github.glusk2.sprouts.core.snapshots.BeforeMove;
-import com.github.glusk2.sprouts.core.snapshots.GameBoard;
-import com.github.glusk2.sprouts.core.snapshots.ResetDialog;
 import com.github.glusk2.sprouts.core.snapshots.TouchEventSnapshooter;
 
 /**

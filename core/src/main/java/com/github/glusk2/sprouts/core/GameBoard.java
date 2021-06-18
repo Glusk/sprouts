@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.snapshots;
+package com.github.glusk2.sprouts.core;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.github.glusk2.sprouts.core.snapshots.Snapshooter;
 
 /** The Sprouts game board. */
 public final class GameBoard extends Actor {
