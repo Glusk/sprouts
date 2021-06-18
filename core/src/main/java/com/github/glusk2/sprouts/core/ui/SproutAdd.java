@@ -3,6 +3,7 @@ package com.github.glusk2.sprouts.core.ui;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.github.glusk2.sprouts.core.CobwebSwitch;
 import com.github.glusk2.sprouts.core.Move;
 import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
@@ -26,6 +27,8 @@ public final class SproutAdd implements Snapshot {
     private final int circleSegmentCount;
     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
+    /** A switch that tracks whether the player wishes to display cobweb. */
+    private final CobwebSwitch displayCobweb;
 
     /**
      * Creates a new SproutAdd Snapshot from the {@code currentState},
@@ -38,19 +41,23 @@ public final class SproutAdd implements Snapshot {
      *                           Vertices
      * @param gameBounds any Submove that is drawn outside of
      *                   {@code gameBounds} is invalid
+     * @param displayCobweb a switch that tracks whether the player wishes to
+     *                      display cobweb
      */
     public SproutAdd(
         final SproutsGameState currentState,
         final Move move,
         final float moveThickness,
         final int circleSegmentCount,
-        final Rectangle gameBounds
+        final Rectangle gameBounds,
+        final CobwebSwitch displayCobweb
     ) {
         this.currentState = currentState;
         this.move = move;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.gameBounds = gameBounds;
+        this.displayCobweb = displayCobweb;
     }
 
     @Override
@@ -70,7 +77,8 @@ public final class SproutAdd implements Snapshot {
                 ),
                 moveThickness,
                 circleSegmentCount,
-                gameBounds
+                gameBounds,
+                displayCobweb
             );
 }
 
@@ -86,7 +94,12 @@ public final class SproutAdd implements Snapshot {
             moveThickness,
             circleSegmentCount
         ).render(renderer);
-        currentState.render(renderer, moveThickness, circleSegmentCount);
+        currentState.render(
+            renderer,
+            moveThickness,
+            circleSegmentCount,
+            displayCobweb.state()
+        );
     }
 
     @Override

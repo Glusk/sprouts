@@ -85,12 +85,15 @@ public final class SproutsTooltip implements SproutsGameState {
      * @param renderer the renderer to render with
      * @param thickness the radius of vertices
      * @param circleSegmentCount the number of segments for the circles drawn
+     * @param displayCobweb this argument has no effect on the rendering of
+     *                      this graph
      */
     @Override
     public void render(
         final ShapeRenderer renderer,
         final float thickness,
-        final int circleSegmentCount
+        final int circleSegmentCount,
+        final boolean displayCobweb
     ) {
         renderer.begin(ShapeType.Filled);
         renderer.setColor(Color.GREEN);

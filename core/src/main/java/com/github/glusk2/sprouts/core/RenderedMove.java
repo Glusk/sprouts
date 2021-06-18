@@ -2,6 +2,7 @@ package com.github.glusk2.sprouts.core;
 
 import java.util.Iterator;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.github.glusk2.sprouts.core.util.RenderBatch;
@@ -39,6 +40,14 @@ public final class RenderedMove implements RenderBatch {
 
     @Override
     public void render(final ShapeRenderer renderer) {
+        Color movePaint = Color.GRAY;
+        if (move.isValid()) {
+            if (move.isCompleted()) {
+                movePaint = Color.BLUE;
+            } else {
+                movePaint = Color.GREEN;
+            }
+        }
         renderer.begin(ShapeType.Filled);
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
@@ -47,7 +56,8 @@ public final class RenderedMove implements RenderBatch {
                 next,
                 lineThickness,
                 circleSegmentCount,
-                true
+                true,
+                movePaint
             ).render(renderer);
             it = next;
         }
