@@ -82,6 +82,12 @@ public final class MainScreen extends ScreenAdapter {
     private int numOfSprouts;
 
     /**
+     * A switch that tracks whether the user wants to display the cobweb.
+     * Initially, the cobweb is disabled.
+     */
+    private CobwebSwitch displayCobweb = new CobwebSwitch(false);
+
+    /**
      * Constructs a new {@code MainScreen} of the Game by specifying the
      * {@code game}, {@code viewport}, {@code renderer} and the
      * {@code numOfSprouts}.
@@ -119,6 +125,7 @@ public final class MainScreen extends ScreenAdapter {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("checkstyle:methodlength")
     public void show() {
         stage = new Stage(viewport);
 
@@ -211,11 +218,41 @@ public final class MainScreen extends ScreenAdapter {
             }
         );
 
+        TextButton cobwebToggle =
+            new TextButton(
+                "Display cobweb",
+                skin
+            );
+        cobwebToggle.addListener(
+            new InputListener() {
+                @Override
+                public boolean touchDown(
+                    final InputEvent event,
+                    final float x,
+                    final float y,
+                    final int pointer,
+                    final int button
+                ) {
+                    String buttonText = cobwebToggle.getText().toString();
+                    if (buttonText.equals("Display cobweb")) {
+                        cobwebToggle.setText("Hide cobweb");
+                        cobwebToggle.setColor(Color.RED);
+                    } else {
+                        cobwebToggle.setText("Display cobweb");
+                        cobwebToggle.setColor(Color.LIGHT_GRAY);
+                    }
+                    displayCobweb.toggle();
+                    return true;
+                }
+            }
+        );
+
         Table toolbar = new Table().pad(TOOLBAR_PADDING);
         toolbar.add(helpButton);
         toolbar.left().add(resetButton).space(TOOLBAR_CELL_SPACING);
         toolbar.add(sliderLabel).space(TOOLBAR_CELL_SPACING);
-        toolbar.add(slider);
+        toolbar.add(slider).space(TOOLBAR_CELL_SPACING);
+        toolbar.add(cobwebToggle);
         toolbar.setHeight(resetButton.getPrefHeight() + 2 * TOOLBAR_PADDING);
 
 
@@ -238,7 +275,8 @@ public final class MainScreen extends ScreenAdapter {
                     ) / minDimensionRatio,
                     CIRCLE_SEGMENT_COUNT,
                     (int) slider.getValue(),
-                    gameBounds
+                    gameBounds,
+                    displayCobweb
                 )
             );
         Actor gameBoard = new GameBoard(gameBoardListener, renderer);
