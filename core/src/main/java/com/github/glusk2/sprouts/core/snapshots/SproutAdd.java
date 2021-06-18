@@ -1,13 +1,13 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core.snapshots;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.CobwebSwitch;
-import com.github.glusk2.sprouts.core.Move;
-import com.github.glusk2.sprouts.core.RenderedMove;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
+import com.github.glusk2.sprouts.core.moves.Move;
+import com.github.glusk2.sprouts.core.moves.RenderedMove;
 
 /**
  * This Snapshot represents the game board <em>after</em> a Move is drawn,

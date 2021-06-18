@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.Move;
-import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.geom.Polyline;
+import com.github.glusk2.sprouts.core.moves.Move;
+import com.github.glusk2.sprouts.core.moves.Submove;
 
 /**
  * Sprouts state after a Move.

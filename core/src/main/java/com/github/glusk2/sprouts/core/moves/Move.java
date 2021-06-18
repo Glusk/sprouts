@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core;
+package com.github.glusk2.sprouts.core.moves;
 
 /**
  * A Sprouts Move consists of one or more Submoves.

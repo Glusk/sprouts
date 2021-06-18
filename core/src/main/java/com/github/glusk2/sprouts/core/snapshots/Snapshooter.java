@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core.snapshots;
 
 /**
  * A Snapshooter is a "camera" that takes "pictures" (Snapshots).

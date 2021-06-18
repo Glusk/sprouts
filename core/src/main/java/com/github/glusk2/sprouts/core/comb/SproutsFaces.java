@@ -119,9 +119,9 @@ public final class SproutsFaces {
      * </pre>
      *
      * @param submove A submove in the game of sprouts (see
-     *                {@link com.github.glusk2.sprouts.core.Submove#asEdge()
-     *                Submove.asEdge()}).
-     *                The submove need not be completed.
+     *             {@link com.github.glusk2.sprouts.core.moves.Submove#asEdge()
+     *             Submove.asEdge()}).
+     *             The submove need not be completed.
      * @return the face in which this {@code submove} is drawn as a set of
      *         directed edges
      * @throws IllegalArgumentException if {@code submove} is not connected to

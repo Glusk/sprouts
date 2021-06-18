@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core.snapshots;
 
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
@@ -11,9 +11,6 @@ import java.util.HashSet;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.CobwebSwitch;
-import com.github.glusk2.sprouts.core.SubmoveElement;
-import com.github.glusk2.sprouts.core.SubmoveHead;
-import com.github.glusk2.sprouts.core.SubmoveSequence;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
@@ -21,6 +18,9 @@ import com.github.glusk2.sprouts.core.comb.Vertex;
 import com.github.glusk2.sprouts.core.geom.BezierCurve;
 import com.github.glusk2.sprouts.core.geom.CurveApproximation;
 import com.github.glusk2.sprouts.core.geom.Polyline;
+import com.github.glusk2.sprouts.core.moves.SubmoveElement;
+import com.github.glusk2.sprouts.core.moves.SubmoveHead;
+import com.github.glusk2.sprouts.core.moves.SubmoveSequence;
 
 import org.junit.Test;
 

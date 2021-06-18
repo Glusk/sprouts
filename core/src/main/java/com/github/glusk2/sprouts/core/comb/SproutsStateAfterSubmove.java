@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
-import com.github.glusk2.sprouts.core.Submove;
 import com.github.glusk2.sprouts.core.geom.IsPointOnLineSegment;
 import com.github.glusk2.sprouts.core.geom.Polyline;
+import com.github.glusk2.sprouts.core.moves.Submove;
 
 /**
  * Sprouts state after a Submove.

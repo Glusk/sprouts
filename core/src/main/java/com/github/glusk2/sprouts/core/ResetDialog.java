@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.github.glusk2.sprouts.core.MainScreen;
 
 /**
  * A "New game" button's InputListener.

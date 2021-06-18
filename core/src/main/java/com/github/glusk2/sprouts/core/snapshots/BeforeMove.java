@@ -1,4 +1,4 @@
-package com.github.glusk2.sprouts.core.ui;
+package com.github.glusk2.sprouts.core.snapshots;
 
 import java.util.Arrays;
 import java.util.LinkedList;
