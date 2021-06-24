@@ -179,11 +179,14 @@ public final class MainScreen extends ScreenAdapter {
                     Window instrWindow = new Window("Instructions", skin);
 
                     Label instructions = new Label(
-                        "Connect two living sprouts with a curve that\r\n"
+                        "Connect two living sprouts (points with black\r\n"
+                      + "border and white fill) with a curve that\r\n"
                       + "doesn't cross itself or the existing moves.\r\n"
-                      + "\r\n"
-                      + "A move can intersect red lines.\r\n"
-                      + "\r\n"
+                      + "While a move is being drawn, the game highlights\r\n"
+                      + "all sprouts in which a move can be terminated\r\n"
+                      + "with green.\r\n"
+                      + "If your move is invalid, it turns gray; a move can\r\n"
+                      + "intersect red lines.\r\n"
                       + "Once a move is complete, add a new sprout anywhere\r\n"
                       + "along the curve.",
                         skin
