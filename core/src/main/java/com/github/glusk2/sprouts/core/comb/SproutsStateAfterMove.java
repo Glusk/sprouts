@@ -74,6 +74,7 @@ public final class SproutsStateAfterMove implements SproutsGameState {
         SproutsEdge edgeToSplit = null;
         int splitIndex = -1;
 
+        // 1. Find edge to split and split point
         SproutsGameState stateAfterSubmoves = previousState;
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
@@ -115,6 +116,7 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             it = submove;
         }
 
+        // 2. split the edge
         if (edgeToSplit != null) {
             List<Vector2> points = edgeToSplit.polyline().points();
             Set<SproutsEdge> edges = new HashSet<>(stateAfterSubmoves.edges());
@@ -153,6 +155,7 @@ public final class SproutsStateAfterMove implements SproutsGameState {
         }
         SproutsGameState stateAfterMove = stateAfterSubmoves;
 
+        // 3. Remove red points
         final SproutsGameState tmp = stateAfterMove;
         List<Vertex> verticesToRemove = stateAfterSubmoves.vertices().stream()
             .filter(v ->
