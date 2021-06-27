@@ -9,6 +9,19 @@ import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 /**
  * A middle sprout.
  * <p>
+ * You can think of this class as a
+ * {@link com.github.glusk2.sprouts.core.comb.Vertex Vertex}
+ * that exposes a different
+ * API. The information about its position and color is implicit. Every sprout
+ * is a black vertex by convention. The position of this Vertex
+ * can be computed from the methods of this class:
+ * <pre>
+ * Vector2 position = this.submove()
+ *                        .polyline()
+ *                        .points()
+ *                        .get(this.submovePolylineIndex());
+ * </pre>
+ * <h3>The procedure to find the middle sprout</h3>
  * Iterate all submoves of a given {@code move}. Find the first point on a
  * submove that is at most {@code vertexGlueRadius} away from
  * {@code middleSproutPosition}. This is the middle sprout! Store the submove
