@@ -60,8 +60,11 @@ public final class MiddleSprout {
     }
 
     /**
-     * Tries to find point closest to {@code middleSproutPosition} on the
+     * Tries to find the point closest to {@code middleSproutPosition} on the
      * {@code move}.
+     * <p>
+     * Variables {@code edgeToSplit} and {@code splitIndex} are set
+     * accordingly.
      */
     private void findMiddleSprout() {
         Iterator<Submove> it = move.iterator();
