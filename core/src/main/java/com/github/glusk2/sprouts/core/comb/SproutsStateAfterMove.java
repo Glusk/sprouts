@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.geom.Polyline;
+import com.github.glusk2.sprouts.core.moves.MiddleSprout;
 import com.github.glusk2.sprouts.core.moves.Move;
 import com.github.glusk2.sprouts.core.moves.Submove;
 
@@ -29,16 +30,8 @@ public final class SproutsStateAfterMove implements SproutsGameState {
     private final SproutsGameState previousState;
     /** The move to draw in {@code previousState}. */
     private final Move move;
-    /**
-     * The position of the sprout that should be placed on the new
-     * {@code move}.
-     */
-    private final Vector2 middleSproutPosition;
-    /**
-     * The acceptable margin of error by which {@code middleSproutPosition}
-     * can be placed off the {@code move}.
-     */
-    private final float vertexGlueRadius;
+    /** The middle sprout to place on the {@code move}. */
+    private final MiddleSprout middleSprout;
 
     /** A cached value of {@link #edges()}. */
     private Set<SproutsEdge> cachedEdges = null;
@@ -59,10 +52,28 @@ public final class SproutsStateAfterMove implements SproutsGameState {
         final Vector2 middleSproutPosition,
         final float vertexGlueRadius
     ) {
+        this(
+            previousState,
+            move,
+            new MiddleSprout(move, middleSproutPosition, vertexGlueRadius)
+        );
+    }
+
+    /**
+     * Creates a new Sprouts state after a Move.
+     *
+     * @param previousState the state before {@code this} one
+     * @param move the move to draw in {@code previousState}
+     * @param middleSprout the middle sprout to place on the {@code move}
+     */
+    public SproutsStateAfterMove(
+        final SproutsGameState previousState,
+        final Move move,
+        final MiddleSprout middleSprout
+    ) {
         this.previousState = previousState;
         this.move = move;
-        this.middleSproutPosition = middleSproutPosition;
-        this.vertexGlueRadius = vertexGlueRadius;
+        this.middleSprout = middleSprout;
     }
 
     @Override
@@ -71,46 +82,15 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             return cachedEdges;
         }
 
-        SproutsEdge edgeToSplit = null;
-        int splitIndex = -1;
+        // 1.1 Find edge to split and split point
+        SproutsEdge edgeToSplit = middleSprout.submove();
+        int splitIndex = middleSprout.submovePolylineIndex();
 
-        // 1. Find edge to split and split point
+        // 1.2 Iterate submoves to get the state after all submoves
         SproutsGameState stateAfterSubmoves = previousState;
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
             Submove submove = it.next();
-            List<Vector2> points = submove.asEdge().polyline().points();
-            for (int i = 0; i < points.size(); i++) {
-                if (
-                    splitIndex < 0
-                 && points.get(i).dst(middleSproutPosition) <= vertexGlueRadius
-                ) {
-                    // Try to place the sprout on the submove edge, such that
-                    // it isn't too close to the endpoint vertices.
-                    // It would be nice to have some tests written for this
-                    // piece of code.
-                    //---------------------------------------------------------
-                    while (
-                        i < points.size()
-                     && (
-                            submove.asEdge().from().position().dst(
-                                points.get(i)
-                            ) <= 2 * vertexGlueRadius
-                         || submove.asEdge().to().position().dst(
-                                points.get(i)
-                            ) <= 2 * vertexGlueRadius
-                        )
-                    ) {
-                        i++;
-                    }
-                    if (i == points.size()) {
-                        continue;
-                    }
-                    //---------------------------------------------------------
-                    edgeToSplit = submove.asEdge();
-                    splitIndex = i;
-                }
-            }
             stateAfterSubmoves =
                 new SproutsStateAfterSubmove(stateAfterSubmoves, submove);
             it = submove;
