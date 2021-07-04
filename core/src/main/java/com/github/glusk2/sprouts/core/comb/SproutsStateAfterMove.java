@@ -82,11 +82,7 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             return cachedEdges;
         }
 
-        // 1.1 Find edge to split and split point
-        SproutsEdge edgeToSplit = middleSprout.submove();
-        int splitIndex = middleSprout.submovePolylineIndex();
-
-        // 1.2 Iterate submoves to get the state after all submoves
+        // 1. Iterate submoves to get the state after all submoves
         SproutsGameState stateAfterSubmoves = previousState;
         Iterator<Submove> it = move.iterator();
         while (it.hasNext()) {
@@ -97,46 +93,15 @@ public final class SproutsStateAfterMove implements SproutsGameState {
         }
 
         // 2. split the edge
-        if (edgeToSplit != null) {
-            List<Vector2> points = edgeToSplit.polyline().points();
-            Set<SproutsEdge> edges = new HashSet<>(stateAfterSubmoves.edges());
-            edges.remove(edgeToSplit);
-            edges.remove(edgeToSplit.reversed());
-
-            // split edge
-            SproutsEdge s1 = new SproutsEdge(
-                true,
-                new Polyline.WrappedList(
-                    points.subList(0, splitIndex + 1)
-                ),
-                edgeToSplit.from().color(),
-                Color.BLACK
+        SproutsGameState stateAfterMiddleSprout =
+            new SproutsStateAfterMiddleSprout(
+                previousState,
+                stateAfterSubmoves,
+                middleSprout
             );
-            SproutsEdge s2 = new SproutsEdge(
-                true,
-                new Polyline.WrappedList(
-                    points.subList(splitIndex, points.size())
-                ),
-                Color.BLACK,
-                edgeToSplit.to().color()
-            );
-
-            // add both ends to the graph
-            edges.add(s1);
-            edges.add(s2);
-            // add both opposites to the graph
-            edges.add(s1.reversed());
-            edges.add(s2.reversed());
-
-            stateAfterSubmoves = () -> edges;
-        } else {
-            cachedEdges = Collections.unmodifiableSet(previousState.edges());
-            return cachedEdges;
-        }
-        SproutsGameState stateAfterMove = stateAfterSubmoves;
 
         // 3. Remove red points
-        final SproutsGameState tmp = stateAfterMove;
+        final SproutsGameState tmp = stateAfterMiddleSprout;
         List<Vertex> verticesToRemove = stateAfterSubmoves.vertices().stream()
             .filter(v ->
                 v.color().equals(Color.RED)
@@ -147,15 +112,17 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             .collect(Collectors.toList());
 
         for (Vertex vertexToRemove : verticesToRemove) {
-            SproutsEdge firstHalf = stateAfterMove.edges().stream().filter(
-                e -> e.isPositive() && vertexToRemove.equals(e.to())
-            ).findFirst().get();
-            SproutsEdge secondHalf = stateAfterMove.edges().stream().filter(
-                e -> e.isPositive() && vertexToRemove.equals(e.from())
-            ).findFirst().get();
+            SproutsEdge firstHalf = stateAfterMiddleSprout.edges().stream()
+                .filter(
+                    e -> e.isPositive() && vertexToRemove.equals(e.to())
+                ).findFirst().get();
+            SproutsEdge secondHalf = stateAfterMiddleSprout.edges().stream()
+                .filter(
+                    e -> e.isPositive() && vertexToRemove.equals(e.from())
+                ).findFirst().get();
 
             Set<SproutsEdge> simplifiedEdges =
-                new HashSet<>(stateAfterMove.edges());
+                new HashSet<>(stateAfterMiddleSprout.edges());
 
             List<Vector2> p1 = firstHalf.polyline().points();
             List<Vector2> p2 = secondHalf.polyline().points();
@@ -177,9 +144,10 @@ public final class SproutsStateAfterMove implements SproutsGameState {
             simplifiedEdges.add(merged);
             simplifiedEdges.add(merged.reversed());
 
-            stateAfterMove = () -> simplifiedEdges;
+            stateAfterMiddleSprout = () -> simplifiedEdges;
         }
-        cachedEdges = Collections.unmodifiableSet(stateAfterMove.edges());
+        cachedEdges =
+            Collections.unmodifiableSet(stateAfterMiddleSprout.edges());
         return cachedEdges;
     }
 }
