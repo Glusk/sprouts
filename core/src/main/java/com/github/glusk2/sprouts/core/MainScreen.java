@@ -83,7 +83,13 @@ public final class MainScreen extends ScreenAdapter {
      * A switch that tracks whether the user wants to display the cobweb.
      * Initially, the cobweb is disabled.
      */
-    private CobwebSwitch displayCobweb = new CobwebSwitch(false);
+    private ToggleSwitch displayCobweb = new ToggleSwitch(false);
+
+    /**
+     * A switch that tracks the player turn. If ON, it's "Player 1"'s turn,
+     * else it is "Player 2"'s'. The first turn belongs to "Player 1".
+     */
+    private ToggleSwitch playerTurn = new ToggleSwitch(false);
 
     /**
      * Constructs a new {@code MainScreen} of the Game by specifying the
@@ -123,7 +129,9 @@ public final class MainScreen extends ScreenAdapter {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("checkstyle:methodlength")
+    @SuppressWarnings(
+        {"checkstyle:methodlength", "checkstyle:avoidinlineconditionals"}
+    )
     public void show() {
         stage = new Stage(viewport);
 
@@ -248,14 +256,22 @@ public final class MainScreen extends ScreenAdapter {
             }
         );
 
-        Table toolbar = new Table().pad(TOOLBAR_PADDING);
-        toolbar.add(helpButton);
-        toolbar.left().add(resetButton).space(TOOLBAR_CELL_SPACING);
+        final Label playerTurnLabel =
+            new Label(
+                "Player " + (playerTurn.state() ? 2 : 1) + " on the move!",
+                skin
+            );
+        Table toolbar = new Table().pad(TOOLBAR_PADDING).left();
+        toolbar.add(helpButton).space(TOOLBAR_CELL_SPACING);
+        toolbar.add(resetButton).space(TOOLBAR_CELL_SPACING);
         toolbar.add(sliderLabel).space(TOOLBAR_CELL_SPACING);
         toolbar.add(slider).space(TOOLBAR_CELL_SPACING);
-        toolbar.add(cobwebToggle);
-        toolbar.setHeight(resetButton.getPrefHeight() + 2 * TOOLBAR_PADDING);
-
+        toolbar.add(cobwebToggle).space(TOOLBAR_CELL_SPACING);
+        int firstRowColumnNumber = toolbar.getCells().size;
+        toolbar.row();
+        toolbar.add(playerTurnLabel).space(TOOLBAR_CELL_SPACING)
+            .colspan(firstRowColumnNumber).left();
+        toolbar.pack();
 
         Rectangle gameBounds =
             new Rectangle(
@@ -277,7 +293,9 @@ public final class MainScreen extends ScreenAdapter {
                     CIRCLE_SEGMENT_COUNT,
                     (int) slider.getValue(),
                     gameBounds,
-                    displayCobweb
+                    displayCobweb,
+                    playerTurn,
+                    playerTurnLabel
                 )
             );
         Actor gameBoard = new GameBoard(gameBoardListener, renderer);

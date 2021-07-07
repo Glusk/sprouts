@@ -1,11 +1,14 @@
 package com.github.glusk2.sprouts.core.snapshots;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.CobwebSwitch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.github.glusk2.sprouts.core.ToggleSwitch;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsStateAfterMove;
+import com.github.glusk2.sprouts.core.moves.MiddleSprout;
 import com.github.glusk2.sprouts.core.moves.Move;
 import com.github.glusk2.sprouts.core.moves.RenderedMove;
 
@@ -28,7 +31,14 @@ public final class SproutAdd implements Snapshot {
     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
     /** A switch that tracks whether the player wishes to display cobweb. */
-    private final CobwebSwitch displayCobweb;
+    private final ToggleSwitch displayCobweb;
+    /**
+     * A switch that tracks the player turn. If ON, it's "Player 1"'s turn,
+     * else it is "Player 2"'s'.
+     */
+    private final ToggleSwitch playerTurn;
+    /** A reference to the UI label to update player turns. */
+    private final Label playerTurnLabel;
 
     /**
      * Creates a new SproutAdd Snapshot from the {@code currentState},
@@ -43,14 +53,20 @@ public final class SproutAdd implements Snapshot {
      *                   {@code gameBounds} is invalid
      * @param displayCobweb a switch that tracks whether the player wishes to
      *                      display cobweb
+     * @param playerTurn A switch that tracks the player turn. If ON, it's
+     *                   "Player 1"'s turn, else it is "Player 2"'s'.
+     * @param playerTurnLabel a reference to the UI label to update player turns
      */
+    @SuppressWarnings("checkstyle:parameternumber")
     public SproutAdd(
         final SproutsGameState currentState,
         final Move move,
         final float moveThickness,
         final int circleSegmentCount,
         final Rectangle gameBounds,
-        final CobwebSwitch displayCobweb
+        final ToggleSwitch displayCobweb,
+        final ToggleSwitch playerTurn,
+        final Label playerTurnLabel
     ) {
         this.currentState = currentState;
         this.move = move;
@@ -58,6 +74,8 @@ public final class SproutAdd implements Snapshot {
         this.circleSegmentCount = circleSegmentCount;
         this.gameBounds = gameBounds;
         this.displayCobweb = displayCobweb;
+        this.playerTurn = playerTurn;
+        this.playerTurnLabel = playerTurnLabel;
     }
 
     @Override
@@ -66,19 +84,33 @@ public final class SproutAdd implements Snapshot {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:avoidinlineconditionals")
     public Snapshot touchUp(final Vector2 position) {
+        MiddleSprout middleSprout =
+            new MiddleSprout(move, position, moveThickness);
+
+        if (middleSprout.submove() != null) {
+            playerTurn.toggle();
+            if (playerTurnLabel != null) {
+                playerTurnLabel.setText(
+                    "Player " + (playerTurn.state() ? 2 : 1) + " on the move!"
+                );
+                Gdx.graphics.requestRendering();
+            }
+        }
         return
             new BeforeMove(
                 new SproutsStateAfterMove(
                     currentState,
                     move,
-                    position,
-                    moveThickness
+                    middleSprout
                 ),
                 moveThickness,
                 circleSegmentCount,
                 gameBounds,
-                displayCobweb
+                displayCobweb,
+                playerTurn,
+                playerTurnLabel
             );
 }
 

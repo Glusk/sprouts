@@ -8,7 +8,8 @@ import java.util.List;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.CobwebSwitch;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.github.glusk2.sprouts.core.ToggleSwitch;
 import com.github.glusk2.sprouts.core.comb.SproutsFaces;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
 import com.github.glusk2.sprouts.core.comb.SproutsTooltip;
@@ -74,7 +75,14 @@ public final class MoveDrawing implements Snapshot {
     /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
     /** A switch that tracks whether the player wishes to display cobweb. */
-    private final CobwebSwitch displayCobweb;
+    private final ToggleSwitch displayCobweb;
+    /**
+     * A switch that tracks the player turn. If ON, it's "Player 1"'s turn,
+     * else it is "Player 2"'s'.
+     */
+    private final ToggleSwitch playerTurn;
+    /** A reference to the UI label to update player turns. */
+    private final Label playerTurnLabel;
 
     /**
      * Creates a new MoveDrawing Snapshot from the {@code currentState},
@@ -92,7 +100,11 @@ public final class MoveDrawing implements Snapshot {
      *                   {@code gameBounds} is invalid
      * @param displayCobweb a switch that tracks whether the player wishes to
      *                      display cobweb
+     * @param playerTurn A switch that tracks the player turn. If ON, it's
+     *                   "Player 1"'s turn, else it is "Player 2"'s'.
+     * @param playerTurnLabel a reference to the UI label to update player turns
      */
+    @SuppressWarnings("checkstyle:parameternumber")
     public MoveDrawing(
         final SproutsGameState gameState,
         final float moveThickness,
@@ -100,7 +112,9 @@ public final class MoveDrawing implements Snapshot {
         final Vertex moveOrigin,
         final List<Vector2> moveSample,
         final Rectangle gameBounds,
-        final CobwebSwitch displayCobweb
+        final ToggleSwitch displayCobweb,
+        final ToggleSwitch playerTurn,
+        final Label playerTurnLabel
     ) {
         this.gameState = gameState;
         this.moveThickness = moveThickness;
@@ -109,6 +123,8 @@ public final class MoveDrawing implements Snapshot {
         this.moveSample = moveSample;
         this.gameBounds = gameBounds;
         this.displayCobweb = displayCobweb;
+        this.playerTurn = playerTurn;
+        this.playerTurnLabel = playerTurnLabel;
     }
 
     /**
@@ -154,7 +170,9 @@ public final class MoveDrawing implements Snapshot {
                     moveThickness,
                     circleSegmentCount,
                     gameBounds,
-                    displayCobweb
+                    displayCobweb,
+                    playerTurn,
+                    playerTurnLabel
                 );
         }
 
@@ -164,7 +182,9 @@ public final class MoveDrawing implements Snapshot {
                 moveThickness,
                 circleSegmentCount,
                 gameBounds,
-                displayCobweb
+                displayCobweb,
+                playerTurn,
+                playerTurnLabel
             );
     }
 
@@ -182,7 +202,9 @@ public final class MoveDrawing implements Snapshot {
                     moveOrigin,
                     newSample,
                     gameBounds,
-                    displayCobweb
+                    displayCobweb,
+                    playerTurn,
+                    playerTurnLabel
                 );
         }
         return this;
