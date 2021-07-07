@@ -86,7 +86,9 @@ public class SproutAddTest {
             moveThickness,
             16,
             gameBounds,
-            new ToggleSwitch(true)
+            new ToggleSwitch(true),
+            new ToggleSwitch(false),
+            null
         ).touchUp(new Vector2(7, 0)).gameState();
 
         assertThat(

@@ -91,10 +91,12 @@ public final class SproutAdd implements Snapshot {
 
         if (middleSprout.submove() != null) {
             playerTurn.toggle();
-            playerTurnLabel.setText(
-                "Player " + (playerTurn.state() ? 2 : 1) + " on the move!"
-            );
-            Gdx.graphics.requestRendering();
+            if (playerTurnLabel != null) {
+                playerTurnLabel.setText(
+                    "Player " + (playerTurn.state() ? 2 : 1) + " on the move!"
+                );
+                Gdx.graphics.requestRendering();
+            }
         }
         return
             new BeforeMove(
