@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.badlogic.gdx.math.Vector2;
 import com.github.glusk2.sprouts.core.moves.MiddleSprout;
 import com.github.glusk2.sprouts.core.moves.Move;
 import com.github.glusk2.sprouts.core.moves.Submove;
@@ -29,29 +28,6 @@ public final class SproutsStateAfterMove implements SproutsGameState {
 
     /** A cached value of {@link #edges()}. */
     private Set<SproutsEdge> cachedEdges = null;
-
-    /**
-     * Creates a new Sprouts state after a Move.
-     *
-     * @param previousState the state before {@code this} one
-     * @param move the move to draw in {@code previousState}
-     * @param middleSproutPosition the position of the sprout that should be
-     * placed on the new {@code move}
-     * @param vertexGlueRadius the acceptable margin of error by which
-     * {@code middleSproutPosition} can be placed off the {@code move}
-     */
-    public SproutsStateAfterMove(
-        final SproutsGameState previousState,
-        final Move move,
-        final Vector2 middleSproutPosition,
-        final float vertexGlueRadius
-    ) {
-        this(
-            previousState,
-            move,
-            new MiddleSprout(move, middleSproutPosition, vertexGlueRadius)
-        );
-    }
 
     /**
      * Creates a new Sprouts state after a Move.
