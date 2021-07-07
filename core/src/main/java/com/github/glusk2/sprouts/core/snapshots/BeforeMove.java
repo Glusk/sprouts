@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.github.glusk2.sprouts.core.ToggleSwitch;
 import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
@@ -36,6 +37,13 @@ public final class BeforeMove implements Snapshot {
     private final Rectangle gameBounds;
     /** A switch that tracks whether the player wishes to display cobweb. */
     private final ToggleSwitch displayCobweb;
+    /**
+     * A switch that tracks the player turn. If ON, it's "Player 1"'s turn,
+     * else it is "Player 2"'s'.
+     */
+    private final ToggleSwitch playerTurn;
+    /** A reference to the UI label to update player turns. */
+    private final Label playerTurnLabel;
 
     /**
      * Creates a new Snapshot, using the default initial state.
@@ -48,13 +56,18 @@ public final class BeforeMove implements Snapshot {
      *                   {@code gameBounds} is invalid
      * @param displayCobweb a switch that tracks whether the player wishes to
      *                      display cobweb
+     * @param playerTurn A switch that tracks the player turn. If ON, it's
+     *                   "Player 1"'s turn, else it is "Player 2"'s'.
+     * @param playerTurnLabel a reference to the UI label to update player turns
      */
     public BeforeMove(
         final float moveThickness,
         final int circleSegmentCount,
         final int numOfSprouts,
         final Rectangle gameBounds,
-        final ToggleSwitch displayCobweb
+        final ToggleSwitch displayCobweb,
+        final ToggleSwitch playerTurn,
+        final Label playerTurnLabel
     ) {
         this(
             new SproutsInitialState(
@@ -64,7 +77,9 @@ public final class BeforeMove implements Snapshot {
             moveThickness,
             circleSegmentCount,
             gameBounds,
-            displayCobweb
+            displayCobweb,
+            playerTurn,
+            playerTurnLabel
         );
     }
 
@@ -79,19 +94,26 @@ public final class BeforeMove implements Snapshot {
      *                   {@code gameBounds} is invalid
      * @param displayCobweb a switch that tracks whether the player wishes to
      *                      display cobweb
+     * @param playerTurn A switch that tracks the player turn. If ON, it's
+     *                   "Player 1"'s turn, else it is "Player 2"'s'.
+     * @param playerTurnLabel a reference to the UI label to update player turns
      */
     public BeforeMove(
         final SproutsGameState gameState,
         final float moveThickness,
         final int circleSegmentCount,
         final Rectangle gameBounds,
-        final ToggleSwitch displayCobweb
+        final ToggleSwitch displayCobweb,
+        final ToggleSwitch playerTurn,
+        final Label playerTurnLabel
     ) {
         this.gameState = gameState;
         this.moveThickness = moveThickness;
         this.circleSegmentCount = circleSegmentCount;
         this.gameBounds = gameBounds;
         this.displayCobweb = displayCobweb;
+        this.playerTurn = playerTurn;
+        this.playerTurnLabel = playerTurnLabel;
     }
 
     @Override
@@ -117,7 +139,9 @@ public final class BeforeMove implements Snapshot {
                     nearest,
                     new LinkedList<Vector2>(Arrays.asList(nearest.position())),
                     gameBounds,
-                    displayCobweb
+                    displayCobweb,
+                    playerTurn,
+                    playerTurnLabel
                 );
         }
         return this;
@@ -134,6 +158,7 @@ public final class BeforeMove implements Snapshot {
     }
 
     @Override
+    @SuppressWarnings("checkstyle:avoidinlineconditionals")
     public void render(final ShapeRenderer renderer) {
         gameState.render(
             renderer,
@@ -147,6 +172,11 @@ public final class BeforeMove implements Snapshot {
 
             Color overlayColor = Color.WHITE.cpy();
             overlayColor.a = 1 / 2f;
+
+            playerTurnLabel.setColor(Color.GREEN);
+            playerTurnLabel.setText(
+                "Player " + (playerTurn.state() ? 1 : 2) + " wins!"
+            );
 
             renderer.begin(ShapeType.Filled);
             renderer.setColor(overlayColor);
