@@ -1,17 +1,9 @@
 package com.github.glusk2.sprouts.core;
 
-/**
- * A mutable cobweb switch.
- * <p>
- * This class may be used to track whether the user wants to display the
- * cobweb edges and vertices.
- * <p>
- * When the switch is <strong>ON</strong>, the cobweb is displayed. When the
- * switch is <strong>OFF</strong>, the cobweb is hidden.
- */
-public final class CobwebSwitch {
+/** A mutable toggle switch. */
+public final class ToggleSwitch {
     /**
-     * If {@code true}, the cobweb switch is <strong>ON</strong>, else it is
+     * If {@code true}, the toggle switch is <strong>ON</strong>, else it is
      * <strong>OFF</strong>.
      */
     private boolean isEnabled;
@@ -19,18 +11,18 @@ public final class CobwebSwitch {
     /**
      * Creates a new switch by pre-setting the state.
      *
-     * @param isEnabled if {@code true}, the cobweb switch is
+     * @param isEnabled if {@code true}, the toggle switch is
      *                  <strong>ON</strong>, else it is
      *                  <strong>OFF</strong>
      */
-    public CobwebSwitch(final boolean isEnabled) {
+    public ToggleSwitch(final boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
     /**
      * Returns the current state of this switch.
      *
-     * @return if {@code true}, the cobweb switch is <strong>ON</strong>,
+     * @return if {@code true}, the toggle switch is <strong>ON</strong>,
      *         else it is <strong>OFF</strong>
      */
     public boolean state() {

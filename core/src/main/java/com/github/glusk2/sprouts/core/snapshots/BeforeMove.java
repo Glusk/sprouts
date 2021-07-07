@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.CobwebSwitch;
+import com.github.glusk2.sprouts.core.ToggleSwitch;
 import com.github.glusk2.sprouts.core.comb.IsAliveSprout;
 import com.github.glusk2.sprouts.core.comb.IsMovePossible;
 import com.github.glusk2.sprouts.core.comb.NearestSproutSearch;
@@ -35,7 +35,7 @@ public final class BeforeMove implements Snapshot {
      /** Any Submove that is drawn outside of {@code gameBounds} is invalid. */
     private final Rectangle gameBounds;
     /** A switch that tracks whether the player wishes to display cobweb. */
-    private final CobwebSwitch displayCobweb;
+    private final ToggleSwitch displayCobweb;
 
     /**
      * Creates a new Snapshot, using the default initial state.
@@ -54,7 +54,7 @@ public final class BeforeMove implements Snapshot {
         final int circleSegmentCount,
         final int numOfSprouts,
         final Rectangle gameBounds,
-        final CobwebSwitch displayCobweb
+        final ToggleSwitch displayCobweb
     ) {
         this(
             new SproutsInitialState(
@@ -85,7 +85,7 @@ public final class BeforeMove implements Snapshot {
         final float moveThickness,
         final int circleSegmentCount,
         final Rectangle gameBounds,
-        final CobwebSwitch displayCobweb
+        final ToggleSwitch displayCobweb
     ) {
         this.gameState = gameState;
         this.moveThickness = moveThickness;

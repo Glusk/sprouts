@@ -83,7 +83,7 @@ public final class MainScreen extends ScreenAdapter {
      * A switch that tracks whether the user wants to display the cobweb.
      * Initially, the cobweb is disabled.
      */
-    private CobwebSwitch displayCobweb = new CobwebSwitch(false);
+    private ToggleSwitch displayCobweb = new ToggleSwitch(false);
 
     /**
      * Constructs a new {@code MainScreen} of the Game by specifying the

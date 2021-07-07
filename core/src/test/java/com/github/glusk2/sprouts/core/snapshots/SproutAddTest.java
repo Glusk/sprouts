@@ -10,7 +10,7 @@ import java.util.HashSet;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.github.glusk2.sprouts.core.CobwebSwitch;
+import com.github.glusk2.sprouts.core.ToggleSwitch;
 import com.github.glusk2.sprouts.core.comb.PresetVertex;
 import com.github.glusk2.sprouts.core.comb.SproutsEdge;
 import com.github.glusk2.sprouts.core.comb.SproutsGameState;
@@ -86,7 +86,7 @@ public class SproutAddTest {
             moveThickness,
             16,
             gameBounds,
-            new CobwebSwitch(true)
+            new ToggleSwitch(true)
         ).touchUp(new Vector2(7, 0)).gameState();
 
         assertThat(
